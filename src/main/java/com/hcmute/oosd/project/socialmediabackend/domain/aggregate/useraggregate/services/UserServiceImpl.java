@@ -226,7 +226,11 @@ public class UserServiceImpl implements UserService {
         String accessToken = this.jwtTokenProvider.generateToken(user);
 
         LOG.info("User " + request.getUsername() + " has just logged in, generated jwt token is " + accessToken);
-        return new LoginResponse(new UserResponse(user), accessToken);
+        LoginResponse response = new LoginResponse(new UserResponse(user), accessToken);
+
+        response.addMessage("Đăng nhập thành công");
+
+        return response;
     }
 
 }
