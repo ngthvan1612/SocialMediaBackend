@@ -5,12 +5,15 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ExtendEntityRepositoryBase<E> {
     private static final String ERROR_INVALID_PARAMETER = "Tham số không hợp lệ";
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private static final Set<Class<?>> primitiveNumbers = Stream
             .of(int.class, long.class, float.class,
@@ -116,7 +119,11 @@ public class ExtendEntityRepositoryBase<E> {
                     } else if (isNumericType(field.getType())) {
                         predicates.add(criteriaBuilder.equal(root.get(columnName), value));
                     } else if (isDateType(field.getType())) {
-                        predicates.add(criteriaBuilder.equal(root.get(columnName), Date.parse(value)));
+                        try {
+                            predicates.add(criteriaBuilder.equal(root.<Date>get(columnName), this.dateFormat.parse(value)));
+                        } catch (ParseException e) {
+                            throw ServiceExceptionFactory.badRequest().withData(e);
+                        }
                     } else if (field.getType().isEnum()) {
                         predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get(columnName)), value));
                     } else {
@@ -139,6 +146,13 @@ public class ExtendEntityRepositoryBase<E> {
 
                     if (isNumericType(field.getType())) {
                         predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(columnName), Double.parseDouble(value)));
+                    }
+                    else if (isDateType(field.getType())) {
+                        try {
+                            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(columnName), this.dateFormat.parse(value)));
+                        } catch (ParseException e) {
+                            throw ServiceExceptionFactory.badRequest().withData(e);
+                        }
                     } else {
                         predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(columnName), new Date(value)));
                     }
@@ -150,6 +164,13 @@ public class ExtendEntityRepositoryBase<E> {
 
                     if (isNumericType(field.getType())) {
                         predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(columnName), Double.parseDouble(value)));
+                    }
+                    else if (isDateType(field.getType())){
+                        try {
+                            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(columnName), this.dateFormat.parse(value)));
+                        } catch (ParseException e) {
+                            throw ServiceExceptionFactory.badRequest().withData(e);
+                        }
                     } else {
                         predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(columnName), new Date(value)));
                     }
