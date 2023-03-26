@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -33,6 +34,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private StorageRepository storageRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserServiceImpl() {
 
@@ -59,7 +63,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
 
         user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setDisplayName(request.getDisplayName());
         user.setBirthday(request.getBirthday());
         user.setAvatar(request.getAvatar());
@@ -121,7 +125,7 @@ public class UserServiceImpl implements UserService {
 
 
         user.setUsername(request.getUsername());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setDisplayName(request.getDisplayName());
         user.setBirthday(request.getBirthday());
         user.setAvatar(request.getAvatar());
@@ -218,7 +222,7 @@ public class UserServiceImpl implements UserService {
                     .addMessage("Tên đăng nhập hoặc mật khẩu không đúng");
         }
 
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw ServiceExceptionFactory.unauthorized()
                     .addMessage("Tên đăng nhập hoặc mật khẩu không đúng");
         }
