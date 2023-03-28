@@ -2,7 +2,6 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregat
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.image.UploadImgRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.StorageService;
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
@@ -25,7 +24,7 @@ public class StorageServiceImpl implements StorageService {
     public SuccessfulResponse uploadImg(UploadImgRequest request) {
         //Save to MinIO
         InputStream preparedStream = new ByteArrayInputStream(request.getImgBufferByteArray());
-        String newMinIOUrl = this.storageRepository.saveUploadedImgStream(
+        String newMinIOUrl = this.storageRepository.saveUploadedImg(
                 request.getUploadFileName(),
                 preparedStream,
                 request.getImgBufferByteArray().length

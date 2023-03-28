@@ -39,8 +39,8 @@ public class MinIOStorageRepositoryImpl implements StorageRepository {
     }
 
     @Override
-    public String saveUploadedStream(String uploadFileName, InputStream inputStream, long length) {
-        String imagePath = "image/";
+    public String savedUploadedAvatar(String uploadFileName, InputStream inputStream, long length) {
+        String imagePath = this.minIOConfigurationModel.getDefaultAvatar()+"/";
         String imageFullPath = imagePath + this.fixedFileNameWithUUID(uploadFileName);
 
         PutObjectArgs uploadImageArgs = PutObjectArgs.builder()
@@ -61,7 +61,7 @@ public class MinIOStorageRepositoryImpl implements StorageRepository {
     }
 
     @Override
-    public String saveUploadedImgStream(String uploadFileName, InputStream inputStream, long length) {
+    public String saveUploadedImg(String uploadFileName, InputStream inputStream, long length) {
         String imagePath = this.minIOConfigurationModel.getDefaultPostIamges() + "/";
         String imageFullPath = imagePath + this.fixedFileNameWithUUID(uploadFileName);
 

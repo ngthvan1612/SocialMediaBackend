@@ -167,7 +167,7 @@ public class UserServiceImpl implements UserService {
 
         //Save to MinIO
         InputStream preparedStream = new ByteArrayInputStream(request.getAvatarBufferByteArray());
-        String newMinIOUrl = this.storageRepository.saveUploadedStream(
+        String newMinIOUrl = this.storageRepository.savedUploadedAvatar(
                 request.getUploadFileName(),
                 preparedStream,
                 request.getAvatarBufferByteArray().length

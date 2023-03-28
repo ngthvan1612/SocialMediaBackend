@@ -30,4 +30,7 @@ public class MinIOConfigurationModel {
 
     @Value("${aws.minio.default-image-upload}")
     private String defaultPostIamges;
+
+    @Value("${aws.minio.default-upload-avatar}")
+    private String defaultAvatar;
 }
