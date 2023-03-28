@@ -62,7 +62,7 @@ public class MinIOStorageRepositoryImpl implements StorageRepository {
 
     @Override
     public String saveUploadedImgStream(String uploadFileName, InputStream inputStream, long length) {
-        String imagePath = "postContent/";
+        String imagePath = this.minIOConfigurationModel.getDefaultPostIamges() + "/";
         String imageFullPath = imagePath + this.fixedFileNameWithUUID(uploadFileName);
 
         PutObjectArgs uploadImageArgs = PutObjectArgs.builder()

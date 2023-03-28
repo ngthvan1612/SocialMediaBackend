@@ -7,6 +7,9 @@ import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @CrossOrigin("*")
 @RestController
@@ -19,8 +22,11 @@ public class CommonStorageController {
 
     @PostMapping("/img")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseBaseAbstract uploadImage(@RequestBody UploadImgRequest uploadImgRequest){
-        SuccessfulResponse createImgUrl = this.storageService.uploadImg(uploadImgRequest);
+    public ResponseBaseAbstract uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
+        UploadImgRequest request = new UploadImgRequest();
+        request.setUploadFileName(file.getName());
+        request.setImgBufferByteArray(file.getBytes());
+        SuccessfulResponse createImgUrl = this.storageService.uploadImg(request);
         return createImgUrl;
     }
 }

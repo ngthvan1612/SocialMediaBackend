@@ -27,4 +27,7 @@ public class MinIOConfigurationModel {
 
     @Value("${aws.minio.default-bucket}")
     private String defaultBucket;
+
+    @Value("${aws.minio.default-image-upload}")
+    private String defaultPostIamges;
 }
