@@ -59,4 +59,26 @@ public class MinIOStorageRepositoryImpl implements StorageRepository {
 
         return this.minIOConfigurationModel.getEndPoint() + "/" + this.minIOConfigurationModel.getDefaultBucket() + "/" + imageFullPath;
     }
+
+    @Override
+    public String saveUploadedImgStream(String uploadFileName, InputStream inputStream, long length) {
+        String imagePath = "postContent/";
+        String imageFullPath = imagePath + this.fixedFileNameWithUUID(uploadFileName);
+
+        PutObjectArgs uploadImageArgs = PutObjectArgs.builder()
+                .bucket(this.minIOConfigurationModel.getDefaultBucket())
+                .object(imageFullPath)
+                .contentType("image/jpeg")
+                .stream(inputStream, length, 5L * 1024 * 1024)
+                .build();
+
+        try {
+            this.client.putObject(uploadImageArgs);
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException | InvalidResponseException | IOException | NoSuchAlgorithmException | ServerException | XmlParserException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return this.minIOConfigurationModel.getEndPoint() + "/" + this.minIOConfigurationModel.getDefaultBucket() + "/" + imageFullPath;
+    }
 }
