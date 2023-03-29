@@ -23,8 +23,6 @@ public class UserResponse {
 
     private String username;
 
-    private String password;
-
     private String displayName;
 
     private Date birthday;
@@ -45,7 +43,6 @@ public class UserResponse {
         this.lastUpdatedAt = user.getLastUpdatedAt();
         this.deletedAt = user.getDeletedAt();
         this.username = user.getUsername();
-        this.password = user.getPassword();
         this.displayName = user.getDisplayName();
         this.birthday = user.getBirthday();
         this.avatar = user.getAvatar();
