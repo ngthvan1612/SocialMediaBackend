@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -110,6 +107,16 @@ public class UserServiceImpl implements UserService {
         response.addMessage("Lấy dữ liệu thành công");
 
         return response;
+    }
+
+    @Override
+    public SearchUsersForPostResponse searchUsersForPost(String pattern, Integer limit) {
+        if (limit == null)
+            limit = 10;
+
+        List<User> userList = this.userRepository.searchUsersForPost(pattern, limit);
+        List<SearchUsersForPost> data = userList.stream().map(SearchUsersForPost::new).toList();
+        return new SearchUsersForPostResponse(data);
     }
 
     @Override

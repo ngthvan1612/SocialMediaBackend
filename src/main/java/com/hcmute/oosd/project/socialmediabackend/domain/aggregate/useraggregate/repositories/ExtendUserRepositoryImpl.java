@@ -33,4 +33,25 @@ public class ExtendUserRepositoryImpl extends ExtendEntityRepositoryBase<User> i
                 User.class.getDeclaredFields()
         );
     }
+
+    @Override
+    public List<User> searchUsersForPost(String pattern, Integer limit) {
+        CriteriaBuilder criteriaBuilder = this.entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> userRoot = criteriaQuery.from(User.class);
+
+        criteriaQuery.where(
+                criteriaBuilder.and(
+                        criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("username")), '%' + pattern + '%'),
+                        criteriaBuilder.isNull(userRoot.get("deletedAt"))
+                )
+        );
+
+        List<User> userList = entityManager
+                .createQuery(criteriaQuery)
+                .setMaxResults(limit)
+                .getResultList();
+
+        return userList;
+    }
 }

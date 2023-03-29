@@ -7,4 +7,5 @@ import java.util.Map;
 
 public interface ExtendUserRepository {
     List<User> searchUser(Map<String, String> queries);
+    List<User> searchUsersForPost(String pattern, Integer limit);
 }

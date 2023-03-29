@@ -12,6 +12,8 @@ public interface UserService {
 
     ListUserResponse searchUsers(Map<String, String> queries);
 
+    SearchUsersForPostResponse searchUsersForPost(String pattern, Integer limit);
+
     SuccessfulResponse updateUser(UpdateUserRequest request);
 
     SuccessfulResponse deleteUser(Integer id);
