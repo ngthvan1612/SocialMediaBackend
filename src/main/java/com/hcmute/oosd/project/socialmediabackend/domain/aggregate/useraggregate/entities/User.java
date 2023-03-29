@@ -48,6 +48,9 @@ public class User implements UserDetails {
     @Column(name = "profile")
     private String profile;
 
+    @Column(name = "email")
+    private String email;
+
     @Enumerated(EnumType.STRING)
     private UserGender gender;
 
