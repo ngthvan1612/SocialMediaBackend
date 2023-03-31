@@ -2,6 +2,7 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregat
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.enums.UserRole;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.UserService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -242,6 +244,88 @@ public class UserServiceImpl implements UserService {
         response.addMessage("Đăng nhập thành công");
 
         return response;
+    }
+
+    @Override
+    public SuccessfulResponse registerUser(RegisterUserRequest registerUserRequest) {
+        String username = registerUserRequest.getUsername();
+        String password = registerUserRequest.getPassword();
+        String displayName = registerUserRequest.getDisplayName();
+        String email = registerUserRequest.getEmail();
+
+        if (username == null) {
+            throw ServiceExceptionFactory.badRequest()
+                    .addMessage("Tên đăng nhập không được trống");
+        }
+
+        username = username.trim();
+
+        if (!username.matches("^[a-zA-Z0-9]+$")) {
+            throw ServiceExceptionFactory.badRequest()
+                    .addMessage("Tên đăng nhập chỉ được chứa chữ in hoa, chữ thường, hoặc ký tự số");
+        }
+
+        // TODO: fix hard Code
+        if (username.length() > 16) {
+            throw ServiceExceptionFactory.badRequest()
+                    .addMessage("Tên đăng nhập có độ dài tối đa là 16");
+        }
+
+        if (this.userRepository.existsByUsername(username)) {
+            throw ServiceExceptionFactory.duplicate()
+                    .addMessage("Đã tồn tại người dùng với username là " + username);
+        }
+
+        if (password == null) {
+            throw ServiceExceptionFactory.badRequest()
+                    .addMessage("Mật khẩu không được trống");
+        }
+
+        // TODO: fix hard Code
+        if (password.length() == 0 || password.length() >16) {
+            throw ServiceExceptionFactory.badRequest()
+                    .addMessage("Mật khẩu có độ dài tối đa là 16");
+        }
+
+        if (displayName == null || displayName.length() == 0){
+            throw ServiceExceptionFactory.badRequest()
+                    .addMessage("Họ và tên không được trống");
+        }
+
+        if (email == null){
+            throw ServiceExceptionFactory.badRequest()
+                    .addMessage("Email không được trống");
+        }
+
+        if (!email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
+            throw ServiceExceptionFactory.badRequest()
+                    .addMessage("Email không hợp lệ");
+        }
+
+        if (this.userRepository.existsByEmail(email)) {
+            throw ServiceExceptionFactory.duplicate()
+                    .addMessage("Đã tồn tại người dùng với email là " + email);
+        }
+
+        //Create entity
+        User user = new User();
+
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setDisplayName(displayName);
+        user.setEmail(email);
+        user.setRole(UserRole.REGULAR);
+
+        //Save to database
+        this.userRepository.save(user);
+
+        //Return
+
+        SuccessfulResponse successResponse = new SuccessfulResponse(HttpStatus.OK);
+        successResponse.addMessage("Đăng ký thành công");
+
+        LOG.info("Create user with id = " + user.getId());
+        return successResponse;
     }
 
 }

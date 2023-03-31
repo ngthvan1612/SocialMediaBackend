@@ -23,4 +23,6 @@ public interface UserService {
 
     LoginResponse authenticate(LoginRequest request);
 
+    SuccessfulResponse registerUser(RegisterUserRequest registerUserRequest);
+
 }
