@@ -32,5 +32,10 @@ public class UserTagFriendPost {
     @JoinColumn(name = "friend_id")
     private User friend;
 
+    public UserTagFriendPost() { }
 
+    public UserTagFriendPost(User friend, Post post) {
+        this.friend = friend;
+        this.post = post;
+    }
 }
