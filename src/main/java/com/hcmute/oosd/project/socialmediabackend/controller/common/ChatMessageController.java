@@ -1,4 +1,4 @@
-package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.controller.common;
+package com.hcmute.oosd.project.socialmediabackend.controller.common;
 
 import com.hcmute.oosd.project.socialmediabackend.SocialMediaBackendApplication;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToOne;
