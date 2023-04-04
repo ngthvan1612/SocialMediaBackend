@@ -9,6 +9,8 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +30,12 @@ public class FollowerServiceImpl implements FollowerService {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private StorageRepository storageRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public FollowerServiceImpl() {
 
@@ -192,6 +198,43 @@ public class FollowerServiceImpl implements FollowerService {
 
         LOG.info("Deleted follower with id = " + follower.getId());
         return response;
+    }
+
+    @Override
+    public GetFollowerResponse getFollowerByUserIdAndFollowerId(ToggleFollowerRequest request) {
+        Integer userId = request.getUserId();
+        Integer followerId = request.getFollowerId();
+        if (userId == followerId){
+            throw ServiceExceptionFactory.badRequest()
+                    .addMessage("Bạn không được tự follow chính mình");
+        }
+        if (!this.followerRepository.existsByUserIdAndFollowerId(userId, followerId)) {
+            User user = entityManager.getReference(User.class, userId);
+            User followed = entityManager.getReference(User.class, followerId);
+
+            Follower follower = new Follower();
+
+            follower.setUser(user);
+            follower.setFollow(followed);
+
+            this.followerRepository.save(follower);
+
+            FollowerResponse followerDTO = new FollowerResponse(follower);
+            GetFollowerResponse response = new GetFollowerResponse(followerDTO);
+            response.addMessage("Follow thành công");
+            return response;
+        }
+        else {
+            Follower follower = this.followerRepository.findByUseridAndFollowerId(userId, followerId).get();
+            this.followerRepository.delete(follower);
+
+            FollowerResponse followerDTO = new FollowerResponse(follower);
+            GetFollowerResponse response = new GetFollowerResponse(followerDTO);
+            response.addMessage("Hủy follow thành công");
+
+            return response;
+        }
+
     }
 
 }
