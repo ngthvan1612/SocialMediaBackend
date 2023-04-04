@@ -56,4 +56,22 @@ public class CommonFollowerController {
         return getFollowerResponse;
     }
 
+    @GetMapping("followers")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract listPeoplesFollowMe( //lấy danh sách những người follow mình
+            @AuthenticationPrincipal User user
+    ){
+        SuccessfulResponse successfulResponse = this.followerService.getListPeoplesFollowMe(user.getId());
+        return successfulResponse;
+    }
+
+    @GetMapping("me")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract listPeoplesFollowed( //lấy danh sách những người mình follow
+            @AuthenticationPrincipal User user
+    ){
+        SuccessfulResponse successfulResponse = this.followerService.getListPeoplesFollowed(user.getId());
+        return successfulResponse;
+    }
+
 }

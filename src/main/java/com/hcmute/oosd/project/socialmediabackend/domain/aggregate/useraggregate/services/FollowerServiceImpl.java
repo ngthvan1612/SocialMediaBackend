@@ -11,6 +11,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -235,6 +236,24 @@ public class FollowerServiceImpl implements FollowerService {
             return response;
         }
 
+    }
+
+    @Override
+    public SuccessfulResponse getListPeoplesFollowMe(Integer userid){
+        List<User> userList =  this.followerRepository.findListPeoplesFollowMe(userid);
+        SuccessfulResponse response = new SuccessfulResponse();
+        response.setData(userList);
+
+        return response;
+    }
+
+    @Override
+    public  SuccessfulResponse getListPeoplesFollowed(Integer followerId){
+        List<User> userList = this.followerRepository.getListPeoplesFollowed(followerId);
+        SuccessfulResponse response = new SuccessfulResponse();
+        response.setData(userList);
+
+        return response;
     }
 
 }
