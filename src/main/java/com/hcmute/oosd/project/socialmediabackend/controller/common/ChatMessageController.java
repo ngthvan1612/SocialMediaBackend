@@ -19,7 +19,7 @@ public class ChatMessageController {
     @MessageMapping("/ws/secured/messenger")
     public void sendMessageOneToOne(@Payload ChatMessageOneToOne msg) {
         Integer sender = msg.getSenderId();
-        Integer receiver = msg.getReceivedId();
+        Integer receiver = msg.getReceiverId();
         String message = msg.getMessage();
 
         logger.info(String.format("WS-INFO: %s send to %s: %s",sender,receiver,message));
