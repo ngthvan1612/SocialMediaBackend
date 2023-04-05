@@ -1,15 +1,14 @@
 package com.hcmute.oosd.project.socialmediabackend.controller.common;
 
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.CreateMessageRequest;
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.GetMessageResponse;
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.ListMessageResponse;
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.UpdateMessageRequest;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.MessageService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -72,5 +71,14 @@ public class CommonMessageController {
     ) {
         SuccessfulResponse updateMessageResponse = this.messageService.deleteMessage(id);
         return updateMessageResponse;
+    }
+
+    @PostMapping("list-message")
+    public ResponseBaseAbstract getListMessageWithAnotherPerson(
+            @RequestBody @Valid GetListMessageWithAnotherPersonRequest request,
+            @AuthenticationPrincipal User user
+    ) {
+        request.setUserId(user.getId());
+        return this.messageService.getListMessageWithAnotherPerson(request);
     }
 }

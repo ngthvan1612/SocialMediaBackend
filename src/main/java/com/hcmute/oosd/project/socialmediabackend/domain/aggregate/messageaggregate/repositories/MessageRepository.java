@@ -21,5 +21,15 @@ public interface MessageRepository extends JpaRepository<Message, Integer>, Exte
     @Query("SELECT u FROM Message u WHERE u.deletedAt is null")
     List<Message> findAll();
 
-
+    /**
+     * Lấy ra toàn bộ kể cả tin nhắn bị xóa
+     * @param senderId
+     * @param receiverId
+     * @return
+     */
+    @Query("SELECT u FROM Message u WHERE (u.sender.id = :senderId and u.receiver.id = :receiverId) or (u.sender.id = :receiverId and u.receiver.id = :senderId)")
+    List<Message> getAllMessageBetween(
+            @Param("senderId") Integer senderId,
+            @Param("receiverId") Integer receiverId
+    );
 }

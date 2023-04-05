@@ -3,6 +3,7 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggre
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.GroupMessage;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.Message;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToOne;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.GroupMessageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.MessageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.MessageService;
@@ -12,19 +13,21 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class MessageServiceImpl implements MessageService {
     private final static Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private MessageRepository messageRepository;
@@ -47,6 +50,36 @@ public class MessageServiceImpl implements MessageService {
     //TODO: authorize
     //TODO: hash password
     //TODO: loggggggggg
+
+    @Override
+    public SuccessfulResponse getListMessageWithAnotherPerson(GetListMessageWithAnotherPersonRequest request) {
+        List<Message> rawMessage = this.messageRepository.getAllMessageBetween(request.getUserId(), request.getFriendId());
+
+        List<ChatMessageOneToOne> messages = rawMessage.stream().map(msg -> new ChatMessageOneToOne(
+                msg.getSender().getId(),
+                msg.getReceiver().getId(),
+                msg
+        )).toList();
+
+        SuccessfulResponse response = new SuccessfulResponse();
+        response.setData(messages);
+
+        return response;
+    }
+
+    @Override
+    public SuccessfulResponse storeMessage(ChatMessageOneToOne message) {
+        Message messageEntity = new Message();
+        messageEntity.setContent(message.getMessage());
+        messageEntity.setSender(this.entityManager.getReference(User.class, message.getSenderId()));
+        messageEntity.setReceiver(this.entityManager.getReference(User.class, message.getReceiverId()));
+        messageEntity.setCreatedAt(message.getCreatedAt());
+
+        this.messageRepository.save(messageEntity);
+
+        SuccessfulResponse response = new SuccessfulResponse();
+        return response;
+    }
 
     @Override
     public SuccessfulResponse createMessage(CreateMessageRequest request) {

@@ -25,5 +25,6 @@ public class ChatMessageOneToOne {
         this.receiverId = receiverId;
         this.message = message.getContent();
         this.createdAt = message.getCreatedAt();
+        this.type = ChatMessageOneToOneType.MESSAGE;
     }
 }
