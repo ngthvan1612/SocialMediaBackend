@@ -2,6 +2,8 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregat
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.Post;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.model.postcontent.PostContentBase;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.model.postcontent.PostContentFactory;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.PostRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
@@ -48,6 +50,12 @@ public class PostServiceImpl implements PostService {
     public SuccessfulResponse createPost(CreatePostRequest request) {
         //Validate
 
+        PostContentBase postContent = PostContentFactory.fromJson(request.getContent());
+        if (postContent != null){
+            System.out.println(PostContentFactory.toJson(postContent));
+        }
+
+        postContent.validate(true);
 
         //Check null
 
