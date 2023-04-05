@@ -17,6 +17,9 @@ public interface MessageRepository extends JpaRepository<Message, Integer>, Exte
     @Query("SELECT u FROM Message u WHERE u.id = :integer AND u.deletedAt is null")
     Optional<Message> findById(@Param("integer") Integer integer);
 
+    @Query("SELECT u FROM Message u WHERE ((u.sender.id = :user1 AND u.receiver.id = :user2) OR (u.sender.id = :user2 AND u.receiver.id = :user1) ) AND u.deletedAt is null ORDER BY u.createdAt")
+    List<Message> sendByOneToOne(@Param("user1") Integer user1, @Param("user2") Integer user2);
+
     @Override
     @Query("SELECT u FROM Message u WHERE u.deletedAt is null")
     List<Message> findAll();

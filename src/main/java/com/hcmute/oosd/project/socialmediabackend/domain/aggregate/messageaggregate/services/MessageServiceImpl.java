@@ -211,5 +211,25 @@ public class MessageServiceImpl implements MessageService {
         return response;
     }
 
+    @Override
+    public ListMessageResponse getMessageFromOneToOne(Integer usera , Integer userb) {
+        if (!this.userRepository.existsById(usera)) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy Ngừoi dùng nào với id là " + usera);
+        }
+        if (!this.userRepository.existsById(userb)) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy Ngừoi dùng nào với id là " + userb);
+        }
+        List<MessageResponse> listMessageResponses =this.messageRepository.sendByOneToOne(usera,userb)
+                .stream().map(message -> new MessageResponse(message)).toList();
+
+        ListMessageResponse response = new ListMessageResponse(listMessageResponses);
+        response.addMessage("Lấy danh sách tin nhắn giữa hai người thành công");
+
+        LOG.info("Get message from userid = "+ usera + " and "+ userb);
+        return response;
+    }
+
 }
   

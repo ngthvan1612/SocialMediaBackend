@@ -18,6 +18,7 @@ public interface MessageService {
     SuccessfulResponse updateMessage(UpdateMessageRequest request);
 
     SuccessfulResponse deleteMessage(Integer id);
+    ListMessageResponse getMessageFromOneToOne(Integer senderId, Integer receiverId);
 
 
 }

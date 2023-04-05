@@ -73,4 +73,12 @@ public class CommonMessageController {
         SuccessfulResponse updateMessageResponse = this.messageService.deleteMessage(id);
         return updateMessageResponse;
     }
+    @GetMapping("from/{usera}/to/{userb}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract getMessagesFromUser(
+            @PathVariable Integer usera, @PathVariable Integer userb
+    ) {
+        ListMessageResponse listMessageResponse = this.messageService.getMessageFromOneToOne(usera , userb);
+        return listMessageResponse;
+    }
 }
