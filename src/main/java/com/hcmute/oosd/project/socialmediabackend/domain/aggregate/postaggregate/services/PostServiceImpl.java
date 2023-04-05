@@ -109,6 +109,7 @@ public class PostServiceImpl implements PostService {
         return response;
     }
 
+
     @Override
     public SuccessfulResponse updatePost(UpdatePostRequest request) {
         //Check record exists
@@ -174,6 +175,8 @@ public class PostServiceImpl implements PostService {
         LOG.info("Deleted post with id = " + post.getId());
         return response;
     }
+
+
 
 }
   

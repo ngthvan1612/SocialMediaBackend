@@ -5,11 +5,14 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.ListPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.UpdatePostRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -18,6 +21,7 @@ import java.util.Map;
 @RestController
 //hoi lai, camelcase hay la a-a-a
 @RequestMapping("api/common/post")
+@Slf4j
 public class CommonPostController {
 
     @Autowired
@@ -48,8 +52,10 @@ public class CommonPostController {
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBaseAbstract createPost(
-            @RequestBody @Valid CreatePostRequest request
-    ) {
+            @RequestBody @Valid CreatePostRequest request,
+            @AuthenticationPrincipal User user
+            ) {
+        request.setAuthorId(user.getId());
         SuccessfulResponse createPostResponse = this.postService.createPost(request);
         return createPostResponse;
     }
@@ -58,8 +64,10 @@ public class CommonPostController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract updatePost(
             @PathVariable Integer id,
-            @RequestBody @Valid UpdatePostRequest request
+            @RequestBody @Valid UpdatePostRequest request,
+            @AuthenticationPrincipal User user
     ) {
+        request.setAuthorId(user.getId());
         request.setPostId(id);
         SuccessfulResponse updatePostResponse = this.postService.updatePost(request);
         return updatePostResponse;
