@@ -11,6 +11,8 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.Date;
+
 @Controller
 public class ChatMessageController {
     @Autowired
@@ -21,6 +23,8 @@ public class ChatMessageController {
         Integer sender = msg.getSenderId();
         Integer receiver = msg.getReceiverId();
         String message = msg.getMessage();
+
+        msg.setCreatedAt(new Date());
 
         logger.info(String.format("WS-INFO: %s send to %s: %s",sender,receiver,message));
 
