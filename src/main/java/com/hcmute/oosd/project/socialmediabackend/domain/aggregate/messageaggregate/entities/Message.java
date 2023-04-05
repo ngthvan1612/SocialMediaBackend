@@ -2,7 +2,9 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggre
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.Date;
 
@@ -24,6 +26,7 @@ public class Message {
     @Column(name = "deletedAt")
     private Date deletedAt;
 
+    @Length(max = 65536)
     @Column(name = "content")
     private String content;
 
