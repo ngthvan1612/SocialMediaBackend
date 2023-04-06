@@ -23,7 +23,8 @@ public class GroupMessage {
 
     @Column(name = "deletedAt")
     private Date deletedAt;
-
+    @Column(name = "isRead")
+    private Boolean isRead=false;
     @Column(name = "displayName")
     private String displayName;
 

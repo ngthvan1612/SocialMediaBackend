@@ -28,7 +28,7 @@ public class Message {
     private String content;
 
     @Column(name = "isRead")
-    private Boolean isRead;
+    private Boolean isRead = false;
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private User sender;
