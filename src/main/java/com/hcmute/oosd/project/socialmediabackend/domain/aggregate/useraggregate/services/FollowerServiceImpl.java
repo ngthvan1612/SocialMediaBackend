@@ -194,5 +194,28 @@ public class FollowerServiceImpl implements FollowerService {
         return response;
     }
 
+    @Override
+    public SuccessfulResponse isFollowed(Integer userId, Integer followerId) {
+        if (!this.userRepository.existsById(userId)) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy Người dùng nào với id là " + userId);
+        }
+        if (!this.userRepository.existsById(followerId)) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy Người dùng nào với id là " + followerId);
+        }
+
+
+
+        boolean isFoolowed = this.followerRepository.isFollowed(userId,followerId);
+        SuccessfulResponse response = new SuccessfulResponse();
+        response.setData(isFoolowed);
+
+        response.addMessage("Kiểm tra user 1 có đang foolow user 2 thành công");
+
+        return response;
+    }
+
+
 }
   

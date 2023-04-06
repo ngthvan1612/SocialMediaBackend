@@ -18,6 +18,7 @@ public interface FollowerService {
     SuccessfulResponse updateFollower(UpdateFollowerRequest request);
 
     SuccessfulResponse deleteFollower(Integer id);
+     SuccessfulResponse isFollowed(Integer userId, Integer followerId);
 
 
 }
