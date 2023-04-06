@@ -59,6 +59,7 @@ public class CommonPostController {
         Map<String, String> queries = new HashMap<>();
         queries.put("author.id.equal", userId.toString());
         queries.put("privacy.equal", "PUBLIC");
+        //TODO: thêm một số criteria về tài khoản kiểm tra người xem và người được xem có thỏa các điều kiên không
         ListPostResponse listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
