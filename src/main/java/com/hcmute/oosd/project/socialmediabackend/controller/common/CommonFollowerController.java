@@ -71,12 +71,5 @@ public class CommonFollowerController {
         return updateFollowerResponse;
     }
 
-    @GetMapping("{userId}/follow/{followerId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseBaseAbstract checkFollow(
-            @PathVariable Integer userId,
-            @PathVariable Integer followerId) {
-        SuccessfulResponse checkFollowResponse = this.followerService.isFollowed(userId, followerId);
-        return checkFollowResponse;
-    }
+
 }
