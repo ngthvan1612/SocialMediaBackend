@@ -78,12 +78,14 @@ public class CommonMessageController {
 
     }
 
+
     @PostMapping("list-message")
     public ResponseBaseAbstract getListMessageWithAnotherPerson(
             @RequestBody @Valid GetListMessageWithAnotherPersonRequest request,
             @AuthenticationPrincipal User user) {
         request.setUserId(user.getId());
         return this.messageService.getListMessageWithAnotherPerson(request);
+
     }
 
     @GetMapping("{userId}/list-user")

@@ -1,6 +1,5 @@
 package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories;
 
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.Message;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -34,6 +33,5 @@ public interface UserRepository extends JpaRepository<User, Integer>, ExtendUser
 
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM User u WHERE u.username = :username AND u.id <> :id ")
     boolean existsByUsernameExceptId(@Param("username") String username, @Param("id") Integer id);
-
 
 }

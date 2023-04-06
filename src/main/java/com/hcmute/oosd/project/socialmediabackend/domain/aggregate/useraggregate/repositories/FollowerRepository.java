@@ -1,6 +1,5 @@
 package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories;
 
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.Message;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.Follower;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
