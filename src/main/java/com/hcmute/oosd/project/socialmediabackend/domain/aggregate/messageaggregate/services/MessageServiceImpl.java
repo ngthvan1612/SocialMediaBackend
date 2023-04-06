@@ -7,6 +7,8 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.GroupMessageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.MessageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.MessageService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.ListUserResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.UserResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
@@ -252,6 +254,22 @@ public class MessageServiceImpl implements MessageService {
         response.addMessage("Lấy danh sách tin nhắn giữa hai người thành công");
 
         LOG.info("Get message from userid = " + usera + " and " + userb);
+        return response;
+    }
+
+    @Override
+    public ListUserResponse getAllUserHaveBeenChat(Integer userId) {
+        if (!this.userRepository.existsById(userId)) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy Ngừoi dùng nào với id là " + userId);
+        }
+        List<UserResponse> listUserResponses = this.messageRepository.getAllUserHaveBeenChat(userId)
+                .stream().map(user -> new UserResponse(user)).toList();
+
+        ListUserResponse response = new ListUserResponse(listUserResponses);
+        response.addMessage("Lấy toàn bộ người dùng đã nhắn ít nhất 1 tin đối với 1 người thành công");
+
+        LOG.info("Get message from userid = " + userId);
         return response;
     }
 

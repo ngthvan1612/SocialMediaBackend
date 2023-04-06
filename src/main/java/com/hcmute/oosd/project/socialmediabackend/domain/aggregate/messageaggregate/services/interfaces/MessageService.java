@@ -2,6 +2,7 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggre
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToOne;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.ListUserResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 
 import java.util.Map;
@@ -21,6 +22,7 @@ public interface MessageService {
 
     SuccessfulResponse deleteMessage(Integer id);
     ListMessageResponse getMessageFromOneToOne(Integer senderId, Integer receiverId);
+    ListUserResponse getAllUserHaveBeenChat (Integer userId);
 
 
 }

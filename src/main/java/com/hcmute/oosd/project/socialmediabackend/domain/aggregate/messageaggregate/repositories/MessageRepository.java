@@ -33,4 +33,7 @@ public interface MessageRepository extends JpaRepository<Message, Integer>, Exte
     List<Message> getAllMessageBetween(
             @Param("senderId") Integer senderId,
             @Param("receiverId") Integer receiverId);
+
+    @Query("SELECT DISTINCT u FROM Message m INNER JOIN User u ON (m.sender.id = u.id OR m.receiver.id = u.id ) WHERE ((m.sender.id = :userId  OR m.receiver.id = :userId) AND u.id <> :userId AND  m.deletedAt is null )")
+    List<User> getAllUserHaveBeenChat(@Param("userId") Integer userId);
 }

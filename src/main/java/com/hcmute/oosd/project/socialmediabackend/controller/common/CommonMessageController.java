@@ -2,6 +2,7 @@ package com.hcmute.oosd.project.socialmediabackend.controller.common;
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.MessageService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.ListUserResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
@@ -83,5 +84,14 @@ public class CommonMessageController {
             @AuthenticationPrincipal User user) {
         request.setUserId(user.getId());
         return this.messageService.getListMessageWithAnotherPerson(request);
+    }
+
+    @GetMapping("{userId}/list-user")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract getAllUserHaveBeenChat(
+            @PathVariable Integer userId) {
+        ListUserResponse listUserResponse = this.messageService.getAllUserHaveBeenChat(userId);
+        return listUserResponse;
+
     }
 }
