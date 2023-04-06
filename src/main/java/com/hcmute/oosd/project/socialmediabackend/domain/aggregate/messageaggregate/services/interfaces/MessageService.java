@@ -1,14 +1,16 @@
 package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces;
 
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.CreateMessageRequest;
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.GetMessageResponse;
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.ListMessageResponse;
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.UpdateMessageRequest;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.*;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToOne;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 
 import java.util.Map;
 
 public interface MessageService {
+    SuccessfulResponse getListMessageWithAnotherPerson(GetListMessageWithAnotherPersonRequest request);
+
+    SuccessfulResponse storeMessage(ChatMessageOneToOne message);
+
     SuccessfulResponse createMessage(CreateMessageRequest request);
 
     GetMessageResponse getMessageById(Integer id);

@@ -22,8 +22,10 @@ public interface FollowerRepository extends JpaRepository<Follower, Integer>, Ex
     @Query("SELECT u FROM Follower u WHERE u.deletedAt is null")
     List<Follower> findAll();
 
-    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM Follower u WHERE u.user.id = :userId AND u.follow.id = :followerId  AND u.deletedAt is null")
-    boolean isFollowed(@Param("userId") Integer userId , @Param("followerId") Integer followerId);
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM Follower u WHERE u.user.id = :userid AND u.follow.id = :followerid AND u.deletedAt is null")
+    boolean existsByUserIdAndFollowerId(@Param("userid") Integer userid, @Param("followerid") Integer followerid);
 
-
+    @Query("SELECT u FROM Follower u WHERE u.user.id = :userid AND u.follow.id = :followerid")
+    Optional<Follower> findByUseridAndFollowerId(@Param("userid") Integer userid,
+            @Param("followerid") Integer followerid);
 }

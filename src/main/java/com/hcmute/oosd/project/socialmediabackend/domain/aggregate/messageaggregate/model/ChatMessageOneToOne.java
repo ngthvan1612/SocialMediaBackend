@@ -9,7 +9,7 @@ import java.util.Date;
 @Data
 public class ChatMessageOneToOne {
     private Integer senderId;
-    private Integer receivedId;
+    private Integer receiverId;
     private String message;
     private ChatMessageOneToOneType type;
     private String randomHash;
@@ -20,10 +20,11 @@ public class ChatMessageOneToOne {
 
     }
 
-    public ChatMessageOneToOne(Integer senderId, Integer receivedId, Message message) {
+    public ChatMessageOneToOne(Integer senderId, Integer receiverId, Message message) {
         this.senderId = senderId;
-        this.receivedId = receivedId;
+        this.receiverId = receiverId;
         this.message = message.getContent();
         this.createdAt = message.getCreatedAt();
+        this.type = ChatMessageOneToOneType.MESSAGE;
     }
 }

@@ -22,14 +22,15 @@ public interface MessageRepository extends JpaRepository<Message, Integer>, Exte
     @Query("SELECT u FROM Message u WHERE u.deletedAt is null")
     List<Message> findAll();
 
-    @Query("SELECT u FROM Message u WHERE ((u.sender.id = :user1 AND u.receiver.id = :user2) OR (u.sender.id = :user2 AND u.receiver.id = :user1) ) AND u.deletedAt is null ORDER BY u.createdAt")
-    List<Message> sendByOneToOne(@Param("user1") Integer user1, @Param("user2") Integer user2);
-
-//    @Query(value = "SELECT DISTINCT u.receiver FROM Message u WHERE u.sender.id = :userId OR u.receiver.id = :userId AND u.deletedAt is null  ",  nativeQuery = true)
-//    List<User> getChatFriendsFromUser(@Param("userId") Integer userId);
-
-
-
-
-
+    /**
+     * Lấy ra toàn bộ kể cả tin nhắn bị xóa
+     * 
+     * @param senderId
+     * @param receiverId
+     * @return
+     */
+    @Query("SELECT u FROM Message u WHERE (u.sender.id = :senderId and u.receiver.id = :receiverId) or (u.sender.id = :receiverId and u.receiver.id = :senderId)")
+    List<Message> getAllMessageBetween(
+            @Param("senderId") Integer senderId,
+            @Param("receiverId") Integer receiverId);
 }

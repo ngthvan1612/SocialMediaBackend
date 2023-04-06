@@ -1,22 +1,21 @@
 package com.hcmute.oosd.project.socialmediabackend.controller.common;
 
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.CreateMessageRequest;
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.GetMessageResponse;
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.ListMessageResponse;
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.UpdateMessageRequest;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.MessageService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
-//hoi lai, camelcase hay la a-a-a
+// hoi lai, camelcase hay la a-a-a
 @RequestMapping("api/common/message")
 public class CommonMessageController {
 
@@ -30,8 +29,7 @@ public class CommonMessageController {
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchMessage(
-            @RequestParam Map<String, String> queries
-    ) {
+            @RequestParam Map<String, String> queries) {
         ListMessageResponse listMessageResponse = this.messageService.searchMessages(queries);
         return listMessageResponse;
     }
@@ -39,8 +37,7 @@ public class CommonMessageController {
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getMessage(
-            @PathVariable Integer id
-    ) {
+            @PathVariable Integer id) {
         GetMessageResponse getMessageResponse = this.messageService.getMessageById(id);
         return getMessageResponse;
     }
@@ -48,8 +45,7 @@ public class CommonMessageController {
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBaseAbstract createMessage(
-            @RequestBody @Valid CreateMessageRequest request
-    ) {
+            @RequestBody @Valid CreateMessageRequest request) {
         SuccessfulResponse createMessageResponse = this.messageService.createMessage(request);
         return createMessageResponse;
     }
@@ -58,8 +54,7 @@ public class CommonMessageController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract updateMessage(
             @PathVariable Integer id,
-            @RequestBody @Valid UpdateMessageRequest request
-    ) {
+            @RequestBody @Valid UpdateMessageRequest request) {
         request.setMessageId(id);
         SuccessfulResponse updateMessageResponse = this.messageService.updateMessage(request);
         return updateMessageResponse;
@@ -68,17 +63,25 @@ public class CommonMessageController {
     @DeleteMapping("{id}/delete")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract deleteMessage(
-            @PathVariable Integer id
-    ) {
+            @PathVariable Integer id) {
         SuccessfulResponse updateMessageResponse = this.messageService.deleteMessage(id);
         return updateMessageResponse;
     }
+
     @GetMapping("from/{usera}/to/{userb}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getMessagesFromUser(
-            @PathVariable Integer usera, @PathVariable Integer userb
-    ) {
-        ListMessageResponse listMessageResponse = this.messageService.getMessageFromOneToOne(usera , userb);
+            @PathVariable Integer usera, @PathVariable Integer userb) {
+        ListMessageResponse listMessageResponse = this.messageService.getMessageFromOneToOne(usera, userb);
         return listMessageResponse;
+
+    }
+
+    @PostMapping("list-message")
+    public ResponseBaseAbstract getListMessageWithAnotherPerson(
+            @RequestBody @Valid GetListMessageWithAnotherPersonRequest request,
+            @AuthenticationPrincipal User user) {
+        request.setUserId(user.getId());
+        return this.messageService.getListMessageWithAnotherPerson(request);
     }
 }
