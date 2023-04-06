@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @CrossOrigin("*")
@@ -36,6 +37,28 @@ public class CommonPostController {
     public ResponseBaseAbstract searchPost(
             @RequestParam Map<String, String> queries
     ) {
+        ListPostResponse listPostResponse = this.postService.searchPosts(queries);
+        return listPostResponse;
+    }
+
+    @GetMapping("/me/list")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract searchMyPost(
+            @AuthenticationPrincipal User user
+    ) {
+        Map<String, String> queries = new HashMap<>();
+        queries.put("author.id.equal", user.getId().toString());
+        ListPostResponse listPostResponse = this.postService.searchPosts(queries);
+        return listPostResponse;
+    }
+    @GetMapping("/{userId}/list")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract searchUserPost(
+            @PathVariable Integer userId
+    ) {
+        Map<String, String> queries = new HashMap<>();
+        queries.put("author.id.equal", userId.toString());
+        queries.put("privacy.equal", "PUBLIC");
         ListPostResponse listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
