@@ -18,6 +18,7 @@ public class MessageResponse {
     private Date lastUpdatedAt;
 
     private Date deletedAt;
+    private Boolean isRead = false;
 
     private String content;
 
