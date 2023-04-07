@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.enums.PostPrivacy;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class CreatePostRequest {
 
@@ -14,5 +16,7 @@ public class CreatePostRequest {
 
     @JsonIgnore
     private Integer authorId;
+
+    private List<Integer> tags;
 
 }

@@ -5,10 +5,12 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.ListPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.UpdatePostRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -47,8 +49,10 @@ public class AdminPostController {
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBaseAbstract createPost(
-            @RequestBody CreatePostRequest request
+            @RequestBody CreatePostRequest request,
+            @AuthenticationPrincipal User user
     ) {
+        request.setAuthorId(user.getId());
         SuccessfulResponse createPostResponse = this.postService.createPost(request);
         return createPostResponse;
     }
@@ -57,8 +61,10 @@ public class AdminPostController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract updatePost(
             @PathVariable Integer id,
-            @RequestBody UpdatePostRequest request
+            @RequestBody UpdatePostRequest request,
+            @AuthenticationPrincipal User user
     ) {
+        request.setAuthorId(user.getId());
         request.setPostId(id);
         SuccessfulResponse updatePostResponse = this.postService.updatePost(request);
         return updatePostResponse;

@@ -26,6 +26,10 @@ public class PostResponse {
 
     private Integer authorId;
 
+    private String username;
+
+    private String avatar;
+
 
     public PostResponse(Post post) {
 
@@ -37,7 +41,8 @@ public class PostResponse {
         this.privacy = post.getPrivacy();
         if (post.getAuthor() != null) {
             this.authorId = post.getAuthor().getId();
+            this.username = post.getAuthor().getUsername();
+            this.avatar = post.getAuthor().getAvatar();
         }
-
     }
 }

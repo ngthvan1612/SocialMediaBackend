@@ -2,9 +2,11 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregat
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.Post;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.UserTagFriendPost;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.model.postcontent.PostContentBase;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.model.postcontent.PostContentFactory;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.PostRepository;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.UserTagFriendPostRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
@@ -30,6 +32,9 @@ public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
 
     @Autowired
+    private UserTagFriendPostRepository userTagFriendPostRepository;
+
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private StorageRepository storageRepository;
@@ -49,12 +54,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public SuccessfulResponse createPost(CreatePostRequest request) {
         //Validate
-
         PostContentBase postContent = PostContentFactory.fromJson(request.getContent());
-        if (postContent != null){
-            System.out.println(PostContentFactory.toJson(postContent));
-        }
 
+        assert postContent != null;
         postContent.validate(true);
 
         //Check null
@@ -69,6 +71,18 @@ public class PostServiceImpl implements PostService {
             author = optionalAuthor.get();
         }
 
+        if (request.getTags() != null) {
+            for (Integer userId : request.getTags()) {
+                if (userId == request.getAuthorId()) {
+                    throw ServiceExceptionFactory.badRequest()
+                            .addMessage("Người được gắn thẻ chung không được là người đăng");
+                }
+                if (!userRepository.existsById(userId)) {
+                    throw ServiceExceptionFactory.badRequest()
+                            .addMessage("Không tồn tại người dùng nào với id là " + userId);
+                }
+            }
+        }
 
         Post post = new Post();
 
@@ -78,6 +92,12 @@ public class PostServiceImpl implements PostService {
 
         //Save to database
         this.postRepository.save(post);
+        if (request.getTags() != null) {
+            List<User> userList = userRepository.findAllById(request.getTags());
+            this.userTagFriendPostRepository.saveAll(
+                    userList.stream().map(user -> new UserTagFriendPost(user, post)).toList()
+            );
+        }
 
         //Return
         PostResponse postDTO = new PostResponse(post);
@@ -116,6 +136,7 @@ public class PostServiceImpl implements PostService {
 
         return response;
     }
+
 
     @Override
     public SuccessfulResponse updatePost(UpdatePostRequest request) {
@@ -182,6 +203,8 @@ public class PostServiceImpl implements PostService {
         LOG.info("Deleted post with id = " + post.getId());
         return response;
     }
+
+
 
 }
   

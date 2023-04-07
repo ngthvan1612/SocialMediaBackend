@@ -1,10 +1,12 @@
 package com.hcmute.oosd.project.socialmediabackend.domain.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 
+@Data
 public abstract class ResponseBaseAbstract {
     @JsonIgnore
     private HttpStatus statusCode;
@@ -22,38 +24,6 @@ public abstract class ResponseBaseAbstract {
 
     public ResponseBaseAbstract(HttpStatus statusCode) {
         this.statusCode = statusCode;
-    }
-
-    public HttpStatus getStatusCode() {
-        return this.statusCode;
-    }
-
-    public void setStatusCode(HttpStatus statusCode) {
-        this.statusCode = statusCode;
-    }
-
-    public String getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Object getData() {
-        return this.data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
-    }
-
-    public ArrayList<String> getMessages() {
-        return this.messages;
-    }
-
-    public void setMessages(ArrayList<String> messages) {
-        this.messages = messages;
     }
 
     public void addMessage(String message) {

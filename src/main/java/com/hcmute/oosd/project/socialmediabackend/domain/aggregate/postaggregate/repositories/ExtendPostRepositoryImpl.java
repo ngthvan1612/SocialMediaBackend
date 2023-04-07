@@ -24,6 +24,7 @@ public class ExtendPostRepositoryImpl extends ExtendEntityRepositoryBase<Post> i
         CriteriaQuery<Post> criteriaQuery = criteriaBuilder.createQuery(Post.class);
         Root<Post> postRoot = criteriaQuery.from(Post.class);
 
+        criteriaQuery.orderBy(criteriaBuilder.desc(postRoot.get("id")));
         return this.dynamicSearchEntity(
                 this.entityManager,
                 queries,
@@ -33,4 +34,5 @@ public class ExtendPostRepositoryImpl extends ExtendEntityRepositoryBase<Post> i
                 Post.class.getDeclaredFields()
         );
     }
+
 }
