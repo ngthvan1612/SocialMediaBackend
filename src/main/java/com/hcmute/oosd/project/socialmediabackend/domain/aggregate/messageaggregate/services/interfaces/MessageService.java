@@ -21,11 +21,8 @@ public interface MessageService {
     SuccessfulResponse updateMessage(UpdateMessageRequest request);
 
     SuccessfulResponse deleteMessage(Integer id);
-<<<<<<< HEAD
+
     ListMessageResponse getMessageFromOneToOne(Integer senderId, Integer receiverId);
+    
     ListUserResponse getAllUserHaveBeenChat (Integer userId);
-=======
->>>>>>> a31597e6e97b10252f6061480825723c0646032e
-
-
 }
