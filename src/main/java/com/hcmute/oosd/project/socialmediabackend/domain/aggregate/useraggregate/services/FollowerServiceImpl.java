@@ -41,20 +41,19 @@ public class FollowerServiceImpl implements FollowerService {
 
     }
 
-    //TODO: Validate with annotation
-    //TODO: check fk before create & update
-    //TODO: update unique column for delete
-    //TODO: swagger
-    //TODO: authorize
-    //TODO: hash password
-    //TODO: loggggggggg
+    // TODO: Validate with annotation
+    // TODO: check fk before create & update
+    // TODO: update unique column for delete
+    // TODO: swagger
+    // TODO: authorize
+    // TODO: hash password
+    // TODO: loggggggggg
 
     @Override
     public SuccessfulResponse createFollower(CreateFollowerRequest request) {
-        //Validate
+        // Validate
 
-
-        //Check null
+        // Check null
 
         Optional<User> optionalUser = this.userRepository.findById(request.getUserId());
         User user = null;
@@ -66,7 +65,6 @@ public class FollowerServiceImpl implements FollowerService {
             user = optionalUser.get();
         }
 
-
         Optional<User> optionalFollow = this.userRepository.findById(request.getFollowId());
         User follow = null;
 
@@ -77,16 +75,15 @@ public class FollowerServiceImpl implements FollowerService {
             follow = optionalFollow.get();
         }
 
-
         Follower follower = new Follower();
 
         follower.setUser(user);
         follower.setFollow(follow);
 
-        //Save to database
+        // Save to database
         this.followerRepository.save(follower);
 
-        //Return
+        // Return
         FollowerResponse followerDTO = new FollowerResponse(follower);
         SuccessfulResponse response = new SuccessfulResponse();
 
@@ -126,13 +123,13 @@ public class FollowerServiceImpl implements FollowerService {
 
     @Override
     public SuccessfulResponse updateFollower(UpdateFollowerRequest request) {
-        //Check record exists
+        // Check record exists
         if (!this.followerRepository.existsById(request.getFollowerId())) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Theo dõi nào với id là " + request.getFollowerId());
         }
 
-        //Read data from request
+        // Read data from request
         Follower follower = this.followerRepository.findById(request.getFollowerId()).get();
 
         Optional<User> optionalUser = this.userRepository.findById(request.getUserId());
@@ -145,7 +142,6 @@ public class FollowerServiceImpl implements FollowerService {
             user = optionalUser.get();
         }
 
-
         Optional<User> optionalFollow = this.userRepository.findById(request.getFollowId());
         User follow = null;
 
@@ -156,20 +152,18 @@ public class FollowerServiceImpl implements FollowerService {
             follow = optionalFollow.get();
         }
 
-
         follower.setUser(user);
         follower.setFollow(follow);
 
-        //Validate unique
+        // Validate unique
 
-
-        //Update last changed time
+        // Update last changed time
         follower.setLastUpdatedAt(new Date());
 
-        //Store
+        // Store
         this.followerRepository.save(follower);
 
-        //Return
+        // Return
         FollowerResponse followerDTO = new FollowerResponse(follower);
         SuccessfulResponse response = new SuccessfulResponse();
 
@@ -179,7 +173,6 @@ public class FollowerServiceImpl implements FollowerService {
         LOG.info("Updated follower with id = " + follower.getId());
         return response;
     }
-
 
     @Override
     public SuccessfulResponse deleteFollower(Integer id) {
@@ -204,7 +197,7 @@ public class FollowerServiceImpl implements FollowerService {
     public GetFollowerResponse getFollowerByUserIdAndFollowerId(ToggleFollowerRequest request) {
         Integer userId = request.getUserId();
         Integer followerId = request.getFollowerId();
-        if (userId == followerId){
+        if (userId == followerId) {
             throw ServiceExceptionFactory.badRequest()
                     .addMessage("Bạn không được tự follow chính mình");
         }
@@ -223,8 +216,7 @@ public class FollowerServiceImpl implements FollowerService {
             GetFollowerResponse response = new GetFollowerResponse(followerDTO);
             response.addMessage("Follow thành công");
             return response;
-        }
-        else {
+        } else {
             Follower follower = this.followerRepository.findByUseridAndFollowerId(userId, followerId).get();
             this.followerRepository.delete(follower);
 
@@ -238,4 +230,3 @@ public class FollowerServiceImpl implements FollowerService {
     }
 
 }
-  

@@ -25,5 +25,6 @@ public interface FollowerRepository extends JpaRepository<Follower, Integer>, Ex
     boolean existsByUserIdAndFollowerId(@Param("userid") Integer userid, @Param("followerid") Integer followerid);
 
     @Query("SELECT u FROM Follower u WHERE u.user.id = :userid AND u.follow.id = :followerid")
-    Optional<Follower> findByUseridAndFollowerId(@Param("userid") Integer userid, @Param("followerid") Integer followerid);
+    Optional<Follower> findByUseridAndFollowerId(@Param("userid") Integer userid,
+            @Param("followerid") Integer followerid);
 }
