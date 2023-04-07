@@ -16,7 +16,7 @@ import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
-//hoi lai, camelcase hay la a-a-a
+// hoi lai, camelcase hay la a-a-a
 @RequestMapping("api/common/follower")
 public class CommonFollowerController {
 
@@ -30,8 +30,7 @@ public class CommonFollowerController {
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchFollower(
-            @RequestParam Map<String, String> queries
-    ) {
+            @RequestParam Map<String, String> queries) {
         ListFollowerResponse listFollowerResponse = this.followerService.searchFollowers(queries);
         return listFollowerResponse;
     }
@@ -39,8 +38,7 @@ public class CommonFollowerController {
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getFollower(
-            @PathVariable Integer id
-    ) {
+            @PathVariable Integer id) {
         GetFollowerResponse getFollowerResponse = this.followerService.getFollowerById(id);
         return getFollowerResponse;
     }
@@ -49,8 +47,7 @@ public class CommonFollowerController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract toggle(
             @AuthenticationPrincipal User user,
-            @RequestBody @Valid ToggleFollowerRequest request
-            ) {
+            @RequestBody @Valid ToggleFollowerRequest request) {
         request.setUserId(user.getId());
         GetFollowerResponse getFollowerResponse = this.followerService.getFollowerByUserIdAndFollowerId(request);
         return getFollowerResponse;
