@@ -23,7 +23,7 @@ public class GroupMessageResponse {
 
     private Integer adminId;
 
-
+    private  Boolean isRead = false;
     public GroupMessageResponse(GroupMessage groupMessage) {
 
         this.id = groupMessage.getId();
