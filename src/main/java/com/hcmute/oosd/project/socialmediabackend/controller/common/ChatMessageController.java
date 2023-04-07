@@ -1,9 +1,11 @@
 package com.hcmute.oosd.project.socialmediabackend.controller.common;
 
 import com.hcmute.oosd.project.socialmediabackend.SocialMediaBackendApplication;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToGroup;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToOne;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.MessageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.MessageService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.types.ChatMessageOneToGroupType;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.types.ChatMessageOneToOneType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,4 +47,22 @@ public class ChatMessageController {
             simpMessagingTemplate.convertAndSend(senderEndPoint, msg);
         }
     }
+    @MessageMapping("/ws/secured/messenger-group")
+    public void sendMessageOneToGroup(@Payload ChatMessageOneToGroup msg) {
+        if (msg.getType() == ChatMessageOneToGroupType.MESSAGE) {
+            Integer member = msg.getMemberId();
+            Integer group = msg.getGroupId();
+            String message = msg.getMessage();
+
+            msg.setCreatedAt(new Date());
+
+            this.messageService.storeMessage(msg);
+
+            logger.info(String.format("WS-INFO: %s send to group %s: %s", member, group, message));
+
+            String receiverEndPoint = "/ws/secured/messenger/group-" + group;
+            simpMessagingTemplate.convertAndSend(receiverEndPoint, msg);
+            
+        }
+
 }
