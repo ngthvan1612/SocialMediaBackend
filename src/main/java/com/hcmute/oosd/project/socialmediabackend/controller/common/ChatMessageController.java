@@ -53,7 +53,6 @@ public class ChatMessageController {
             Integer member = msg.getMemberId();
             Integer group = msg.getGroupId();
             String message = msg.getMessage();
-
             msg.setCreatedAt(new Date());
 
             this.messageService.storeMessage(msg);
@@ -62,7 +61,6 @@ public class ChatMessageController {
 
             String receiverEndPoint = "/ws/secured/messenger/group-" + group;
             simpMessagingTemplate.convertAndSend(receiverEndPoint, msg);
-            
         }
-
+    }
 }
