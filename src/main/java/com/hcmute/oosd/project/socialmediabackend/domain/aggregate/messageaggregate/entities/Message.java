@@ -30,6 +30,8 @@ public class Message {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "isRead")
+    private Boolean isRead = false;
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private User sender;
