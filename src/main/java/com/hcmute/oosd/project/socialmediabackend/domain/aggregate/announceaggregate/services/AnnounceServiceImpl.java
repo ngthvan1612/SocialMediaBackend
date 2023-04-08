@@ -2,9 +2,13 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggr
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.dto.announce.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.entities.Announce;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.model.CreatedPostNotification;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.repositories.AnnounceRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.services.interfaces.AnnounceService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.Post;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.PostRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.FollowerRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
@@ -13,6 +17,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExcept
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -24,16 +29,31 @@ import java.util.Optional;
 public class AnnounceServiceImpl implements AnnounceService {
     private final static Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    @Autowired
-    private AnnounceRepository announceRepository;
+    private final AnnounceRepository announceRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private StorageRepository storageRepository;
+    private final UserRepository userRepository;
 
-    public AnnounceServiceImpl() {
+    private final FollowerRepository followerRepository;
 
+    private final StorageRepository storageRepository;
+
+    private final PostRepository postRepository;
+
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
+    public AnnounceServiceImpl(
+            AnnounceRepository announceRepository,
+            UserRepository userRepository,
+            StorageRepository storageRepository,
+            PostRepository postRepository,
+            FollowerRepository followerRepository,
+            SimpMessagingTemplate simpMessagingTemplate) {
+        this.announceRepository = announceRepository;
+        this.userRepository = userRepository;
+        this.storageRepository = storageRepository;
+        this.postRepository = postRepository;
+        this.followerRepository = followerRepository;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     //TODO: Validate with annotation
@@ -175,5 +195,34 @@ public class AnnounceServiceImpl implements AnnounceService {
         return response;
     }
 
+    @Override
+    public void onCreatedNewPost(Integer postId) {
+        Optional<Post> postOptional = this.postRepository.findById(postId);
+        if (postOptional.isEmpty()) {
+            LOG.error("Not found post with id = " + postId + " to announce");
+            return;
+        }
+
+        final Post post = postOptional.get();
+        final Integer authorId = post.getAuthor().getId();
+        final List<User> authorFollowers = this.followerRepository.findListPeoplesFollowMe(authorId);
+
+        //TODO: sau này đổ xuống queue (rabbit-mq hoặc kafka)
+        for (User user : authorFollowers) {
+            try {
+                String endPoint = "/ws/secured/announce/user-" + user.getId();
+                CreatedPostNotification notification = new CreatedPostNotification();
+
+                notification.setPost(post);
+                notification.setMessage("Người dùng mà bạn đang theo dõi vừa đăng bài mới");
+
+                this.simpMessagingTemplate.convertAndSend(endPoint, notification);
+            }
+            catch (Exception e) {
+                LOG.error("Send notification error ");
+                e.printStackTrace();
+            }
+        }
+    }
 }
   

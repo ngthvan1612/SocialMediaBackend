@@ -19,5 +19,5 @@ public interface AnnounceService {
 
     SuccessfulResponse deleteAnnounce(Integer id);
 
-
+    void onCreatedNewPost(Integer postId);
 }
