@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Configuration
 @PropertySources({
-        @PropertySource("classpath:storage.production.properties"),
-        @PropertySource("classpath:storage.development.properties")
+        @PropertySource(value = "classpath:storage.production.properties", ignoreResourceNotFound = true),
+        @PropertySource(value = "classpath:storage.development.properties", ignoreResourceNotFound = true)
 })
 @Data
 public class MinIOConfigurationModel {

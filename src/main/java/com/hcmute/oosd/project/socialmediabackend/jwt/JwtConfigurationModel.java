@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 @Configuration
 @Data
 @PropertySources({
-        @PropertySource("classpath:jwt.production.properties"),
-        @PropertySource("classpath:jwt.development.properties"),
+        @PropertySource(value = "classpath:jwt.production.properties", ignoreResourceNotFound = true),
+        @PropertySource(value = "classpath:jwt.development.properties", ignoreResourceNotFound = true),
 })
 public class JwtConfigurationModel {
     @Value("${jwt.configuration.secret}")
