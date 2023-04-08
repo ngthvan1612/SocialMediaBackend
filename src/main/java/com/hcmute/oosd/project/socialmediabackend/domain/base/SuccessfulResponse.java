@@ -16,4 +16,10 @@ public class SuccessfulResponse extends ResponseBaseAbstract {
         assert statusCode.value() <= 399;
         super.setStatusCode(statusCode);
     }
+
+    public static class Builder extends ResponseBaseBuilder<SuccessfulResponse, Builder> {
+        public Builder() {
+            super(new SuccessfulResponse());
+        }
+    }
 }
