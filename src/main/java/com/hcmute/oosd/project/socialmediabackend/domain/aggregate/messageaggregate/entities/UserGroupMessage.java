@@ -20,7 +20,8 @@ public class UserGroupMessage {
 
     @Column(name = "lastUpdatedAt")
     private Date lastUpdatedAt = new Date();
-
+    @Column(name = "isRead")
+    private Boolean isRead=false;
     @Column(name = "deletedAt")
     private Date deletedAt;
 

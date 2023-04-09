@@ -2,7 +2,12 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggre
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.groupmessage.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.GroupMessage;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.Message;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.UserGroupMessage;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToGroup;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.GroupMessageRepository;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.MessageRepository;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.UserGroupMessageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.GroupMessageService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
@@ -10,6 +15,9 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +32,13 @@ import java.util.Optional;
 public class GroupMessageServiceImpl implements GroupMessageService {
     private final static Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
 
+    @PersistenceContext
+    private EntityManager entityManager;
+    @Autowired
+    private MessageRepository messageRepository;
     @Autowired
     private GroupMessageRepository groupMessageRepository;
-
+    private UserGroupMessageRepository userGroupMessageRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -152,7 +164,21 @@ public class GroupMessageServiceImpl implements GroupMessageService {
         LOG.info("Updated groupMessage with id = " + groupMessage.getId());
         return response;
     }
+    @Override
+    public SuccessfulResponse groupstoreMessage(ChatMessageOneToGroup message) {
 
+        GroupMessage group = this.entityManager.getReference(GroupMessage.class, message.getGroupId());
+        Message messageEntity = new Message();
+        messageEntity.setContent(message.getMessage());
+        messageEntity.setSender(this.entityManager.getReference(User.class, message.getMemberId()));
+        messageEntity.setCreatedAt(message.getCreatedAt());
+        messageEntity.setGroup(group);
+
+        this.messageRepository.save(messageEntity);
+
+        SuccessfulResponse response = new SuccessfulResponse();
+        return response;
+    }
 
     @Override
     public SuccessfulResponse deleteGroupMessage(Integer id) {

@@ -1,9 +1,11 @@
 package com.hcmute.oosd.project.socialmediabackend.controller.common;
 
 import com.hcmute.oosd.project.socialmediabackend.SocialMediaBackendApplication;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.groupmessage.GroupMessageResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToGroup;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToOne;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.MessageRepository;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.GroupMessageService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.MessageService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.types.ChatMessageOneToGroupType;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.types.ChatMessageOneToOneType;
@@ -22,6 +24,8 @@ import java.util.Date;
 public class ChatMessageController {
     @Autowired
     private MessageService messageService;
+    private GroupMessageService groupmessageService;
+    private GroupMessageResponse groupmessageResponse;
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -55,7 +59,7 @@ public class ChatMessageController {
             String message = msg.getMessage();
             msg.setCreatedAt(new Date());
 
-            this.messageService.storeMessage(msg);
+            this.groupmessageService.groupstoreMessage(msg);
 
             logger.info(String.format("WS-INFO: %s send to group %s: %s", member, group, message));
 
