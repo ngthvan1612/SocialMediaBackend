@@ -4,6 +4,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.groupmessage.GetGroupMessageResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.groupmessage.ListGroupMessageResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.groupmessage.UpdateGroupMessageRequest;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToGroup;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 
 import java.util.Map;
@@ -17,6 +18,8 @@ public interface GroupMessageService {
 
     SuccessfulResponse updateGroupMessage(UpdateGroupMessageRequest request);
 
+//    SuccessfulResponse addUserToGroup(Integer groupId, Integer userId);
+    SuccessfulResponse groupstoreMessage(ChatMessageOneToGroup message);
     SuccessfulResponse deleteGroupMessage(Integer id);
 
 

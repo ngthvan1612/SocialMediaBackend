@@ -20,9 +20,9 @@ public class ChatMessageOneToGroup {
 
     }
 
-    public ChatMessageOneToGroup(Integer senderId, Integer receiverId, Message message) {
-        this.memberId = senderId;
-        this.groupId = receiverId;
+    public ChatMessageOneToGroup(Integer memberId, Integer groupId, Message message) {
+        this.memberId = memberId;
+        this.groupId = groupId;
         this.message = message.getContent();
         this.createdAt = message.getCreatedAt();
         this.type = ChatMessageOneToGroupType.MESSAGE;
