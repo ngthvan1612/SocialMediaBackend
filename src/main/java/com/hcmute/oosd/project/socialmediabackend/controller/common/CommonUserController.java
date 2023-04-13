@@ -1,12 +1,14 @@
 package com.hcmute.oosd.project.socialmediabackend.controller.common;
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.*;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.UserService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,15 +65,15 @@ public class CommonUserController {
         return createUserResponse;
     }
 
-    @PutMapping("{id}/update-avatar")
+    @PutMapping("/update-avatar")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract updateUserAvatar(
-            @PathVariable Integer id,
+            @AuthenticationPrincipal User user,
             @RequestParam("avatarFile") MultipartFile avatarFile
     ) throws IOException {
         UpdateUserAvatarRequest request = new UpdateUserAvatarRequest();
 
-        request.setUserId(id);
+        request.setUserId(user.getId());
         request.setAvatarBufferByteArray(avatarFile.getBytes());
         request.setUploadFileName(avatarFile.getOriginalFilename());
 
