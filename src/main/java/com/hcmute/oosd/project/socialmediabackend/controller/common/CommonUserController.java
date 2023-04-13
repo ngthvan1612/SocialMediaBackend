@@ -41,18 +41,20 @@ public class CommonUserController {
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchUser(
+            @AuthenticationPrincipal User loggingInUser,
             @RequestParam Map<String, String> queries
     ) {
-        ListUserResponse listUserResponse = this.userService.searchUsers(queries);
+        ListUserResponse listUserResponse = this.userService.searchUsers(queries, loggingInUser);
         return listUserResponse;
     }
 
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getUser(
+            @AuthenticationPrincipal User currentUser,
             @PathVariable Integer id
     ) {
-        GetUserResponse getUserResponse = this.userService.getUserById(id);
+        GetUserResponse getUserResponse = this.userService.getUserById(id,currentUser);
         return getUserResponse;
     }
 

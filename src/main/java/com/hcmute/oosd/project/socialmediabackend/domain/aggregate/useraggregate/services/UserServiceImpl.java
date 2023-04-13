@@ -3,6 +3,7 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregat
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.enums.UserRole;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.FollowerRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.UserService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
@@ -30,13 +31,21 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private StorageRepository storageRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private FollowerRepository followerRepository;
 
+    private void preparedFollowedForUserResponse(User loggingInUser, UserResponse toAccessUser) {
+        if (loggingInUser.getId() == toAccessUser.getId()) return;
+        if (!this.followerRepository.existsByUserIdAndFollowerId(loggingInUser.getId(),toAccessUser.getId()))
+            toAccessUser.setFollowed(false);
+        else
+            toAccessUser.setFollowed(true);
+    }
     public UserServiceImpl() {
 
     }
@@ -85,7 +94,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetUserResponse getUserById(Integer id) {
+    public GetUserResponse getUserById(Integer id, User loggindInUser) {
         if (!this.userRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy người dùng nào với id là " + id);
@@ -93,6 +102,7 @@ public class UserServiceImpl implements UserService {
 
         User user = this.userRepository.findById(id).get();
         UserResponse userDTO = new UserResponse(user);
+        preparedFollowedForUserResponse(loggindInUser, userDTO);
         GetUserResponse response = new GetUserResponse(userDTO);
 
         response.addMessage("Lấy dữ liệu thành công");
@@ -101,10 +111,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ListUserResponse searchUsers(Map<String, String> queries) {
+    public ListUserResponse searchUsers(Map<String, String> queries, User loggingInUser) {
         List<UserResponse> listUserResponses = this.userRepository.searchUser(queries)
                 .stream().map(user -> new UserResponse(user)).toList();
 
+        for (UserResponse userResponse : listUserResponses) {
+            preparedFollowedForUserResponse(loggingInUser,userResponse);
+        }
         ListUserResponse response = new ListUserResponse(listUserResponses);
         response.addMessage("Lấy dữ liệu thành công");
 
