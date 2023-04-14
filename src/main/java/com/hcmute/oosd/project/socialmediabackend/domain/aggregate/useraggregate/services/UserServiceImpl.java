@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.*;
-import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -57,7 +56,7 @@ public class UserServiceImpl implements UserService {
     //TODO: authorize
     //TODO: hash password
     //TODO: loggggggggg
-
+    
     @Override
     public SuccessfulResponse createUser(CreateUserRequest request) {
         //Validate
@@ -94,7 +93,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GetUserResponse getUserById(Integer id, User loggindInUser) {
+    public GetUserResponse getUserById(Integer id, User loggingInUser) {
         if (!this.userRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy người dùng nào với id là " + id);
@@ -102,7 +101,7 @@ public class UserServiceImpl implements UserService {
 
         User user = this.userRepository.findById(id).get();
         UserResponse userDTO = new UserResponse(user);
-        preparedFollowedForUserResponse(loggindInUser, userDTO);
+        preparedFollowedForUserResponse(loggingInUser, userDTO);
         GetUserResponse response = new GetUserResponse(userDTO);
 
         response.addMessage("Lấy dữ liệu thành công");
@@ -150,7 +149,6 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setDisplayName(request.getDisplayName());
         user.setBirthday(request.getBirthday());
-        user.setAvatar(request.getAvatar());
         user.setProfile(request.getProfile());
         user.setGender(request.getGender());
         user.setRole(request.getRole());
