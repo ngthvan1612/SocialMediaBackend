@@ -34,4 +34,7 @@ public interface UserRepository extends JpaRepository<User, Integer>, ExtendUser
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM User u WHERE u.username = :username AND u.id <> :id ")
     boolean existsByUsernameExceptId(@Param("username") String username, @Param("id") Integer id);
 
+    @Query("SELECT u FROM User u WHERE u.id != :id AND u NOT IN :listFollowedUser AND u.deletedAt is null")
+    List<User> getSuggestionsForMe(@Param("id") Integer id, @Param("listFollowedUser") List<User> listFollowedUser);
+
 }

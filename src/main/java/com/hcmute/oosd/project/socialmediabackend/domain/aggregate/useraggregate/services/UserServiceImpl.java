@@ -56,7 +56,23 @@ public class UserServiceImpl implements UserService {
     //TODO: authorize
     //TODO: hash password
     //TODO: loggggggggg
-    
+
+    @Override
+    public SuccessfulResponse getSuggestionsForMe(User loggingInUser) {
+        if (!this.userRepository.existsById(loggingInUser.getId())) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy người dùng nào với id là " + loggingInUser.getId());
+        }
+        List<User> listFollowedUser = this.followerRepository.getListPeoplesFollowed(loggingInUser.getId());
+        List<SuggestionForMe> listSuggestionForMes = this.userRepository.getSuggestionsForMe(loggingInUser.getId(),listFollowedUser)
+                .stream().map(user -> new SuggestionForMe(user)).toList();
+
+        SuccessfulResponse response = new SuccessfulResponse();
+        response.setData(listSuggestionForMes);
+        response.addMessage("Lấy dữ liệu thành công");
+
+        return response;
+    }
     @Override
     public SuccessfulResponse createUser(CreateUserRequest request) {
         //Validate

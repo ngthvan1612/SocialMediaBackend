@@ -102,4 +102,13 @@ public class CommonUserController {
         SuccessfulResponse updateUserResponse = this.userService.deleteUser(id);
         return updateUserResponse;
     }
+
+    @GetMapping("suggestion-users-for-me")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract getListSuggestionsForMe(
+            @AuthenticationPrincipal User loggingInUser
+    ) {
+        SuccessfulResponse getListSuggestionsForMeResponse = this.userService.getSuggestionsForMe(loggingInUser);
+        return getListSuggestionsForMeResponse;
+    }
 }
