@@ -6,6 +6,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.model.postcontent.PostContentBase;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.model.postcontent.PostContentFactory;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.PostRepository;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.ReactionRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.UserTagFriendPostRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
@@ -36,6 +37,8 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ReactionRepository reactionRepository;
     @Autowired
     private StorageRepository storageRepository;
 
@@ -195,6 +198,8 @@ public class PostServiceImpl implements PostService {
         post.setDeletedAt(new Date());
 
         this.postRepository.save(post);
+
+        reactionRepository.deleteByPostId(post.getId());
 
         SuccessfulResponse response = new SuccessfulResponse();
         response.addMessage("Xóa Bài đăng thành công");

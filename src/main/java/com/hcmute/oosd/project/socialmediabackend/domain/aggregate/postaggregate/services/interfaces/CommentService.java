@@ -17,7 +17,7 @@ public interface CommentService {
 
     SuccessfulResponse updateComment(UpdateCommentRequest request);
 
-    SuccessfulResponse deleteComment(Integer id);
+    SuccessfulResponse deleteComment(Integer id, Integer userId);
 
 
 }

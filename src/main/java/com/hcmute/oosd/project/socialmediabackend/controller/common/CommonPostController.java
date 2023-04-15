@@ -4,7 +4,11 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.GetPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.ListPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.UpdatePostRequest;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.reaction.CreateReactionRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.ReactionService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.follower.GetFollowerResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.follower.ToggleFollowerRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
@@ -24,6 +28,8 @@ public class CommonPostController {
 
     @Autowired
     private PostService postService;
+    @Autowired
+    private ReactionService reactionService;
 
     public CommonPostController() {
 
@@ -77,5 +83,16 @@ public class CommonPostController {
     ) {
         SuccessfulResponse updatePostResponse = this.postService.deletePost(id);
         return updatePostResponse;
+    }
+
+    @PostMapping("{postId}/like/toggle")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract likePost(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid CreateReactionRequest request
+)
+    {
+        SuccessfulResponse likePostReponse = this.reactionService.createReaction(request);
+        return likePostReponse;
     }
 }
