@@ -34,6 +34,7 @@ public class UserResponse {
     private UserGender gender;
 
     private UserRole role;
+    private boolean followed;
 
 
     public UserResponse(User user) {

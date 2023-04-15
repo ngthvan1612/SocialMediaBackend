@@ -21,8 +21,9 @@ public interface MessageService {
     SuccessfulResponse updateMessage(UpdateMessageRequest request);
 
     SuccessfulResponse deleteMessage(Integer id);
-    ListMessageResponse getMessageFromOneToOne(Integer senderId, Integer receiverId);
-    ListUserResponse getAllUserHaveBeenChat (Integer userId);
 
+    ListMessageResponse getMessageFromOneToOne(Integer senderId, Integer receiverId);
+    
+    ListUserResponse getAllUserHaveBeenChat (Integer userId);
 
 }

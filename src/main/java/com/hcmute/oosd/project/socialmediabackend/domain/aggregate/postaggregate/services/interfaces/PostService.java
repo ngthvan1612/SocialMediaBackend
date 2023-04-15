@@ -19,5 +19,4 @@ public interface PostService {
 
     SuccessfulResponse deletePost(Integer id);
 
-
 }

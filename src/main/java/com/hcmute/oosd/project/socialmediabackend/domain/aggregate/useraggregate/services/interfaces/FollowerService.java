@@ -17,4 +17,8 @@ public interface FollowerService {
     SuccessfulResponse deleteFollower(Integer id);
 
     GetFollowerResponse getFollowerByUserIdAndFollowerId(ToggleFollowerRequest request);
+
+    SuccessfulResponse getListPeoplesFollowMe(Integer userid);
+
+    SuccessfulResponse getListPeoplesFollowed(Integer userid);
 }

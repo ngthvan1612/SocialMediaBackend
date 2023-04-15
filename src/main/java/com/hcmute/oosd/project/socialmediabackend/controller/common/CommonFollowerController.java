@@ -53,23 +53,22 @@ public class CommonFollowerController {
         return getFollowerResponse;
     }
 
-    @PutMapping("{id}/update")
+    @GetMapping("followers")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseBaseAbstract updateFollower(
-            @PathVariable Integer id,
-            @RequestBody @Valid UpdateFollowerRequest request) {
-        request.setFollowerId(id);
-        SuccessfulResponse updateFollowerResponse = this.followerService.updateFollower(request);
-        return updateFollowerResponse;
+    public ResponseBaseAbstract listPeoplesFollowMe( //lấy danh sách những người follow mình
+            @AuthenticationPrincipal User user
+    ){
+        SuccessfulResponse successfulResponse = this.followerService.getListPeoplesFollowMe(user.getId());
+        return successfulResponse;
     }
 
-    @DeleteMapping("{id}/delete")
+    @GetMapping("me")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseBaseAbstract deleteFollower(
-            @PathVariable Integer id) {
-        SuccessfulResponse updateFollowerResponse = this.followerService.deleteFollower(id);
-        return updateFollowerResponse;
+    public ResponseBaseAbstract listPeoplesFollowed( //lấy danh sách những người mình follow
+            @AuthenticationPrincipal User user
+    ){
+        SuccessfulResponse successfulResponse = this.followerService.getListPeoplesFollowed(user.getId());
+        return successfulResponse;
     }
-
 
 }

@@ -1,10 +1,12 @@
 package com.hcmute.oosd.project.socialmediabackend.domain.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 
+@Data
 public abstract class ResponseBaseAbstract {
     @JsonIgnore
     private HttpStatus statusCode;
@@ -24,39 +26,44 @@ public abstract class ResponseBaseAbstract {
         this.statusCode = statusCode;
     }
 
-    public HttpStatus getStatusCode() {
-        return this.statusCode;
-    }
-
-    public void setStatusCode(HttpStatus statusCode) {
-        this.statusCode = statusCode;
-    }
-
-    public String getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Object getData() {
-        return this.data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
-    }
-
-    public ArrayList<String> getMessages() {
-        return this.messages;
-    }
-
-    public void setMessages(ArrayList<String> messages) {
-        this.messages = messages;
-    }
-
     public void addMessage(String message) {
         this.messages.add(message);
+    }
+
+    public static class ResponseBaseBuilder<C extends ResponseBaseAbstract, T extends ResponseBaseBuilder<C, T>> {
+        private final C instance;
+
+        public ResponseBaseBuilder(C instance) {
+            this.instance = instance;
+        }
+
+        public T setStatusString(String statusString) {
+            this.instance.setStatus(statusString);
+            return this.getThis();
+        }
+
+        public T setStatusCode(HttpStatus httpStatus) {
+            this.instance.setStatusCode(httpStatus);
+            return this.getThis();
+        }
+
+        public T setStatusCode(Integer httpStatus) {
+            this.instance.setStatusCode(HttpStatus.valueOf(httpStatus));
+            return this.getThis();
+        }
+
+        public T addMessage(String message) {
+            this.instance.getMessages().add(message);
+            return this.getThis();
+        }
+
+        @SuppressWarnings(value = "unchecked")
+        private T getThis() {
+            return (T)this;
+        }
+
+        public ResponseBaseAbstract build() {
+            return this.instance;
+        }
     }
 }

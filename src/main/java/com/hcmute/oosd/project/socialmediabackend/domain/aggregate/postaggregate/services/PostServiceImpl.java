@@ -1,5 +1,6 @@
 package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services;
 
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.services.interfaces.AnnounceService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.Post;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.UserTagFriendPost;
@@ -41,6 +42,8 @@ public class PostServiceImpl implements PostService {
     private ReactionRepository reactionRepository;
     @Autowired
     private StorageRepository storageRepository;
+    @Autowired
+    private AnnounceService announceService;
 
     public PostServiceImpl() {
 
@@ -110,6 +113,8 @@ public class PostServiceImpl implements PostService {
         response.addMessage("Tạo Bài đăng thành công");
 
         LOG.info("Created post with id = " + post.getId());
+
+        announceService.onCreatedNewPost(post.getId());
         return response;
     }
 
@@ -139,6 +144,7 @@ public class PostServiceImpl implements PostService {
 
         return response;
     }
+
 
     @Override
     public SuccessfulResponse updatePost(UpdatePostRequest request) {
@@ -207,6 +213,7 @@ public class PostServiceImpl implements PostService {
         LOG.info("Deleted post with id = " + post.getId());
         return response;
     }
+
 
 }
   

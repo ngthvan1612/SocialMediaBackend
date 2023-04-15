@@ -11,5 +11,6 @@ public class CreateMessageRequest {
     private Integer senderId;
     private Integer receiverId;
     private Integer groupId;
+    private Boolean isRead = false;
 
 }
