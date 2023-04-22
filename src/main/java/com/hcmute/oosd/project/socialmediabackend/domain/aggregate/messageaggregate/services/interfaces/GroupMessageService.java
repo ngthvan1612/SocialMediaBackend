@@ -7,10 +7,12 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToGroup;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 
+import java.util.List;
 import java.util.Map;
 
 public interface GroupMessageService {
     SuccessfulResponse createGroupMessage(CreateGroupMessageRequest request);
+
 
     GetGroupMessageResponse getGroupMessageById(Integer id);
 
@@ -18,7 +20,8 @@ public interface GroupMessageService {
 
     SuccessfulResponse updateGroupMessage(UpdateGroupMessageRequest request);
 
-//    SuccessfulResponse addUserToGroup(Integer groupId, Integer userId);
+    SuccessfulResponse CreateGroup(String groupName, List<Integer> memberIds);
+    SuccessfulResponse AddUserToGroup(Integer groupId, List<Integer> memberIds);
     SuccessfulResponse groupstoreMessage(ChatMessageOneToGroup message);
     SuccessfulResponse deleteGroupMessage(Integer id);
 

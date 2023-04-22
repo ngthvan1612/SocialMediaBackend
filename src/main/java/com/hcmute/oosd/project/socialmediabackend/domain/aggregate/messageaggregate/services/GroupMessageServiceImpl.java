@@ -9,6 +9,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.MessageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.UserGroupMessageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.GroupMessageService;
+
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
@@ -16,17 +17,15 @@ import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
+
 import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class GroupMessageServiceImpl implements GroupMessageService {
@@ -173,13 +172,64 @@ public class GroupMessageServiceImpl implements GroupMessageService {
         messageEntity.setSender(this.entityManager.getReference(User.class, message.getMemberId()));
         messageEntity.setCreatedAt(message.getCreatedAt());
         messageEntity.setGroup(group);
-
         this.messageRepository.save(messageEntity);
 
         SuccessfulResponse response = new SuccessfulResponse();
         return response;
     }
+    @Transactional
+    @Override
+    public SuccessfulResponse CreateGroup(String groupName, List<Integer> memberIds)
+    {
+        if (memberIds.size() < 3) {
+            throw new RuntimeException("Nhóm phải có ít nhất 3 thành viên");
+        }
+        List<User> members = userRepository.findAllById(memberIds);
 
+//        UpdateUserRequest request = null;
+        GroupMessage groupMessage = new GroupMessage();
+//        groupMessage.setId(UUID.randomUUID().toString());
+        groupMessage.setDisplayName(groupName);
+        groupMessage.setAdmin(members.get(0)); // Chọn admin là thành viên đầu tiên trong danh sách
+
+
+        // Lưu đối tượng nhóm vào cơ sở dữ liệu
+        groupMessageRepository.save(groupMessage);
+        // Tạo đối tượng UserGroupMessage cho từng thành viên trong danh sách
+        List<UserGroupMessage> userGroupMessages = new ArrayList<>();
+        for (User member : members) {
+            UserGroupMessage userGroupMessage = new UserGroupMessage();
+            userGroupMessage.setGroup(groupMessage);
+            userGroupMessage.setMember(member);
+            userGroupMessages.add(userGroupMessage);
+        }
+        // Lưu danh sách UserGroupMessage vào cơ sở dữ liệu
+        userGroupMessageRepository.saveAll(userGroupMessages);
+        SuccessfulResponse response = new SuccessfulResponse();
+        response.addMessage("Tạo nhóm thành công ");
+        response.setData(groupMessage);
+        return response;
+
+    }
+    @Override
+    public  SuccessfulResponse AddUserToGroup(Integer groupId, List<Integer> memberIds)
+    {
+        Optional<GroupMessage> optionalGroupMessage = groupMessageRepository.findById(groupId);
+        List<User> members = userRepository.findAllById(memberIds);
+        List<UserGroupMessage> userGroupMessages = new ArrayList<>();
+        GroupMessage groupMessage = optionalGroupMessage.get();
+        for (User member : members) {
+            UserGroupMessage userGroupMessage = new UserGroupMessage();
+            userGroupMessage.setGroup(groupMessage);
+            userGroupMessage.setMember(member);
+            userGroupMessages.add(userGroupMessage);
+            }
+        userGroupMessageRepository.saveAll(userGroupMessages);
+        SuccessfulResponse response = new SuccessfulResponse();
+        response.addMessage("Thêm thành viên vào nhóm thành công");
+        response.setData(groupMessage);
+        return response;
+    }
     @Override
     public SuccessfulResponse deleteGroupMessage(Integer id) {
         if (!this.groupMessageRepository.existsById(id)) {
