@@ -10,10 +10,13 @@ public class SearchUsersForPost {
     private Integer id;
     private String username;
 
+    private String avatar;
+
     public SearchUsersForPost() { }
 
     public SearchUsersForPost(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
+        this.avatar = user.getAvatar();
     }
 }

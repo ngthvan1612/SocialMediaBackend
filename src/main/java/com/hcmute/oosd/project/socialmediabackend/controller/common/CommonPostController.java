@@ -102,6 +102,7 @@ public class CommonPostController {
     public ResponseBaseAbstract deletePost(
             @PathVariable Integer id
     ) {
+        //TODO: Kiem tra người xóa có phải chủ post hay khong
         SuccessfulResponse updatePostResponse = this.postService.deletePost(id);
         return updatePostResponse;
     }

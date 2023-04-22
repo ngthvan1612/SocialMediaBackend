@@ -31,7 +31,7 @@ public class CommonUserController {
     @GetMapping("search-users-for-post")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchUsersForPost(
-            @RequestParam("username.contains") String username,
+                @RequestParam("username.contains") String username,
             @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit
     ) {
         SearchUsersForPostResponse searchUsersForPostResponse = this.userService.searchUsersForPost(username, limit);

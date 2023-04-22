@@ -177,7 +177,12 @@ public class PostServiceImpl implements PostService {
 
         //Store
         this.postRepository.save(post);
-
+        if (request.getTags() != null) {
+            List<User> userList = userRepository.findAllById(request.getTags());
+            this.userTagFriendPostRepository.saveAll(
+                    userList.stream().map(user -> new UserTagFriendPost(user, post)).toList()
+            );
+        }
         //Return
         PostResponse postDTO = new PostResponse(post);
         SuccessfulResponse response = new SuccessfulResponse();

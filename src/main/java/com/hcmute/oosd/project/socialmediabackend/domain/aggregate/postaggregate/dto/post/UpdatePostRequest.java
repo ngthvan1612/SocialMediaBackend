@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.enums.PostPrivacy;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class UpdatePostRequest {
     @JsonIgnore
@@ -11,6 +13,6 @@ public class UpdatePostRequest {
 
     private String content;
     private PostPrivacy privacy;
-
+    private List<Integer> tags;
     private Integer authorId;
 }
