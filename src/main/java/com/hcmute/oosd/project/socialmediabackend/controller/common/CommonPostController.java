@@ -4,7 +4,13 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.GetPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.ListPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.UpdatePostRequest;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.reaction.CreateReactionRequest;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.enums.ReactionType;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.CommentService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.ReactionService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.follower.GetFollowerResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.follower.ToggleFollowerRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
@@ -27,6 +33,12 @@ public class CommonPostController {
 
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private ReactionService reactionService;
 
     public CommonPostController() {
 
@@ -97,6 +109,7 @@ public class CommonPostController {
         return updatePostResponse;
     }
 
+
     @DeleteMapping("{id}/delete")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract deletePost(
@@ -105,5 +118,26 @@ public class CommonPostController {
         //TODO: Kiem tra người xóa có phải chủ post hay khong
         SuccessfulResponse updatePostResponse = this.postService.deletePost(id);
         return updatePostResponse;
+    }
+
+    @GetMapping("{id}/comments")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract getComments(
+            @PathVariable Integer id
+    ) {
+        SuccessfulResponse getCommentsResponse = commentService.getByPost(id);
+        return getCommentsResponse;
+    }
+
+    @GetMapping("{postId}/like/toggle")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract likePost(
+            @AuthenticationPrincipal User user,
+            @PathVariable Integer postId
+    )
+    {
+        CreateReactionRequest request = new CreateReactionRequest(ReactionType.LIKE,user.getId(),postId);
+        SuccessfulResponse likePostReponse = this.postService.toogleLikePost(request);
+        return likePostReponse;
     }
 }

@@ -21,5 +21,11 @@ public interface CommentRepository extends JpaRepository<Comment, Integer>, Exte
     @Query("SELECT u FROM Comment u WHERE u.deletedAt is null")
     List<Comment> findAll();
 
+    @Query("SELECT u FROM Comment u WHERE u.post.id = :integer AND u.deletedAt is null")
+    List<Comment> getByPost(@Param("integer")  Integer integer );
+
+    @Query("SELECT u FROM Comment u WHERE u.parent.id = :integer AND u.deletedAt is null")
+    List<Comment> getByComment(@Param("integer")  Integer integer );
+
 
 }

@@ -5,11 +5,13 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.comment.ListCommentResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.comment.UpdateCommentRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.CommentService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -68,9 +70,23 @@ public class CommonCommentController {
     @DeleteMapping("{id}/delete")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract deleteComment(
+            @AuthenticationPrincipal User user,
             @PathVariable Integer id
     ) {
-        SuccessfulResponse updateCommentResponse = this.commentService.deleteComment(id);
+        Integer userId  = user.getId();
+        SuccessfulResponse updateCommentResponse = this.commentService.deleteComment(id,userId);
         return updateCommentResponse;
     }
+
+    @GetMapping("{id}/comments")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract getChildComment(
+            @PathVariable Integer id
+    ) {
+        SuccessfulResponse getChildComment = this.commentService.getByComment(id);
+        return getChildComment;
+    }
+
+
+
 }

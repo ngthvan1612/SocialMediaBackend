@@ -25,4 +25,5 @@ public interface MessageService {
     ListMessageResponse getMessageFromOneToOne(Integer senderId, Integer receiverId);
     
     ListUserResponse getAllUserHaveBeenChat (Integer userId);
+
 }
