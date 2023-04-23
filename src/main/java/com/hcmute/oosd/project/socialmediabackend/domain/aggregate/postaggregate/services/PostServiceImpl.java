@@ -2,11 +2,15 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregat
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.services.interfaces.AnnounceService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.*;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.Comment;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.Post;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.Reaction;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.UserTagFriendPost;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.model.postcontent.PostContentBase;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.model.postcontent.PostContentFactory;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.CommentRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.PostRepository;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.ReactionRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.UserTagFriendPostRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
@@ -20,10 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -41,6 +42,12 @@ public class PostServiceImpl implements PostService {
     private StorageRepository storageRepository;
     @Autowired
     private AnnounceService announceService;
+
+    @Autowired
+    private ReactionRepository reactionRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     public PostServiceImpl() {
 
@@ -115,15 +122,30 @@ public class PostServiceImpl implements PostService {
         return response;
     }
 
+    public AdditionalData4Post GetAdditionalData4Post(Integer id, Integer uid){
+        Map<String, String> queries = new HashMap<>();
+        queries.put("post.id.equal", id.toString());
+        //reaction
+        List<Reaction> reactions = this.reactionRepository.searchReaction(queries);
+        //comment
+        List<Comment> comments = this.commentRepository.searchComment(queries);
+        AdditionalData4Post data = new AdditionalData4Post(
+                reactions.size(),
+                reactions.stream().anyMatch(reaction ->
+                        reaction.getUser().getId().equals(uid) && reaction.getPost().getId().equals(id)),
+                comments.size());
+        return data;
+    }
+
     @Override
-    public GetPostResponse getPostById(Integer id) {
+    public GetPostResponse getPostById(Integer id, Integer uid) {
         if (!this.postRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bài đăng nào với id là " + id);
         }
 
         Post post = this.postRepository.findById(id).get();
-        PostResponse postDTO = new PostResponse(post);
+        PostResponse postDTO = new PostResponse(post, GetAdditionalData4Post(id, uid));
         GetPostResponse response = new GetPostResponse(postDTO);
 
         response.addMessage("Lấy dữ liệu thành công");
@@ -132,9 +154,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ListPostResponse searchPosts(Map<String, String> queries) {
+    public ListPostResponse searchPosts(Map<String, String> queries, Integer uid) {
         List<PostResponse> listPostResponses = this.postRepository.searchPost(queries)
-                .stream().map(post -> new PostResponse(post)).toList();
+                .stream().map(post -> new PostResponse(post, GetAdditionalData4Post(post.getId(), uid))).toList();
 
         ListPostResponse response = new ListPostResponse(listPostResponses);
         response.addMessage("Lấy dữ liệu thành công");

@@ -35,9 +35,10 @@ public class CommonPostController {
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchPost(
-            @RequestParam Map<String, String> queries
+            @RequestParam Map<String, String> queries,
+            @AuthenticationPrincipal User user
     ) {
-        ListPostResponse listPostResponse = this.postService.searchPosts(queries);
+        ListPostResponse listPostResponse = this.postService.searchPosts(queries, user.getId());
         return listPostResponse;
     }
 
@@ -48,28 +49,31 @@ public class CommonPostController {
     ) {
         Map<String, String> queries = new HashMap<>();
         queries.put("author.id.equal", user.getId().toString());
-        ListPostResponse listPostResponse = this.postService.searchPosts(queries);
+        ListPostResponse listPostResponse = this.postService.searchPosts(queries, user.getId());
         return listPostResponse;
     }
     @GetMapping("/{userId}/list")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchUserPost(
-            @PathVariable Integer userId
+            @PathVariable Integer userId,
+            @AuthenticationPrincipal User user
     ) {
         Map<String, String> queries = new HashMap<>();
         queries.put("author.id.equal", userId.toString());
         queries.put("privacy.equal", "PUBLIC");
         //TODO: thêm một số criteria về tài khoản kiểm tra người xem và người được xem có thỏa các điều kiên không
-        ListPostResponse listPostResponse = this.postService.searchPosts(queries);
+        ListPostResponse listPostResponse = this.postService.searchPosts(queries, user.getId());
         return listPostResponse;
     }
 
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getPost(
-            @PathVariable Integer id
+            @PathVariable Integer id,
+            @AuthenticationPrincipal User user
+
     ) {
-        GetPostResponse getPostResponse = this.postService.getPostById(id);
+        GetPostResponse getPostResponse = this.postService.getPostById(id, user.getId());
         return getPostResponse;
     }
 

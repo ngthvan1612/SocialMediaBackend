@@ -11,9 +11,9 @@ import java.util.Map;
 public interface PostService {
     SuccessfulResponse createPost(CreatePostRequest request);
 
-    GetPostResponse getPostById(Integer id);
+    GetPostResponse getPostById(Integer id, Integer uid);
 
-    ListPostResponse searchPosts(Map<String, String> queries);
+    ListPostResponse searchPosts(Map<String, String> queries, Integer uid);
 
     SuccessfulResponse updatePost(UpdatePostRequest request);
 
