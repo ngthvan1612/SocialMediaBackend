@@ -24,5 +24,8 @@ public interface ReactionRepository extends JpaRepository<Reaction, Integer>, Ex
     @Query("SELECT u FROM Reaction u WHERE u.post.id = :integer ")
     List<Reaction> deleteByPostId(@Param("integer") Integer integer);
 
+    @Query("SELECT u FROM Reaction u WHERE u.post.id = :postId AND u.user.id = :userId")
+    Optional<Reaction> findByPostAndUser(@Param("userId") Integer userId,@Param("postId") Integer postId);
+
 
 }

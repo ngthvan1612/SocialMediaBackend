@@ -2,7 +2,9 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregat
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.services.interfaces.AnnounceService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.*;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.reaction.CreateReactionRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.Post;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.Reaction;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.UserTagFriendPost;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.model.postcontent.PostContentBase;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.model.postcontent.PostContentFactory;
@@ -10,6 +12,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.ReactionRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.UserTagFriendPostRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.ReactionService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
@@ -44,6 +47,9 @@ public class PostServiceImpl implements PostService {
     private StorageRepository storageRepository;
     @Autowired
     private AnnounceService announceService;
+
+    @Autowired
+    private ReactionService reactionService;
 
     public PostServiceImpl() {
 
@@ -211,6 +217,33 @@ public class PostServiceImpl implements PostService {
         response.addMessage("Xóa Bài đăng thành công");
 
         LOG.info("Deleted post with id = " + post.getId());
+        return response;
+    }
+
+    @Override
+    public SuccessfulResponse toogleLikePost(CreateReactionRequest request) {
+        if (!this.postRepository.existsById(request.getPostId())) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy Bài đăng nào với id là " + request.getPostId());
+        }
+        if (!this.userRepository.existsById(request.getUserId())) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy Ngừoi dùng nào với id là " + request.getUserId());
+        }
+        Optional<Reaction> optionalReaction = reactionRepository.findByPostAndUser(request.getUserId(),request.getPostId());
+        Reaction reaction = null;
+
+        if (!optionalReaction.isEmpty()) {
+            reaction = optionalReaction.get();
+            reactionRepository.delete(reaction);
+        }
+        else{
+            reactionService.createReaction(request);
+        }
+        SuccessfulResponse response = new SuccessfulResponse();
+        response.addMessage("Like/Dislike post thành công");
+
+        LOG.info("Toggle like post with id = " + request.getPostId());
         return response;
     }
 

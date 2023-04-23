@@ -5,6 +5,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.ListPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.UpdatePostRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.reaction.CreateReactionRequest;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.enums.ReactionType;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.CommentService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.ReactionService;
@@ -127,14 +128,15 @@ public class CommonPostController {
         return getCommentsResponse;
     }
 
-    @PostMapping("{postId}/like/toggle")
+    @GetMapping("{postId}/like/toggle")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract likePost(
             @AuthenticationPrincipal User user,
-            @RequestBody @Valid CreateReactionRequest request
-)
+            @PathVariable Integer postId
+    )
     {
-        SuccessfulResponse likePostReponse = this.reactionService.createReaction(request);
+        CreateReactionRequest request = new CreateReactionRequest(ReactionType.LIKE,user.getId(),postId);
+        SuccessfulResponse likePostReponse = this.postService.toogleLikePost(request);
         return likePostReponse;
     }
 }
