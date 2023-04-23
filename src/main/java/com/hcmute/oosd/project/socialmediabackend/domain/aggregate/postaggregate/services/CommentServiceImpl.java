@@ -18,10 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -244,9 +241,9 @@ public class CommentServiceImpl implements CommentService {
                     .addMessage("Không tìm thấy Post nào với id là " + id);
         }
         List<Comment> comments = commentRepository.getByPost(id);
-        List<CommentPostResponse> commentPosts = null;
+        List<CommentPostResponse> commentPosts = new ArrayList<>();
         for (int i = 0 ; i< comments.size(); i++){
-            commentPosts.add(new CommentPostResponse(comments.get(i).getId(), comments.get(i).getContent(),getByComment(comments.get(i).getId()).size()));
+            commentPosts.add(new CommentPostResponse(comments.get(i).getId(), comments.get(i).getContent(),commentRepository.getByComment(comments.get(i).getId()).size()));
         }
 
         ListCommentPostResponse response = new ListCommentPostResponse(commentPosts);
@@ -257,12 +254,21 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> getByComment(Integer id) {
+    public ListCommentPostResponse getByComment(Integer id) {
         if (!this.commentRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bình luận nào với id là " + id);
         }
-        return commentRepository.getByComment(id);
+
+        List<CommentPostResponse> commentPosts = new ArrayList<>();
+        List<Comment> comments = commentRepository.getByComment(id);
+        for (int i = 0 ; i< comments.size(); i++){
+            commentPosts.add(new CommentPostResponse(comments.get(i).getId(), comments.get(i).getContent(),commentRepository.getByComment(comments.get(i).getId()).size()));
+        }
+        ListCommentPostResponse response = new ListCommentPostResponse(commentPosts);
+        response.addMessage("Lấy danh sách Bình luận từ Parent thành công");
+        LOG.info("Get comment with comment id = " + id);
+        return response;
     }
 
 }

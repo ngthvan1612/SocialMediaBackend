@@ -118,7 +118,7 @@ public class CommonPostController {
         return updatePostResponse;
     }
 
-    @DeleteMapping("{id}/comments")
+    @GetMapping("{id}/comments")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getComments(
             @PathVariable Integer id

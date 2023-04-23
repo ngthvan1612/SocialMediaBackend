@@ -78,5 +78,15 @@ public class CommonCommentController {
         return updateCommentResponse;
     }
 
+    @GetMapping("{id}/comments")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract getChildComment(
+            @PathVariable Integer id
+    ) {
+        SuccessfulResponse getChildComment = this.commentService.getByComment(id);
+        return getChildComment;
+    }
+
+
 
 }
