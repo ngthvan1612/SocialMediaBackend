@@ -95,13 +95,9 @@ public class CommentServiceImpl implements CommentService {
                         .addMessage("Comment "+parent.getId()+" không thuộc post "+ post.getId() );
             }
         }
-
-        // comment level 2
-
-        if (parent.getParent()!= null){
-            parent = parent.getParent();
-        }
-
+        if (parent!= null && parent.getParent()!= null){
+                parent = parent.getParent();
+            }
 
         Comment comment = new Comment();
 
@@ -239,6 +235,34 @@ public class CommentServiceImpl implements CommentService {
 
         LOG.info("Deleted comment with id = " + comment.getId());
         return response;
+    }
+
+    @Override
+    public ListCommentPostResponse getByPost(Integer id) {
+        if (!this.postRepository.existsById(id)) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy Post nào với id là " + id);
+        }
+        List<Comment> comments = commentRepository.getByPost(id);
+        List<CommentPostResponse> commentPosts = null;
+        for (int i = 0 ; i< comments.size(); i++){
+            commentPosts.add(new CommentPostResponse(comments.get(i).getId(), comments.get(i).getContent(),getByComment(comments.get(i).getId()).size()));
+        }
+
+        ListCommentPostResponse response = new ListCommentPostResponse(commentPosts);
+        response.addMessage("Lấy bình luận thuộc post thành công");
+
+        LOG.info("Get comments from post id = " + id);
+        return response;
+    }
+
+    @Override
+    public List<Comment> getByComment(Integer id) {
+        if (!this.commentRepository.existsById(id)) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy Bình luận nào với id là " + id);
+        }
+        return commentRepository.getByComment(id);
     }
 
 }

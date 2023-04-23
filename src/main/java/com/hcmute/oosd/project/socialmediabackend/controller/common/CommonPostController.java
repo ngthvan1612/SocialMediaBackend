@@ -5,6 +5,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.ListPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.UpdatePostRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.reaction.CreateReactionRequest;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.CommentService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.ReactionService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.follower.GetFollowerResponse;
@@ -31,6 +32,10 @@ public class CommonPostController {
 
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private CommentService commentService;
+
     @Autowired
     private ReactionService reactionService;
 
@@ -103,6 +108,7 @@ public class CommonPostController {
         return updatePostResponse;
     }
 
+
     @DeleteMapping("{id}/delete")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract deletePost(
@@ -110,6 +116,15 @@ public class CommonPostController {
     ) {
         SuccessfulResponse updatePostResponse = this.postService.deletePost(id);
         return updatePostResponse;
+    }
+
+    @DeleteMapping("{id}/comments")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract getComments(
+            @PathVariable Integer id
+    ) {
+        SuccessfulResponse getCommentsResponse = commentService.getByPost(id);
+        return getCommentsResponse;
     }
 
     @PostMapping("{postId}/like/toggle")
