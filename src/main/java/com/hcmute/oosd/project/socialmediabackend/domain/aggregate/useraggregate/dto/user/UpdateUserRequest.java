@@ -16,7 +16,6 @@ public class UpdateUserRequest {
     private String password;
     private String displayName;
     private Date birthday;
-    private String avatar;
     private String profile;
     private UserGender gender;
     private UserRole role;
