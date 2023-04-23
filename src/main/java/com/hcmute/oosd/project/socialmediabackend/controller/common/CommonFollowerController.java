@@ -53,21 +53,21 @@ public class CommonFollowerController {
         return getFollowerResponse;
     }
 
-    @GetMapping("followers")
+    @GetMapping("{id}/followers")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract listPeoplesFollowMe( //lấy danh sách những người follow mình
-            @AuthenticationPrincipal User user
+        @PathVariable Integer id
     ){
-        SuccessfulResponse successfulResponse = this.followerService.getListPeoplesFollowMe(user.getId());
+        SuccessfulResponse successfulResponse = this.followerService.getListPeoplesFollowMe(id);
         return successfulResponse;
     }
 
-    @GetMapping("me")
+    @GetMapping("{id}/following")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract listPeoplesFollowed( //lấy danh sách những người mình follow
-            @AuthenticationPrincipal User user
+        @PathVariable Integer id
     ){
-        SuccessfulResponse successfulResponse = this.followerService.getListPeoplesFollowed(user.getId());
+        SuccessfulResponse successfulResponse = this.followerService.getListPeoplesFollowed(id);
         return successfulResponse;
     }
 
