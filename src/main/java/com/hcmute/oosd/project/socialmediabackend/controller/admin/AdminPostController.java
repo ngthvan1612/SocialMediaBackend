@@ -7,7 +7,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,7 +33,7 @@ public class AdminPostController {
     public ResponseBaseAbstract searchPost(
             @RequestParam Map<String, String> queries
     ) {
-        ListPostResponse listPostResponse = this.postService.searchPosts(queries);
+        ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
 
@@ -42,7 +42,7 @@ public class AdminPostController {
     public ResponseBaseAbstract getPost(
             @PathVariable Integer id
     ) {
-        GetPostResponse getPostResponse = this.postService.getPostById(id);
+        ResponseBaseAbstract getPostResponse = this.postService.getPostById(id);
         return getPostResponse;
     }
 
@@ -53,7 +53,7 @@ public class AdminPostController {
             @AuthenticationPrincipal User user
     ) {
         request.setAuthorId(user.getId());
-        SuccessfulResponse createPostResponse = this.postService.createPost(request);
+        ResponseBaseAbstract createPostResponse = this.postService.createPost(request);
         return createPostResponse;
     }
 
@@ -66,7 +66,7 @@ public class AdminPostController {
     ) {
         request.setAuthorId(user.getId());
         request.setPostId(id);
-        SuccessfulResponse updatePostResponse = this.postService.updatePost(request);
+        ResponseBaseAbstract updatePostResponse = this.postService.updatePost(request);
         return updatePostResponse;
     }
 
@@ -75,7 +75,7 @@ public class AdminPostController {
     public ResponseBaseAbstract deletePost(
             @PathVariable Integer id
     ) {
-        SuccessfulResponse updatePostResponse = this.postService.deletePost(id);
+        ResponseBaseAbstract updatePostResponse = this.postService.deletePost(id);
         return updatePostResponse;
     }
 }

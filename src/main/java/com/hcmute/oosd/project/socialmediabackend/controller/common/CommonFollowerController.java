@@ -4,14 +4,13 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.FollowerService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.Authenticator;
 import java.util.Map;
 
 @CrossOrigin("*")
@@ -58,7 +57,7 @@ public class CommonFollowerController {
     public ResponseBaseAbstract listPeoplesFollowMe( //lấy danh sách những người follow mình
         @PathVariable Integer id
     ){
-        SuccessfulResponse successfulResponse = this.followerService.getListPeoplesFollowMe(id);
+        SuccessResponse successfulResponse = this.followerService.getListPeoplesFollowMe(id);
         return successfulResponse;
     }
 
@@ -67,7 +66,7 @@ public class CommonFollowerController {
     public ResponseBaseAbstract listPeoplesFollowed( //lấy danh sách những người mình follow
         @PathVariable Integer id
     ){
-        SuccessfulResponse successfulResponse = this.followerService.getListPeoplesFollowed(id);
+        SuccessResponse successfulResponse = this.followerService.getListPeoplesFollowed(id);
         return successfulResponse;
     }
 

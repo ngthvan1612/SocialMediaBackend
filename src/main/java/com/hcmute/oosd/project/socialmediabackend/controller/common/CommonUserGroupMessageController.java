@@ -6,7 +6,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.usergroupmessage.UpdateUserGroupMessageRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.UserGroupMessageService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,7 +50,7 @@ public class CommonUserGroupMessageController {
     public ResponseBaseAbstract createUserGroupMessage(
             @RequestBody @Valid CreateUserGroupMessageRequest request
     ) {
-        SuccessfulResponse createUserGroupMessageResponse = this.userGroupMessageService.createUserGroupMessage(request);
+        SuccessResponse createUserGroupMessageResponse = this.userGroupMessageService.createUserGroupMessage(request);
         return createUserGroupMessageResponse;
     }
 
@@ -61,7 +61,7 @@ public class CommonUserGroupMessageController {
             @RequestBody @Valid UpdateUserGroupMessageRequest request
     ) {
         request.setUserGroupMessageId(id);
-        SuccessfulResponse updateUserGroupMessageResponse = this.userGroupMessageService.updateUserGroupMessage(request);
+        SuccessResponse updateUserGroupMessageResponse = this.userGroupMessageService.updateUserGroupMessage(request);
         return updateUserGroupMessageResponse;
     }
 
@@ -70,7 +70,7 @@ public class CommonUserGroupMessageController {
     public ResponseBaseAbstract deleteUserGroupMessage(
             @PathVariable Integer id
     ) {
-        SuccessfulResponse updateUserGroupMessageResponse = this.userGroupMessageService.deleteUserGroupMessage(id);
+        SuccessResponse updateUserGroupMessageResponse = this.userGroupMessageService.deleteUserGroupMessage(id);
         return updateUserGroupMessageResponse;
     }
 }

@@ -7,7 +7,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.UserService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import com.hcmute.oosd.project.socialmediabackend.jwt.JwtTokenProvider;
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
     //TODO: loggggggggg
 
     @Override
-    public SuccessfulResponse getSuggestionsForMe(User loggingInUser) {
+    public SuccessResponse getSuggestionsForMe(User loggingInUser) {
         if (!this.userRepository.existsById(loggingInUser.getId())) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy người dùng nào với id là " + loggingInUser.getId());
@@ -67,14 +67,14 @@ public class UserServiceImpl implements UserService {
         List<SuggestionForMe> listSuggestionForMes = this.userRepository.getSuggestionsForMe(loggingInUser.getId(),listFollowedUser)
                 .stream().map(user -> new SuggestionForMe(user)).toList();
 
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.setData(listSuggestionForMes);
         response.addMessage("Lấy dữ liệu thành công");
 
         return response;
     }
     @Override
-    public SuccessfulResponse createUser(CreateUserRequest request) {
+    public SuccessResponse createUser(CreateUserRequest request) {
         //Validate
         if (this.userRepository.existsByUsername(request.getUsername())) {
             throw ServiceExceptionFactory.duplicate()
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
 
         //Return
         UserResponse userDTO = new UserResponse(user);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(userDTO);
         response.addMessage("Tạo người dùng thành công");
@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SuccessfulResponse updateUser(UpdateUserRequest request) {
+    public SuccessResponse updateUser(UpdateUserRequest request) {
         //Check record exists
         if (!this.userRepository.existsById(request.getUserId())) {
             throw ServiceExceptionFactory.notFound()
@@ -185,7 +185,7 @@ public class UserServiceImpl implements UserService {
 
         //Return
         UserResponse userDTO = new UserResponse(user);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(userDTO);
         response.addMessage("Cập nhật người dùng thành công");
@@ -195,7 +195,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SuccessfulResponse updateAvatarById(UpdateUserAvatarRequest request) {
+    public SuccessResponse updateAvatarById(UpdateUserAvatarRequest request) {
         if (!this.userRepository.existsById(request.getUserId())) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy người dùng nào có id = " + request.getUserId());
@@ -220,7 +220,7 @@ public class UserServiceImpl implements UserService {
 
         this.userRepository.save(user);
 
-        SuccessfulResponse successResponse = new SuccessfulResponse(HttpStatus.OK);
+        SuccessResponse successResponse = new SuccessResponse(HttpStatus.OK);
         successResponse.addMessage("Cập nhật ảnh đại diện thành công");
 
         LOG.info("Updated avatar of user with id = " + user.getId());
@@ -229,7 +229,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public SuccessfulResponse deleteUser(Integer id) {
+    public SuccessResponse deleteUser(Integer id) {
         if (!this.userRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy người dùng nào với id là " + id);
@@ -242,7 +242,7 @@ public class UserServiceImpl implements UserService {
 
         this.userRepository.save(user);
 
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Xóa người dùng thành công");
 
         LOG.info("Deleted user with id = " + user.getId());
@@ -274,7 +274,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SuccessfulResponse registerUser(RegisterUserRequest registerUserRequest) {
+    public SuccessResponse registerUser(RegisterUserRequest registerUserRequest) {
         String username = registerUserRequest.getUsername();
         String password = registerUserRequest.getPassword();
         String displayName = registerUserRequest.getDisplayName();
@@ -348,7 +348,7 @@ public class UserServiceImpl implements UserService {
 
         //Return
 
-        SuccessfulResponse successResponse = new SuccessfulResponse(HttpStatus.OK);
+        SuccessResponse successResponse = new SuccessResponse(HttpStatus.OK);
         successResponse.addMessage("Đăng ký thành công");
 
         LOG.info("Create user with id = " + user.getId());

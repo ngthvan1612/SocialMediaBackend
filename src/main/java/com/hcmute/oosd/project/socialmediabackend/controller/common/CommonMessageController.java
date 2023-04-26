@@ -5,7 +5,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.ListUserResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,7 +47,7 @@ public class CommonMessageController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBaseAbstract createMessage(
             @RequestBody @Valid CreateMessageRequest request) {
-        SuccessfulResponse createMessageResponse = this.messageService.createMessage(request);
+        SuccessResponse createMessageResponse = this.messageService.createMessage(request);
         return createMessageResponse;
     }
 
@@ -57,7 +57,7 @@ public class CommonMessageController {
             @PathVariable Integer id,
             @RequestBody @Valid UpdateMessageRequest request) {
         request.setMessageId(id);
-        SuccessfulResponse updateMessageResponse = this.messageService.updateMessage(request);
+        SuccessResponse updateMessageResponse = this.messageService.updateMessage(request);
         return updateMessageResponse;
     }
 
@@ -65,7 +65,7 @@ public class CommonMessageController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract deleteMessage(
             @PathVariable Integer id) {
-        SuccessfulResponse updateMessageResponse = this.messageService.deleteMessage(id);
+        SuccessResponse updateMessageResponse = this.messageService.deleteMessage(id);
         return updateMessageResponse;
     }
 

@@ -10,7 +10,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public class UserTagFriendPostServiceImpl implements UserTagFriendPostService {
     //TODO: loggggggggg
 
     @Override
-    public SuccessfulResponse createUserTagFriendPost(CreateUserTagFriendPostRequest request) {
+    public SuccessResponse createUserTagFriendPost(CreateUserTagFriendPostRequest request) {
         //Validate
 
 
@@ -87,7 +87,7 @@ public class UserTagFriendPostServiceImpl implements UserTagFriendPostService {
 
         //Return
         UserTagFriendPostResponse userTagFriendPostDTO = new UserTagFriendPostResponse(userTagFriendPost);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(userTagFriendPostDTO);
         response.addMessage("Tạo Tag bạn bè của bài đăng thành công");
@@ -124,7 +124,7 @@ public class UserTagFriendPostServiceImpl implements UserTagFriendPostService {
     }
 
     @Override
-    public SuccessfulResponse updateUserTagFriendPost(UpdateUserTagFriendPostRequest request) {
+    public SuccessResponse updateUserTagFriendPost(UpdateUserTagFriendPostRequest request) {
         //Check record exists
         if (!this.userTagFriendPostRepository.existsById(request.getUserTagFriendPostId())) {
             throw ServiceExceptionFactory.notFound()
@@ -170,7 +170,7 @@ public class UserTagFriendPostServiceImpl implements UserTagFriendPostService {
 
         //Return
         UserTagFriendPostResponse userTagFriendPostDTO = new UserTagFriendPostResponse(userTagFriendPost);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(userTagFriendPostDTO);
         response.addMessage("Cập nhật Tag bạn bè của bài đăng thành công");
@@ -181,7 +181,7 @@ public class UserTagFriendPostServiceImpl implements UserTagFriendPostService {
 
 
     @Override
-    public SuccessfulResponse deleteUserTagFriendPost(Integer id) {
+    public SuccessResponse deleteUserTagFriendPost(Integer id) {
         if (!this.userTagFriendPostRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Tag bạn bè của bài đăng nào với id là " + id);
@@ -192,7 +192,7 @@ public class UserTagFriendPostServiceImpl implements UserTagFriendPostService {
 
         this.userTagFriendPostRepository.save(userTagFriendPost);
 
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Xóa Tag bạn bè của bài đăng thành công");
 
         LOG.info("Deleted userTagFriendPost with id = " + userTagFriendPost.getId());

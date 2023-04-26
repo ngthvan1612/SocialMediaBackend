@@ -2,14 +2,14 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregat
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 
 import java.util.Map;
 
 public interface UserService {
-    SuccessfulResponse getSuggestionsForMe(User loggingInUser);
+    SuccessResponse getSuggestionsForMe(User loggingInUser);
 
-    SuccessfulResponse createUser(CreateUserRequest request);
+    SuccessResponse createUser(CreateUserRequest request);
 
     GetUserResponse getUserById(Integer id, User loggingInUser);
 
@@ -17,15 +17,15 @@ public interface UserService {
 
     SearchUsersForPostResponse searchUsersForPost(String pattern, Integer limit);
 
-    SuccessfulResponse updateUser(UpdateUserRequest request);
+    SuccessResponse updateUser(UpdateUserRequest request);
 
-    SuccessfulResponse deleteUser(Integer id);
+    SuccessResponse deleteUser(Integer id);
 
-    SuccessfulResponse updateAvatarById(UpdateUserAvatarRequest request);
+    SuccessResponse updateAvatarById(UpdateUserAvatarRequest request);
 
 
     LoginResponse authenticate(LoginRequest request);
 
-    SuccessfulResponse registerUser(RegisterUserRequest registerUserRequest);
+    SuccessResponse registerUser(RegisterUserRequest registerUserRequest);
 
 }

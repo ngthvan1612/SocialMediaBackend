@@ -1,11 +1,11 @@
 package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user;
 
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class LoginResponse extends SuccessfulResponse {
+public class LoginResponse extends SuccessResponse {
     public LoginResponse(UserResponse userResponse, String jwtToken) {
         super();
 

@@ -1,10 +1,8 @@
 package com.hcmute.oosd.project.socialmediabackend.controller.common;
 
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.LoginRequest;
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.LoginResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.RegisterUserRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.UserService;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,8 +18,8 @@ public class SignupController {
     }
 
     @PostMapping
-    public SuccessfulResponse signup(@RequestBody RegisterUserRequest request) {
-        SuccessfulResponse response = this.userService.registerUser(request);
+    public SuccessResponse signup(@RequestBody RegisterUserRequest request) {
+        SuccessResponse response = this.userService.registerUser(request);
         return response;
     }
 }

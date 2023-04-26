@@ -12,11 +12,10 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +64,7 @@ public class AnnounceServiceImpl implements AnnounceService {
     //TODO: loggggggggg
 
     @Override
-    public SuccessfulResponse createAnnounce(CreateAnnounceRequest request) {
+    public SuccessResponse createAnnounce(CreateAnnounceRequest request) {
         //Validate
 
 
@@ -93,7 +92,7 @@ public class AnnounceServiceImpl implements AnnounceService {
 
         //Return
         AnnounceResponse announceDTO = new AnnounceResponse(announce);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(announceDTO);
         response.addMessage("Tạo Thông báo thành công");
@@ -130,7 +129,7 @@ public class AnnounceServiceImpl implements AnnounceService {
     }
 
     @Override
-    public SuccessfulResponse updateAnnounce(UpdateAnnounceRequest request) {
+    public SuccessResponse updateAnnounce(UpdateAnnounceRequest request) {
         //Check record exists
         if (!this.announceRepository.existsById(request.getAnnounceId())) {
             throw ServiceExceptionFactory.notFound()
@@ -166,7 +165,7 @@ public class AnnounceServiceImpl implements AnnounceService {
 
         //Return
         AnnounceResponse announceDTO = new AnnounceResponse(announce);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(announceDTO);
         response.addMessage("Cập nhật Thông báo thành công");
@@ -177,7 +176,7 @@ public class AnnounceServiceImpl implements AnnounceService {
 
 
     @Override
-    public SuccessfulResponse deleteAnnounce(Integer id) {
+    public SuccessResponse deleteAnnounce(Integer id) {
         if (!this.announceRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Thông báo nào với id là " + id);
@@ -188,7 +187,7 @@ public class AnnounceServiceImpl implements AnnounceService {
 
         this.announceRepository.save(announce);
 
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Xóa Thông báo thành công");
 
         LOG.info("Deleted announce with id = " + announce.getId());

@@ -6,7 +6,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.story.UpdateStoryRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.StoryService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,7 +50,7 @@ public class CommonStoryController {
     public ResponseBaseAbstract createStory(
             @RequestBody @Valid CreateStoryRequest request
     ) {
-        SuccessfulResponse createStoryResponse = this.storyService.createStory(request);
+        SuccessResponse createStoryResponse = this.storyService.createStory(request);
         return createStoryResponse;
     }
 
@@ -61,7 +61,7 @@ public class CommonStoryController {
             @RequestBody @Valid UpdateStoryRequest request
     ) {
         request.setStoryId(id);
-        SuccessfulResponse updateStoryResponse = this.storyService.updateStory(request);
+        SuccessResponse updateStoryResponse = this.storyService.updateStory(request);
         return updateStoryResponse;
     }
 
@@ -70,7 +70,7 @@ public class CommonStoryController {
     public ResponseBaseAbstract deleteStory(
             @PathVariable Integer id
     ) {
-        SuccessfulResponse updateStoryResponse = this.storyService.deleteStory(id);
+        SuccessResponse updateStoryResponse = this.storyService.deleteStory(id);
         return updateStoryResponse;
     }
 }
