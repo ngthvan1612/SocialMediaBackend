@@ -7,11 +7,10 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.FollowerService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class FollowerServiceImpl implements FollowerService {
     // TODO: loggggggggg
 
     @Override
-    public SuccessfulResponse createFollower(CreateFollowerRequest request) {
+    public SuccessResponse createFollower(CreateFollowerRequest request) {
         // Validate
 
         // Check null
@@ -86,7 +85,7 @@ public class FollowerServiceImpl implements FollowerService {
 
         // Return
         FollowerResponse followerDTO = new FollowerResponse(follower);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(followerDTO);
         response.addMessage("Tạo Theo dõi thành công");
@@ -123,7 +122,7 @@ public class FollowerServiceImpl implements FollowerService {
     }
 
     @Override
-    public SuccessfulResponse updateFollower(UpdateFollowerRequest request) {
+    public SuccessResponse updateFollower(UpdateFollowerRequest request) {
         // Check record exists
         if (!this.followerRepository.existsById(request.getFollowerId())) {
             throw ServiceExceptionFactory.notFound()
@@ -166,7 +165,7 @@ public class FollowerServiceImpl implements FollowerService {
 
         // Return
         FollowerResponse followerDTO = new FollowerResponse(follower);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(followerDTO);
         response.addMessage("Cập nhật Theo dõi thành công");
@@ -176,7 +175,7 @@ public class FollowerServiceImpl implements FollowerService {
     }
 
     @Override
-    public SuccessfulResponse deleteFollower(Integer id) {
+    public SuccessResponse deleteFollower(Integer id) {
         if (!this.followerRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Theo dõi nào với id là " + id);
@@ -187,7 +186,7 @@ public class FollowerServiceImpl implements FollowerService {
 
         this.followerRepository.save(follower);
 
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Xóa Theo dõi thành công");
 
         LOG.info("Deleted follower with id = " + follower.getId());
@@ -231,18 +230,18 @@ public class FollowerServiceImpl implements FollowerService {
     }
 
     @Override
-    public SuccessfulResponse getListPeoplesFollowMe(Integer userid){
+    public SuccessResponse getListPeoplesFollowMe(Integer userid){
         List<User> userList =  this.followerRepository.findListPeoplesFollowMe(userid);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.setData(userList);
 
         return response;
     }
 
     @Override
-    public  SuccessfulResponse getListPeoplesFollowed(Integer followerId){
+    public SuccessResponse getListPeoplesFollowed(Integer followerId){
         List<User> userList = this.followerRepository.getListPeoplesFollowed(followerId);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.setData(userList);
 
         return response;

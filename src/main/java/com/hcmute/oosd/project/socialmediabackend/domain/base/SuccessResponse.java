@@ -2,12 +2,12 @@ package com.hcmute.oosd.project.socialmediabackend.domain.base;
 
 import org.springframework.http.HttpStatus;
 
-public class SuccessfulResponse extends ResponseBaseAbstract {
-    public SuccessfulResponse() {
+public class SuccessResponse extends ResponseBaseAbstract {
+    public SuccessResponse() {
         this.setStatusCode(HttpStatus.OK);
     }
 
-    public SuccessfulResponse(HttpStatus statusCode) {
+    public SuccessResponse(HttpStatus statusCode) {
         this.setStatusCode(statusCode);
     }
 
@@ -17,9 +17,9 @@ public class SuccessfulResponse extends ResponseBaseAbstract {
         super.setStatusCode(statusCode);
     }
 
-    public static class Builder extends ResponseBaseBuilder<SuccessfulResponse, Builder> {
+    public static class Builder extends ResponseBaseBuilder<SuccessResponse, Builder> {
         public Builder() {
-            super(new SuccessfulResponse());
+            super(new SuccessResponse());
         }
     }
 }

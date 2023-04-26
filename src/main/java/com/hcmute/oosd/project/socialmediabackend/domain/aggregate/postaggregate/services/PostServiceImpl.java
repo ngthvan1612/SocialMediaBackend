@@ -13,7 +13,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +55,7 @@ public class PostServiceImpl implements PostService {
     //TODO: loggggggggg
 
     @Override
-    public SuccessfulResponse createPost(CreatePostRequest request) {
+    public SuccessResponse createPost(CreatePostRequest request) {
         //Validate
         PostContentBase postContent = PostContentFactory.fromJson(request.getContent());
 
@@ -104,7 +104,7 @@ public class PostServiceImpl implements PostService {
 
         //Return
         PostResponse postDTO = new PostResponse(post);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(postDTO);
         response.addMessage("Tạo Bài đăng thành công");
@@ -112,7 +112,8 @@ public class PostServiceImpl implements PostService {
         LOG.info("Created post with id = " + post.getId());
 
         announceService.onCreatedNewPost(post.getId());
-        return response;
+
+        SuccessResponse
     }
 
     @Override
@@ -144,7 +145,7 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public SuccessfulResponse updatePost(UpdatePostRequest request) {
+    public SuccessResponse updatePost(UpdatePostRequest request) {
         //Check record exists
         if (!this.postRepository.existsById(request.getPostId())) {
             throw ServiceExceptionFactory.notFound()
@@ -180,7 +181,7 @@ public class PostServiceImpl implements PostService {
 
         //Return
         PostResponse postDTO = new PostResponse(post);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(postDTO);
         response.addMessage("Cập nhật Bài đăng thành công");
@@ -191,7 +192,7 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public SuccessfulResponse deletePost(Integer id) {
+    public SuccessResponse deletePost(Integer id) {
         if (!this.postRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bài đăng nào với id là " + id);
@@ -202,7 +203,7 @@ public class PostServiceImpl implements PostService {
 
         this.postRepository.save(post);
 
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Xóa Bài đăng thành công");
 
         LOG.info("Deleted post with id = " + post.getId());

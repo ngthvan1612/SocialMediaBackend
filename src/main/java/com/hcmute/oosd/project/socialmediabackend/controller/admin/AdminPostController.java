@@ -7,7 +7,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -53,7 +53,7 @@ public class AdminPostController {
             @AuthenticationPrincipal User user
     ) {
         request.setAuthorId(user.getId());
-        SuccessfulResponse createPostResponse = this.postService.createPost(request);
+        SuccessResponse createPostResponse = this.postService.createPost(request);
         return createPostResponse;
     }
 
@@ -66,7 +66,7 @@ public class AdminPostController {
     ) {
         request.setAuthorId(user.getId());
         request.setPostId(id);
-        SuccessfulResponse updatePostResponse = this.postService.updatePost(request);
+        SuccessResponse updatePostResponse = this.postService.updatePost(request);
         return updatePostResponse;
     }
 
@@ -75,7 +75,7 @@ public class AdminPostController {
     public ResponseBaseAbstract deletePost(
             @PathVariable Integer id
     ) {
-        SuccessfulResponse updatePostResponse = this.postService.deletePost(id);
+        SuccessResponse updatePostResponse = this.postService.deletePost(id);
         return updatePostResponse;
     }
 }

@@ -15,6 +15,26 @@ public abstract class ResponseBaseAbstract {
     private Object data;
     private ArrayList<String> messages;
 
+    @Deprecated
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Deprecated
+    public void setStatusCode(HttpStatus statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    @Deprecated
+    public void setData(Object data) {
+        this.data = data;
+    }
+
+    @Deprecated
+    public void setMessages(ArrayList<String> messages) {
+        this.messages = messages;
+    }
+
     public ResponseBaseAbstract() {
         this.statusCode = HttpStatus.OK;
         this.status = "OK";
@@ -26,6 +46,7 @@ public abstract class ResponseBaseAbstract {
         this.statusCode = statusCode;
     }
 
+    @Deprecated
     public void addMessage(String message) {
         this.messages.add(message);
     }

@@ -3,7 +3,7 @@ package com.hcmute.oosd.project.socialmediabackend.controller.common;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.image.UploadImgRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.StorageService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +26,7 @@ public class CommonStorageController {
         UploadImgRequest request = new UploadImgRequest();
         request.setUploadFileName(file.getName());
         request.setImgBufferByteArray(file.getBytes());
-        SuccessfulResponse createImgUrl = this.storageService.uploadImg(request);
+        SuccessResponse createImgUrl = this.storageService.uploadImg(request);
         return createImgUrl;
     }
 }
