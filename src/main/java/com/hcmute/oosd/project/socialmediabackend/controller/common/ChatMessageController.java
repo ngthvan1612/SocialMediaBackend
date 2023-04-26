@@ -59,7 +59,7 @@ public class ChatMessageController {
             String message = msg.getMessage();
             msg.setCreatedAt(new Date());
 
-            this.groupmessageService.groupstoreMessage(msg);
+            //this.messageService.storeMessage(msg);
 
             logger.info(String.format("WS-INFO: %s send to group %s: %s", member, group, message));
 

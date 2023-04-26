@@ -20,6 +20,9 @@ public class WebSocketConfiguration implements  WebSocketMessageBrokerConfigurer
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/ws/secured/messenger/user");
+        registry.enableSimpleBroker(
+                "/ws/secured/messenger/user",
+                "/ws/secured/announce/user"
+        );
     }
 }
