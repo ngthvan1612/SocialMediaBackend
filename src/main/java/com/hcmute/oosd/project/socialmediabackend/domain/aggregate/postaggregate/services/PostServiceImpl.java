@@ -12,6 +12,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
@@ -46,16 +47,8 @@ public class PostServiceImpl implements PostService {
 
     }
 
-    //TODO: Validate with annotation
-    //TODO: check fk before create & update
-    //TODO: update unique column for delete
-    //TODO: swagger
-    //TODO: authorize
-    //TODO: hash password
-    //TODO: loggggggggg
-
     @Override
-    public SuccessResponse createPost(CreatePostRequest request) {
+    public ResponseBaseAbstract createPost(CreatePostRequest request) {
         //Validate
         PostContentBase postContent = PostContentFactory.fromJson(request.getContent());
 
@@ -103,49 +96,48 @@ public class PostServiceImpl implements PostService {
         }
 
         //Return
-        PostResponse postDTO = new PostResponse(post);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(postDTO);
-        response.addMessage("Tạo Bài đăng thành công");
-
         LOG.info("Created post with id = " + post.getId());
 
+        //Announce
         announceService.onCreatedNewPost(post.getId());
 
-        SuccessResponse
+        return SuccessResponse.builder()
+                .addMessage("Tạo bài đăng thành công")
+                .setData(new PostResponse(post))
+                .returnCreated();
     }
 
     @Override
-    public GetPostResponse getPostById(Integer id) {
+    public ResponseBaseAbstract getPostById(Integer id) {
         if (!this.postRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bài đăng nào với id là " + id);
         }
 
         Post post = this.postRepository.findById(id).get();
-        PostResponse postDTO = new PostResponse(post);
-        GetPostResponse response = new GetPostResponse(postDTO);
 
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(new PostResponse(post))
+                .returnGetOK();
     }
 
     @Override
-    public ListPostResponse searchPosts(Map<String, String> queries) {
+    public ResponseBaseAbstract searchPosts(Map<String, String> queries) {
         List<PostResponse> listPostResponses = this.postRepository.searchPost(queries)
                 .stream().map(post -> new PostResponse(post)).toList();
 
         ListPostResponse response = new ListPostResponse(listPostResponses);
-        response.addMessage("Lấy dữ liệu thành công");
 
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(response)
+                .returnGetOK();
     }
 
 
     @Override
-    public SuccessResponse updatePost(UpdatePostRequest request) {
+    public ResponseBaseAbstract updatePost(UpdatePostRequest request) {
         //Check record exists
         if (!this.postRepository.existsById(request.getPostId())) {
             throw ServiceExceptionFactory.notFound()
@@ -172,7 +164,6 @@ public class PostServiceImpl implements PostService {
 
         //Validate unique
 
-
         //Update last changed time
         post.setLastUpdatedAt(new Date());
 
@@ -180,19 +171,17 @@ public class PostServiceImpl implements PostService {
         this.postRepository.save(post);
 
         //Return
-        PostResponse postDTO = new PostResponse(post);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(postDTO);
-        response.addMessage("Cập nhật Bài đăng thành công");
-
         LOG.info("Updated post with id = " + post.getId());
-        return response;
+
+        return SuccessResponse.builder()
+                .addMessage("Cập nhật bài đăng thành công")
+                .setData(new PostResponse(post))
+                .returnUpdated();
     }
 
 
     @Override
-    public SuccessResponse deletePost(Integer id) {
+    public ResponseBaseAbstract deletePost(Integer id) {
         if (!this.postRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bài đăng nào với id là " + id);
@@ -203,11 +192,11 @@ public class PostServiceImpl implements PostService {
 
         this.postRepository.save(post);
 
-        SuccessResponse response = new SuccessResponse();
-        response.addMessage("Xóa Bài đăng thành công");
-
         LOG.info("Deleted post with id = " + post.getId());
-        return response;
+
+        return SuccessResponse.builder()
+                .addMessage("Xóa bài đăng thành công")
+                .returnDeleted();
     }
 
 
