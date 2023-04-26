@@ -52,7 +52,7 @@ public abstract class ResponseBaseAbstract {
     }
 
     public static class ResponseBaseBuilder<C extends ResponseBaseAbstract, T extends ResponseBaseBuilder<C, T>> {
-        private final C instance;
+        protected final C instance;
 
         public ResponseBaseBuilder(C instance) {
             this.instance = instance;
@@ -88,7 +88,7 @@ public abstract class ResponseBaseAbstract {
             return (T)this;
         }
 
-        public ResponseBaseAbstract build() {
+        protected ResponseBaseAbstract build() {
             return this.instance;
         }
     }
