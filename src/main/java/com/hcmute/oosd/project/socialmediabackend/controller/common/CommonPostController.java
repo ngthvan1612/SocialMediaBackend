@@ -124,7 +124,7 @@ public class CommonPostController {
     public ResponseBaseAbstract getComments(
             @PathVariable Integer id
     ) {
-        SuccessfulResponse getCommentsResponse = commentService.getByPost(id);
+        SuccessResponse getCommentsResponse = commentService.getByPost(id);
         return getCommentsResponse;
     }
 
@@ -136,7 +136,7 @@ public class CommonPostController {
     )
     {
         CreateReactionRequest request = new CreateReactionRequest(ReactionType.LIKE,user.getId(),postId);
-        SuccessfulResponse likePostReponse = this.postService.toogleLikePost(request);
+        SuccessResponse likePostReponse = this.postService.toogleLikePost(request);
         return likePostReponse;
     }
 }

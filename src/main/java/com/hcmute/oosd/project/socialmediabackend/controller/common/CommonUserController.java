@@ -108,7 +108,7 @@ public class CommonUserController {
     public ResponseBaseAbstract getListSuggestionsForMe(
             @AuthenticationPrincipal User loggingInUser
     ) {
-        SuccessfulResponse getListSuggestionsForMeResponse = this.userService.getSuggestionsForMe(loggingInUser);
+        ResponseBaseAbstract getListSuggestionsForMeResponse = this.userService.getSuggestionsForMe(loggingInUser);
         return getListSuggestionsForMeResponse;
     }
 }

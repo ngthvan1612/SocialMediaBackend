@@ -209,7 +209,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public SucccessResponse deleteComment(Integer id, Integer userId ) {
+    public SuccessResponse deleteComment(Integer id, Integer userId ) {
 
         if (!this.commentRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
@@ -233,7 +233,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ListCommentPostResponse getByPost(Integer id) {
+    public SuccessResponse getByPost(Integer id) {
         if (!this.postRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Post nào với id là " + id);

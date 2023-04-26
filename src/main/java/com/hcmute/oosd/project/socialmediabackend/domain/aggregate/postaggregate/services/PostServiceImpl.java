@@ -216,7 +216,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public SuccessfulResponse toogleLikePost(CreateReactionRequest request) {
+    public SuccessResponse toogleLikePost(CreateReactionRequest request) {
         if (!this.postRepository.existsById(request.getPostId())) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bài đăng nào với id là " + request.getPostId());
@@ -235,7 +235,7 @@ public class PostServiceImpl implements PostService {
         else{
             reactionService.createReaction(request);
         }
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Like/Dislike post thành công");
 
         LOG.info("Toggle like post with id = " + request.getPostId());

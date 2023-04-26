@@ -22,7 +22,7 @@ public interface CommentService {
 
     SuccessResponse deleteComment(Integer id, Integer userId);
 
-    ListCommentPostResponse getByPost(Integer id);
+    SuccessResponse getByPost(Integer id);
     SuccessResponse getByComment(Integer id);
 
 

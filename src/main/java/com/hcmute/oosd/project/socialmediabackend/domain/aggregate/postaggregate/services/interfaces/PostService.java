@@ -5,6 +5,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.ListPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.UpdatePostRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.reaction.CreateReactionRequest;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 
 import java.util.Map;
@@ -18,7 +19,7 @@ public interface PostService {
 
     ResponseBaseAbstract updatePost(UpdatePostRequest request);
 
-    SuccessResponse deletePost(Integer id);
+    ResponseBaseAbstract deletePost(Integer id);
     SuccessResponse toogleLikePost(CreateReactionRequest request);
 
 }
