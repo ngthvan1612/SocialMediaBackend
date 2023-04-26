@@ -33,7 +33,7 @@ public class AdminPostController {
     public ResponseBaseAbstract searchPost(
             @RequestParam Map<String, String> queries
     ) {
-        ListPostResponse listPostResponse = this.postService.searchPosts(queries);
+        ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
 
@@ -42,7 +42,7 @@ public class AdminPostController {
     public ResponseBaseAbstract getPost(
             @PathVariable Integer id
     ) {
-        GetPostResponse getPostResponse = this.postService.getPostById(id);
+        ResponseBaseAbstract getPostResponse = this.postService.getPostById(id);
         return getPostResponse;
     }
 
@@ -53,7 +53,7 @@ public class AdminPostController {
             @AuthenticationPrincipal User user
     ) {
         request.setAuthorId(user.getId());
-        SuccessResponse createPostResponse = this.postService.createPost(request);
+        ResponseBaseAbstract createPostResponse = this.postService.createPost(request);
         return createPostResponse;
     }
 
@@ -66,7 +66,7 @@ public class AdminPostController {
     ) {
         request.setAuthorId(user.getId());
         request.setPostId(id);
-        SuccessResponse updatePostResponse = this.postService.updatePost(request);
+        ResponseBaseAbstract updatePostResponse = this.postService.updatePost(request);
         return updatePostResponse;
     }
 
@@ -75,7 +75,7 @@ public class AdminPostController {
     public ResponseBaseAbstract deletePost(
             @PathVariable Integer id
     ) {
-        SuccessResponse updatePostResponse = this.postService.deletePost(id);
+        ResponseBaseAbstract updatePostResponse = this.postService.deletePost(id);
         return updatePostResponse;
     }
 }
