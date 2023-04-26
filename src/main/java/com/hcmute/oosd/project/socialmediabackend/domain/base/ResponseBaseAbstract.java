@@ -68,6 +68,11 @@ public abstract class ResponseBaseAbstract {
             return this.getThis();
         }
 
+        public T setData(Object data) {
+            this.instance.setData(data);
+            return this.getThis();
+        }
+
         public T setStatusCode(Integer httpStatus) {
             this.instance.setStatusCode(HttpStatus.valueOf(httpStatus));
             return this.getThis();
