@@ -126,7 +126,6 @@ public class GroupMessageServiceImpl implements GroupMessageService {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Nhóm nào với id là " + request.getGroupMessageId());
         }
-
         //Read data from request
         GroupMessage groupMessage = this.groupMessageRepository.findById(request.getGroupMessageId()).get();
 
@@ -139,7 +138,6 @@ public class GroupMessageServiceImpl implements GroupMessageService {
         } else {
             admin = optionalAdmin.get();
         }
-
 
         groupMessage.setDisplayName(request.getDisplayName());
         groupMessage.setAdmin(admin);
