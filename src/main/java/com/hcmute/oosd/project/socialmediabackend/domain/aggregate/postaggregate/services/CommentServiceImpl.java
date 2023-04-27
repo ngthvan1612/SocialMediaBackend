@@ -10,6 +10,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
@@ -50,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
     //TODO: loggggggggg
 
     @Override
-    public SuccessResponse createComment(CreateCommentRequest request) {
+    public ResponseBaseAbstract createComment(CreateCommentRequest request) {
         //Validate
 
 
@@ -114,11 +115,14 @@ public class CommentServiceImpl implements CommentService {
         response.addMessage("Tạo Bình luận thành công");
 
         LOG.info("Created comment with id = " + comment.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Tạo bình luận thành công")
+                .setData(new CommentResponse(comment))
+                .returnCreated();
     }
 
     @Override
-    public GetCommentResponse getCommentById(Integer id) {
+    public ResponseBaseAbstract getCommentById(Integer id) {
         if (!this.commentRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bình luận nào với id là " + id);
@@ -128,24 +132,26 @@ public class CommentServiceImpl implements CommentService {
         CommentResponse commentDTO = new CommentResponse(comment);
         GetCommentResponse response = new GetCommentResponse(commentDTO);
 
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(response)
+                .returnGetOK();
     }
 
     @Override
-    public ListCommentResponse searchComments(Map<String, String> queries) {
+    public ResponseBaseAbstract searchComments(Map<String, String> queries) {
         List<CommentResponse> listCommentResponses = this.commentRepository.searchComment(queries)
                 .stream().map(comment -> new CommentResponse(comment)).toList();
 
         ListCommentResponse response = new ListCommentResponse(listCommentResponses);
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return  SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(response)
+                .returnGetOK();
     }
 
     @Override
-    public SuccessResponse updateComment(UpdateCommentRequest request) {
+    public ResponseBaseAbstract updateComment(UpdateCommentRequest request) {
         //Check record exists
         if (!this.commentRepository.existsById(request.getCommentId())) {
             throw ServiceExceptionFactory.notFound()
@@ -209,7 +215,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public SuccessResponse deleteComment(Integer id, Integer userId ) {
+    public ResponseBaseAbstract deleteComment(Integer id, Integer userId ) {
 
         if (!this.commentRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
@@ -233,7 +239,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public SuccessResponse getByPost(Integer id) {
+    public ResponseBaseAbstract getByPost(Integer id) {
         if (!this.postRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Post nào với id là " + id);
@@ -245,14 +251,15 @@ public class CommentServiceImpl implements CommentService {
         }
 
         ListCommentPostResponse response = new ListCommentPostResponse(commentPosts);
-        response.addMessage("Lấy bình luận thuộc post thành công");
-
         LOG.info("Get comments from post id = " + id);
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy bình luận thuộc Post thành công")
+                .setData(response)
+                .returnGetOK();
     }
 
     @Override
-    public ListCommentPostResponse getByComment(Integer id) {
+    public ResponseBaseAbstract getByComment(Integer id) {
         if (!this.commentRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bình luận nào với id là " + id);
@@ -264,9 +271,12 @@ public class CommentServiceImpl implements CommentService {
             commentPosts.add(new CommentPostResponse(comments.get(i).getId(), comments.get(i).getContent(),commentRepository.getByComment(comments.get(i).getId()).size()));
         }
         ListCommentPostResponse response = new ListCommentPostResponse(commentPosts);
-        response.addMessage("Lấy danh sách Bình luận từ Parent thành công");
+
         LOG.info("Get comment with comment id = " + id);
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy danh sách Bình luận từ Parent thành công")
+                .setData(response)
+                .returnGetOK();
     }
 
 }

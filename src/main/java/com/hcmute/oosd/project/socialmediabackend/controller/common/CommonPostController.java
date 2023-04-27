@@ -124,7 +124,7 @@ public class CommonPostController {
     public ResponseBaseAbstract getComments(
             @PathVariable Integer id
     ) {
-        SuccessResponse getCommentsResponse = commentService.getByPost(id);
+        ResponseBaseAbstract getCommentsResponse = commentService.getByPost(id);
         return getCommentsResponse;
     }
 

@@ -34,7 +34,7 @@ public class CommonCommentController {
     public ResponseBaseAbstract searchComment(
             @RequestParam Map<String, String> queries
     ) {
-        ListCommentResponse listCommentResponse = this.commentService.searchComments(queries);
+        ResponseBaseAbstract listCommentResponse = this.commentService.searchComments(queries);
         return listCommentResponse;
     }
 
@@ -43,7 +43,7 @@ public class CommonCommentController {
     public ResponseBaseAbstract getComment(
             @PathVariable Integer id
     ) {
-        GetCommentResponse getCommentResponse = this.commentService.getCommentById(id);
+        ResponseBaseAbstract getCommentResponse = this.commentService.getCommentById(id);
         return getCommentResponse;
     }
 
@@ -52,7 +52,7 @@ public class CommonCommentController {
     public ResponseBaseAbstract createComment(
             @RequestBody @Valid CreateCommentRequest request
     ) {
-        SuccessResponse createCommentResponse = this.commentService.createComment(request);
+        ResponseBaseAbstract createCommentResponse = this.commentService.createComment(request);
         return createCommentResponse;
     }
 
@@ -63,7 +63,7 @@ public class CommonCommentController {
             @RequestBody @Valid UpdateCommentRequest request
     ) {
         request.setCommentId(id);
-        SuccessResponse updateCommentResponse = this.commentService.updateComment(request);
+        ResponseBaseAbstract updateCommentResponse = this.commentService.updateComment(request);
         return updateCommentResponse;
     }
 
@@ -74,7 +74,7 @@ public class CommonCommentController {
             @PathVariable Integer id
     ) {
         Integer userId  = user.getId();
-        SuccessResponse updateCommentResponse = this.commentService.deleteComment(id,userId);
+        ResponseBaseAbstract updateCommentResponse = this.commentService.deleteComment(id,userId);
         return updateCommentResponse;
     }
 
@@ -83,7 +83,7 @@ public class CommonCommentController {
     public ResponseBaseAbstract getChildComment(
             @PathVariable Integer id
     ) {
-        SuccessResponse getChildComment = this.commentService.getByComment(id);
+        ResponseBaseAbstract getChildComment = this.commentService.getByComment(id);
         return getChildComment;
     }
 
