@@ -6,7 +6,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.reaction.UpdateReactionRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.ReactionService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,7 +50,7 @@ public class CommonReactionController {
     public ResponseBaseAbstract createReaction(
             @RequestBody @Valid CreateReactionRequest request
     ) {
-        SuccessfulResponse createReactionResponse = this.reactionService.createReaction(request);
+        SuccessResponse createReactionResponse = this.reactionService.createReaction(request);
         return createReactionResponse;
     }
 
@@ -61,7 +61,7 @@ public class CommonReactionController {
             @RequestBody @Valid UpdateReactionRequest request
     ) {
         request.setReactionId(id);
-        SuccessfulResponse updateReactionResponse = this.reactionService.updateReaction(request);
+        SuccessResponse updateReactionResponse = this.reactionService.updateReaction(request);
         return updateReactionResponse;
     }
 
@@ -70,7 +70,7 @@ public class CommonReactionController {
     public ResponseBaseAbstract deleteReaction(
             @PathVariable Integer id
     ) {
-        SuccessfulResponse updateReactionResponse = this.reactionService.deleteReaction(id);
+        SuccessResponse updateReactionResponse = this.reactionService.deleteReaction(id);
         return updateReactionResponse;
     }
 }

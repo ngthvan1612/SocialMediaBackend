@@ -4,14 +4,13 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.FollowerService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.Authenticator;
 import java.util.Map;
 
 @CrossOrigin("*")
@@ -53,21 +52,21 @@ public class CommonFollowerController {
         return getFollowerResponse;
     }
 
-    @GetMapping("followers")
+    @GetMapping("{id}/followers")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract listPeoplesFollowMe( //lấy danh sách những người follow mình
-            @AuthenticationPrincipal User user
+        @PathVariable Integer id
     ){
-        SuccessfulResponse successfulResponse = this.followerService.getListPeoplesFollowMe(user.getId());
+        SuccessResponse successfulResponse = this.followerService.getListPeoplesFollowMe(id);
         return successfulResponse;
     }
 
-    @GetMapping("me")
+    @GetMapping("{id}/following")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract listPeoplesFollowed( //lấy danh sách những người mình follow
-            @AuthenticationPrincipal User user
+        @PathVariable Integer id
     ){
-        SuccessfulResponse successfulResponse = this.followerService.getListPeoplesFollowed(user.getId());
+        SuccessResponse successfulResponse = this.followerService.getListPeoplesFollowed(id);
         return successfulResponse;
     }
 

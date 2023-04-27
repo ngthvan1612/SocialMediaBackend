@@ -4,7 +4,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.StorageService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class StorageServiceImpl implements StorageService {
     @Autowired
     private StorageRepository storageRepository;
     @Override
-    public SuccessfulResponse uploadImg(UploadImgRequest request) {
+    public SuccessResponse uploadImg(UploadImgRequest request) {
         //Save to MinIO
         InputStream preparedStream = new ByteArrayInputStream(request.getImgBufferByteArray());
         String newMinIOUrl = this.storageRepository.saveUploadedImg(
@@ -36,7 +36,7 @@ public class StorageServiceImpl implements StorageService {
         }
 
         //Return
-        SuccessfulResponse response = new SuccessfulResponse(HttpStatus.CREATED);
+        SuccessResponse response = new SuccessResponse(HttpStatus.CREATED);
 
         response.setData(newMinIOUrl);
         response.addMessage("Tải hình ảnh lên server thành công");

@@ -10,7 +10,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
     //TODO: loggggggggg
 
     @Override
-    public SuccessfulResponse createUserGroupMessage(CreateUserGroupMessageRequest request) {
+    public SuccessResponse createUserGroupMessage(CreateUserGroupMessageRequest request) {
         //Validate
 
 
@@ -87,7 +87,7 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
 
         //Return
         UserGroupMessageResponse userGroupMessageDTO = new UserGroupMessageResponse(userGroupMessage);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(userGroupMessageDTO);
         response.addMessage("Tạo Chi tiết nhóm thành công");
@@ -124,7 +124,7 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
     }
 
     @Override
-    public SuccessfulResponse updateUserGroupMessage(UpdateUserGroupMessageRequest request) {
+    public SuccessResponse updateUserGroupMessage(UpdateUserGroupMessageRequest request) {
         //Check record exists
         if (!this.userGroupMessageRepository.existsById(request.getUserGroupMessageId())) {
             throw ServiceExceptionFactory.notFound()
@@ -170,7 +170,7 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
 
         //Return
         UserGroupMessageResponse userGroupMessageDTO = new UserGroupMessageResponse(userGroupMessage);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(userGroupMessageDTO);
         response.addMessage("Cập nhật Chi tiết nhóm thành công");
@@ -181,7 +181,7 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
 
 
     @Override
-    public SuccessfulResponse deleteUserGroupMessage(Integer id) {
+    public SuccessResponse deleteUserGroupMessage(Integer id) {
         if (!this.userGroupMessageRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Chi tiết nhóm nào với id là " + id);
@@ -192,7 +192,7 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
 
         this.userGroupMessageRepository.save(userGroupMessage);
 
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Xóa Chi tiết nhóm thành công");
 
         LOG.info("Deleted userGroupMessage with id = " + userGroupMessage.getId());

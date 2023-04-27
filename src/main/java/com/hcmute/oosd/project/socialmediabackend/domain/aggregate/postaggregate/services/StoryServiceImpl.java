@@ -8,7 +8,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class StoryServiceImpl implements StoryService {
     //TODO: loggggggggg
 
     @Override
-    public SuccessfulResponse createStory(CreateStoryRequest request) {
+    public SuccessResponse createStory(CreateStoryRequest request) {
         //Validate
 
 
@@ -72,7 +72,7 @@ public class StoryServiceImpl implements StoryService {
 
         //Return
         StoryResponse storyDTO = new StoryResponse(story);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(storyDTO);
         response.addMessage("Tạo Story 24h thành công");
@@ -109,7 +109,7 @@ public class StoryServiceImpl implements StoryService {
     }
 
     @Override
-    public SuccessfulResponse updateStory(UpdateStoryRequest request) {
+    public SuccessResponse updateStory(UpdateStoryRequest request) {
         //Check record exists
         if (!this.storyRepository.existsById(request.getStoryId())) {
             throw ServiceExceptionFactory.notFound()
@@ -144,7 +144,7 @@ public class StoryServiceImpl implements StoryService {
 
         //Return
         StoryResponse storyDTO = new StoryResponse(story);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(storyDTO);
         response.addMessage("Cập nhật Story 24h thành công");
@@ -155,7 +155,7 @@ public class StoryServiceImpl implements StoryService {
 
 
     @Override
-    public SuccessfulResponse deleteStory(Integer id) {
+    public SuccessResponse deleteStory(Integer id) {
         if (!this.storyRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Story 24h nào với id là " + id);
@@ -166,7 +166,7 @@ public class StoryServiceImpl implements StoryService {
 
         this.storyRepository.save(story);
 
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Xóa Story 24h thành công");
 
         LOG.info("Deleted story with id = " + story.getId());

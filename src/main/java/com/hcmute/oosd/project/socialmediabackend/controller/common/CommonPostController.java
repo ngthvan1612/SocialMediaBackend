@@ -4,10 +4,16 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.GetPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.ListPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.UpdatePostRequest;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.reaction.CreateReactionRequest;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.enums.ReactionType;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.CommentService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.PostService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.ReactionService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.follower.GetFollowerResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.follower.ToggleFollowerRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +34,12 @@ public class CommonPostController {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private ReactionService reactionService;
+
     public CommonPostController() {
 
     }
@@ -35,10 +47,9 @@ public class CommonPostController {
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchPost(
-            @RequestParam Map<String, String> queries,
-            @AuthenticationPrincipal User user
+            @RequestParam Map<String, String> queries
     ) {
-        ListPostResponse listPostResponse = this.postService.searchPosts(queries, user.getId());
+        ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
 
@@ -49,31 +60,28 @@ public class CommonPostController {
     ) {
         Map<String, String> queries = new HashMap<>();
         queries.put("author.id.equal", user.getId().toString());
-        ListPostResponse listPostResponse = this.postService.searchPosts(queries, user.getId());
+        ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
     @GetMapping("/{userId}/list")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchUserPost(
-            @PathVariable Integer userId,
-            @AuthenticationPrincipal User user
+            @PathVariable Integer userId
     ) {
         Map<String, String> queries = new HashMap<>();
         queries.put("author.id.equal", userId.toString());
         queries.put("privacy.equal", "PUBLIC");
         //TODO: thêm một số criteria về tài khoản kiểm tra người xem và người được xem có thỏa các điều kiên không
-        ListPostResponse listPostResponse = this.postService.searchPosts(queries, user.getId());
+        ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
 
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getPost(
-            @PathVariable Integer id,
-            @AuthenticationPrincipal User user
-
+            @PathVariable Integer id
     ) {
-        GetPostResponse getPostResponse = this.postService.getPostById(id, user.getId());
+        ResponseBaseAbstract getPostResponse = this.postService.getPostById(id);
         return getPostResponse;
     }
 
@@ -84,7 +92,7 @@ public class CommonPostController {
             @AuthenticationPrincipal User user
             ) {
         request.setAuthorId(user.getId());
-        SuccessfulResponse createPostResponse = this.postService.createPost(request);
+        ResponseBaseAbstract createPostResponse = this.postService.createPost(request);
         return createPostResponse;
     }
 
@@ -97,17 +105,38 @@ public class CommonPostController {
     ) {
         request.setAuthorId(user.getId());
         request.setPostId(id);
-        SuccessfulResponse updatePostResponse = this.postService.updatePost(request);
+        ResponseBaseAbstract updatePostResponse = this.postService.updatePost(request);
         return updatePostResponse;
     }
+
 
     @DeleteMapping("{id}/delete")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract deletePost(
             @PathVariable Integer id
     ) {
-        //TODO: Kiem tra người xóa có phải chủ post hay khong
-        SuccessfulResponse updatePostResponse = this.postService.deletePost(id);
+        ResponseBaseAbstract updatePostResponse = this.postService.deletePost(id);
         return updatePostResponse;
+    }
+
+    @GetMapping("{id}/comments")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract getComments(
+            @PathVariable Integer id
+    ) {
+        SuccessResponse getCommentsResponse = commentService.getByPost(id);
+        return getCommentsResponse;
+    }
+
+    @GetMapping("{postId}/like/toggle")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract likePost(
+            @AuthenticationPrincipal User user,
+            @PathVariable Integer postId
+    )
+    {
+        CreateReactionRequest request = new CreateReactionRequest(ReactionType.LIKE,user.getId(),postId);
+        SuccessResponse likePostReponse = this.postService.toogleLikePost(request);
+        return likePostReponse;
     }
 }

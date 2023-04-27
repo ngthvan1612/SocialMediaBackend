@@ -1,8 +1,8 @@
 package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.dto.announce;
 
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 
-public class GetAnnounceResponse extends SuccessfulResponse {
+public class GetAnnounceResponse extends SuccessResponse {
     public GetAnnounceResponse(AnnounceResponse announceResponse) {
         super();
         this.setData(announceResponse);

@@ -12,4 +12,9 @@ public class CreateReactionRequest {
     private Integer userId;
     private Integer postId;
 
+    public CreateReactionRequest(ReactionType reaction, Integer userId, Integer postId) {
+        this.reaction = reaction;
+        this.userId = userId;
+        this.postId = postId;
+    }
 }
