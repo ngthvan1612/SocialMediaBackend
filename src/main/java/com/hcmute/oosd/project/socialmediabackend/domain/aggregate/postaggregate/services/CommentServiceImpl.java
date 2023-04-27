@@ -144,7 +144,7 @@ public class CommentServiceImpl implements CommentService {
                 .stream().map(comment -> new CommentResponse(comment)).toList();
 
         ListCommentResponse response = new ListCommentResponse(listCommentResponses);
-        return  SuccessResponse.builder()
+        return SuccessResponse.builder()
                 .addMessage("Lấy dữ liệu thành công")
                 .setData(response)
                 .returnGetOK();
@@ -201,16 +201,11 @@ public class CommentServiceImpl implements CommentService {
 
         //Store
         this.commentRepository.save(comment);
-
-        //Return
-        CommentResponse commentDTO = new CommentResponse(comment);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(commentDTO);
-        response.addMessage("Cập nhật Bình luận thành công");
-
         LOG.info("Updated comment with id = " + comment.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Cập nhật bình luận thành công")
+                .setData(new CommentResponse(comment))
+                .returnUpdated();
     }
 
 
@@ -230,12 +225,10 @@ public class CommentServiceImpl implements CommentService {
         comment.setDeletedAt(new Date());
 
         this.commentRepository.save(comment);
-
-        SuccessResponse response = new SuccessResponse();
-        response.addMessage("Xóa Bình luận thành công");
-
         LOG.info("Deleted comment with id = " + comment.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Xóa bình luận thành công")
+                .returnDeleted();
     }
 
     @Override

@@ -20,6 +20,6 @@ public interface PostService {
     ResponseBaseAbstract updatePost(UpdatePostRequest request);
 
     ResponseBaseAbstract deletePost(Integer id);
-    SuccessResponse toogleLikePost(CreateReactionRequest request);
+    ResponseBaseAbstract toogleLikePost(CreateReactionRequest request);
 
 }
