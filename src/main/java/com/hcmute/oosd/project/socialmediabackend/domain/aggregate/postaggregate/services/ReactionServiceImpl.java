@@ -10,7 +10,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public class ReactionServiceImpl implements ReactionService {
     //TODO: loggggggggg
 
     @Override
-    public SuccessfulResponse createReaction(CreateReactionRequest request) {
+    public SuccessResponse createReaction(CreateReactionRequest request) {
         //Validate
 
 
@@ -88,7 +88,7 @@ public class ReactionServiceImpl implements ReactionService {
 
         //Return
         ReactionResponse reactionDTO = new ReactionResponse(reaction);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(reactionDTO);
         response.addMessage("Tạo Thả cảm xúc thành công");
@@ -125,7 +125,7 @@ public class ReactionServiceImpl implements ReactionService {
     }
 
     @Override
-    public SuccessfulResponse updateReaction(UpdateReactionRequest request) {
+    public SuccessResponse updateReaction(UpdateReactionRequest request) {
         //Check record exists
         if (!this.reactionRepository.existsById(request.getReactionId())) {
             throw ServiceExceptionFactory.notFound()
@@ -172,7 +172,7 @@ public class ReactionServiceImpl implements ReactionService {
 
         //Return
         ReactionResponse reactionDTO = new ReactionResponse(reaction);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(reactionDTO);
         response.addMessage("Cập nhật Thả cảm xúc thành công");
@@ -183,7 +183,7 @@ public class ReactionServiceImpl implements ReactionService {
 
 
     @Override
-    public SuccessfulResponse deleteReaction(Integer id) {
+    public SuccessResponse deleteReaction(Integer id) {
         if (!this.reactionRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Thả cảm xúc nào với id là " + id);
@@ -194,7 +194,7 @@ public class ReactionServiceImpl implements ReactionService {
 
         this.reactionRepository.save(reaction);
 
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Xóa Thả cảm xúc thành công");
 
         LOG.info("Deleted reaction with id = " + reaction.getId());

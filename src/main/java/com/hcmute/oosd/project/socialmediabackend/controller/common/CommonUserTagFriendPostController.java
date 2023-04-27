@@ -6,7 +6,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.usertagfriendpost.UpdateUserTagFriendPostRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.UserTagFriendPostService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,7 +50,7 @@ public class CommonUserTagFriendPostController {
     public ResponseBaseAbstract createUserTagFriendPost(
             @RequestBody @Valid CreateUserTagFriendPostRequest request
     ) {
-        SuccessfulResponse createUserTagFriendPostResponse = this.userTagFriendPostService.createUserTagFriendPost(request);
+        SuccessResponse createUserTagFriendPostResponse = this.userTagFriendPostService.createUserTagFriendPost(request);
         return createUserTagFriendPostResponse;
     }
 
@@ -61,7 +61,7 @@ public class CommonUserTagFriendPostController {
             @RequestBody @Valid UpdateUserTagFriendPostRequest request
     ) {
         request.setUserTagFriendPostId(id);
-        SuccessfulResponse updateUserTagFriendPostResponse = this.userTagFriendPostService.updateUserTagFriendPost(request);
+        SuccessResponse updateUserTagFriendPostResponse = this.userTagFriendPostService.updateUserTagFriendPost(request);
         return updateUserTagFriendPostResponse;
     }
 
@@ -70,7 +70,7 @@ public class CommonUserTagFriendPostController {
     public ResponseBaseAbstract deleteUserTagFriendPost(
             @PathVariable Integer id
     ) {
-        SuccessfulResponse updateUserTagFriendPostResponse = this.userTagFriendPostService.deleteUserTagFriendPost(id);
+        SuccessResponse updateUserTagFriendPostResponse = this.userTagFriendPostService.deleteUserTagFriendPost(id);
         return updateUserTagFriendPostResponse;
     }
 }

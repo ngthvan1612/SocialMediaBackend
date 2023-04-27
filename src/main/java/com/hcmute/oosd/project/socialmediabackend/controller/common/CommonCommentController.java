@@ -7,7 +7,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.CommentService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,7 +52,7 @@ public class CommonCommentController {
     public ResponseBaseAbstract createComment(
             @RequestBody @Valid CreateCommentRequest request
     ) {
-        SuccessfulResponse createCommentResponse = this.commentService.createComment(request);
+        SuccessResponse createCommentResponse = this.commentService.createComment(request);
         return createCommentResponse;
     }
 
@@ -63,7 +63,7 @@ public class CommonCommentController {
             @RequestBody @Valid UpdateCommentRequest request
     ) {
         request.setCommentId(id);
-        SuccessfulResponse updateCommentResponse = this.commentService.updateComment(request);
+        SuccessResponse updateCommentResponse = this.commentService.updateComment(request);
         return updateCommentResponse;
     }
 
@@ -74,7 +74,7 @@ public class CommonCommentController {
             @PathVariable Integer id
     ) {
         Integer userId  = user.getId();
-        SuccessfulResponse updateCommentResponse = this.commentService.deleteComment(id,userId);
+        SuccessResponse updateCommentResponse = this.commentService.deleteComment(id,userId);
         return updateCommentResponse;
     }
 
@@ -83,7 +83,7 @@ public class CommonCommentController {
     public ResponseBaseAbstract getChildComment(
             @PathVariable Integer id
     ) {
-        SuccessfulResponse getChildComment = this.commentService.getByComment(id);
+        SuccessResponse getChildComment = this.commentService.getByComment(id);
         return getChildComment;
     }
 

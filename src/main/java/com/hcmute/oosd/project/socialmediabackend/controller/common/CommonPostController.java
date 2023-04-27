@@ -13,7 +13,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.follower.ToggleFollowerRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class CommonPostController {
     public ResponseBaseAbstract searchPost(
             @RequestParam Map<String, String> queries
     ) {
-        ListPostResponse listPostResponse = this.postService.searchPosts(queries);
+        ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
 
@@ -60,7 +60,7 @@ public class CommonPostController {
     ) {
         Map<String, String> queries = new HashMap<>();
         queries.put("author.id.equal", user.getId().toString());
-        ListPostResponse listPostResponse = this.postService.searchPosts(queries);
+        ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
     @GetMapping("/{userId}/list")
@@ -72,7 +72,7 @@ public class CommonPostController {
         queries.put("author.id.equal", userId.toString());
         queries.put("privacy.equal", "PUBLIC");
         //TODO: thêm một số criteria về tài khoản kiểm tra người xem và người được xem có thỏa các điều kiên không
-        ListPostResponse listPostResponse = this.postService.searchPosts(queries);
+        ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
 
@@ -81,7 +81,7 @@ public class CommonPostController {
     public ResponseBaseAbstract getPost(
             @PathVariable Integer id
     ) {
-        GetPostResponse getPostResponse = this.postService.getPostById(id);
+        ResponseBaseAbstract getPostResponse = this.postService.getPostById(id);
         return getPostResponse;
     }
 
@@ -92,7 +92,7 @@ public class CommonPostController {
             @AuthenticationPrincipal User user
             ) {
         request.setAuthorId(user.getId());
-        SuccessfulResponse createPostResponse = this.postService.createPost(request);
+        ResponseBaseAbstract createPostResponse = this.postService.createPost(request);
         return createPostResponse;
     }
 
@@ -105,7 +105,7 @@ public class CommonPostController {
     ) {
         request.setAuthorId(user.getId());
         request.setPostId(id);
-        SuccessfulResponse updatePostResponse = this.postService.updatePost(request);
+        ResponseBaseAbstract updatePostResponse = this.postService.updatePost(request);
         return updatePostResponse;
     }
 
@@ -115,8 +115,7 @@ public class CommonPostController {
     public ResponseBaseAbstract deletePost(
             @PathVariable Integer id
     ) {
-        //TODO: Kiem tra người xóa có phải chủ post hay khong
-        SuccessfulResponse updatePostResponse = this.postService.deletePost(id);
+        ResponseBaseAbstract updatePostResponse = this.postService.deletePost(id);
         return updatePostResponse;
     }
 
@@ -125,7 +124,7 @@ public class CommonPostController {
     public ResponseBaseAbstract getComments(
             @PathVariable Integer id
     ) {
-        SuccessfulResponse getCommentsResponse = commentService.getByPost(id);
+        SuccessResponse getCommentsResponse = commentService.getByPost(id);
         return getCommentsResponse;
     }
 
@@ -137,7 +136,7 @@ public class CommonPostController {
     )
     {
         CreateReactionRequest request = new CreateReactionRequest(ReactionType.LIKE,user.getId(),postId);
-        SuccessfulResponse likePostReponse = this.postService.toogleLikePost(request);
+        SuccessResponse likePostReponse = this.postService.toogleLikePost(request);
         return likePostReponse;
     }
 }

@@ -11,7 +11,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
     //TODO: loggggggggg
 
     @Override
-    public SuccessfulResponse createComment(CreateCommentRequest request) {
+    public SuccessResponse createComment(CreateCommentRequest request) {
         //Validate
 
 
@@ -108,7 +108,7 @@ public class CommentServiceImpl implements CommentService {
 
         //Return
         CommentResponse commentDTO = new CommentResponse(comment);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(commentDTO);
         response.addMessage("Tạo Bình luận thành công");
@@ -145,7 +145,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public SuccessfulResponse updateComment(UpdateCommentRequest request) {
+    public SuccessResponse updateComment(UpdateCommentRequest request) {
         //Check record exists
         if (!this.commentRepository.existsById(request.getCommentId())) {
             throw ServiceExceptionFactory.notFound()
@@ -198,7 +198,7 @@ public class CommentServiceImpl implements CommentService {
 
         //Return
         CommentResponse commentDTO = new CommentResponse(comment);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(commentDTO);
         response.addMessage("Cập nhật Bình luận thành công");
@@ -209,7 +209,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public SuccessfulResponse deleteComment(Integer id, Integer userId ) {
+    public SuccessResponse deleteComment(Integer id, Integer userId ) {
 
         if (!this.commentRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
@@ -225,9 +225,7 @@ public class CommentServiceImpl implements CommentService {
 
         this.commentRepository.save(comment);
 
-
-
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Xóa Bình luận thành công");
 
         LOG.info("Deleted comment with id = " + comment.getId());
@@ -235,7 +233,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ListCommentPostResponse getByPost(Integer id) {
+    public SuccessResponse getByPost(Integer id) {
         if (!this.postRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Post nào với id là " + id);
