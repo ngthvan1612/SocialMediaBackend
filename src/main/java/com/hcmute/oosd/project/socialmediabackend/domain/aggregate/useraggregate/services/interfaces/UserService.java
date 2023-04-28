@@ -9,11 +9,11 @@ import java.util.Map;
 public interface UserService {
     ResponseBaseAbstract createUser(CreateUserRequest request);
 
-    GetUserResponse getUserById(Integer id, User loggingInUser);
+    ResponseBaseAbstract getUserById(Integer id, User loggingInUser);
 
-    ListUserResponse searchUsers(Map<String, String> queries, User loggingInUser);
+    ResponseBaseAbstract searchUsers(Map<String, String> queries, User loggingInUser);
 
-    SearchUsersForPostResponse searchUsersForPost(String pattern, Integer limit);
+    ResponseBaseAbstract searchUsersForPost(String pattern, Integer limit);
 
     ResponseBaseAbstract updateUser(UpdateUserRequest request);
 
@@ -21,7 +21,7 @@ public interface UserService {
 
     ResponseBaseAbstract updateAvatarById(UpdateUserAvatarRequest request);
 
-    LoginResponse authenticate(LoginRequest request);
+    ResponseBaseAbstract authenticate(LoginRequest request);
 
     ResponseBaseAbstract registerUser(RegisterUserRequest registerUserRequest);
 

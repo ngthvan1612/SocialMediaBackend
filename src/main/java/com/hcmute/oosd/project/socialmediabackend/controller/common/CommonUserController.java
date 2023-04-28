@@ -33,7 +33,7 @@ public class CommonUserController {
     public ResponseBaseAbstract searchUsersForPost(
             @RequestParam("username.contains") String username,
             @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit) {
-        SearchUsersForPostResponse searchUsersForPostResponse = this.userService.searchUsersForPost(username, limit);
+        ResponseBaseAbstract searchUsersForPostResponse = this.userService.searchUsersForPost(username, limit);
         return searchUsersForPostResponse;
     }
 
@@ -42,7 +42,7 @@ public class CommonUserController {
     public ResponseBaseAbstract searchUser(
             @AuthenticationPrincipal User loggingInUser,
             @RequestParam Map<String, String> queries) {
-        ListUserResponse listUserResponse = this.userService.searchUsers(queries, loggingInUser);
+        ResponseBaseAbstract listUserResponse = this.userService.searchUsers(queries, loggingInUser);
         return listUserResponse;
     }
 
@@ -51,7 +51,7 @@ public class CommonUserController {
     public ResponseBaseAbstract getUser(
             @AuthenticationPrincipal User currentUser,
             @PathVariable Integer id) {
-        GetUserResponse getUserResponse = this.userService.getUserById(id, currentUser);
+        ResponseBaseAbstract getUserResponse = this.userService.getUserById(id, currentUser);
         return getUserResponse;
     }
 
