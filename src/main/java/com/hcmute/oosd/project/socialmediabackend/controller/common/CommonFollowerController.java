@@ -4,7 +4,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.FollowerService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,19 +54,17 @@ public class CommonFollowerController {
 
     @GetMapping("followers")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseBaseAbstract listPeoplesFollowMe( //lấy danh sách những người follow mình
-            @AuthenticationPrincipal User user
-    ){
-        SuccessResponse successfulResponse = this.followerService.getListPeoplesFollowMe(user.getId());
+    public ResponseBaseAbstract listPeoplesFollowMe( // lấy danh sách những người follow mình
+            @AuthenticationPrincipal User user) {
+        ResponseBaseAbstract successfulResponse = this.followerService.getListPeoplesFollowMe(user.getId());
         return successfulResponse;
     }
 
     @GetMapping("me")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseBaseAbstract listPeoplesFollowed( //lấy danh sách những người mình follow
-            @AuthenticationPrincipal User user
-    ){
-        SuccessResponse successfulResponse = this.followerService.getListPeoplesFollowed(user.getId());
+    public ResponseBaseAbstract listPeoplesFollowed( // lấy danh sách những người mình follow
+            @AuthenticationPrincipal User user) {
+        ResponseBaseAbstract successfulResponse = this.followerService.getListPeoplesFollowed(user.getId());
         return successfulResponse;
     }
 
