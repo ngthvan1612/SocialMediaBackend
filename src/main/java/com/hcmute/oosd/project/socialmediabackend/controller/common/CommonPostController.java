@@ -90,7 +90,7 @@ public class CommonPostController {
     public ResponseBaseAbstract createPost(
             @RequestBody @Valid CreatePostRequest request,
             @AuthenticationPrincipal User user
-            ) {
+    ) {
         request.setAuthorId(user.getId());
         ResponseBaseAbstract createPostResponse = this.postService.createPost(request);
         return createPostResponse;
@@ -136,7 +136,7 @@ public class CommonPostController {
     )
     {
         CreateReactionRequest request = new CreateReactionRequest(ReactionType.LIKE,user.getId(),postId);
-        SuccessResponse likePostReponse = this.postService.toogleLikePost(request);
+        ResponseBaseAbstract likePostReponse = this.postService.toogleLikePost(request);
         return likePostReponse;
     }
 }
