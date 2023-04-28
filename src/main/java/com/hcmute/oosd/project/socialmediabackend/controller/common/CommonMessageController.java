@@ -31,7 +31,7 @@ public class CommonMessageController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchMessage(
             @RequestParam Map<String, String> queries) {
-        ListMessageResponse listMessageResponse = this.messageService.searchMessages(queries);
+        ResponseBaseAbstract listMessageResponse = this.messageService.searchMessages(queries);
         return listMessageResponse;
     }
 
@@ -39,7 +39,7 @@ public class CommonMessageController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getMessage(
             @PathVariable Integer id) {
-        GetMessageResponse getMessageResponse = this.messageService.getMessageById(id);
+        ResponseBaseAbstract getMessageResponse = this.messageService.getMessageById(id);
         return getMessageResponse;
     }
 
@@ -47,7 +47,7 @@ public class CommonMessageController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBaseAbstract createMessage(
             @RequestBody @Valid CreateMessageRequest request) {
-        SuccessResponse createMessageResponse = this.messageService.createMessage(request);
+        ResponseBaseAbstract createMessageResponse = this.messageService.createMessage(request);
         return createMessageResponse;
     }
 
@@ -57,7 +57,7 @@ public class CommonMessageController {
             @PathVariable Integer id,
             @RequestBody @Valid UpdateMessageRequest request) {
         request.setMessageId(id);
-        SuccessResponse updateMessageResponse = this.messageService.updateMessage(request);
+        ResponseBaseAbstract updateMessageResponse = this.messageService.updateMessage(request);
         return updateMessageResponse;
     }
 
@@ -65,7 +65,7 @@ public class CommonMessageController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract deleteMessage(
             @PathVariable Integer id) {
-        SuccessResponse updateMessageResponse = this.messageService.deleteMessage(id);
+        ResponseBaseAbstract updateMessageResponse = this.messageService.deleteMessage(id);
         return updateMessageResponse;
     }
 
@@ -73,7 +73,7 @@ public class CommonMessageController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getMessagesFromUser(
             @PathVariable Integer usera, @PathVariable Integer userb) {
-        ListMessageResponse listMessageResponse = this.messageService.getMessageFromOneToOne(usera, userb);
+        ResponseBaseAbstract listMessageResponse = this.messageService.getMessageFromOneToOne(usera, userb);
         return listMessageResponse;
 
     }
@@ -92,7 +92,7 @@ public class CommonMessageController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getAllUserHaveBeenChat(
             @PathVariable Integer userId) {
-        ListUserResponse listUserResponse = this.messageService.getAllUserHaveBeenChat(userId);
+        ResponseBaseAbstract listUserResponse = this.messageService.getAllUserHaveBeenChat(userId);
         return listUserResponse;
 
     }
