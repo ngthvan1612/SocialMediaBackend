@@ -6,7 +6,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggre
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.dto.announce.UpdateAnnounceRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.services.interfaces.AnnounceService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,7 +50,7 @@ public class CommonAnnounceController {
     public ResponseBaseAbstract createAnnounce(
             @RequestBody @Valid CreateAnnounceRequest request
     ) {
-        SuccessfulResponse createAnnounceResponse = this.announceService.createAnnounce(request);
+        SuccessResponse createAnnounceResponse = this.announceService.createAnnounce(request);
         return createAnnounceResponse;
     }
 
@@ -61,7 +61,7 @@ public class CommonAnnounceController {
             @RequestBody @Valid UpdateAnnounceRequest request
     ) {
         request.setAnnounceId(id);
-        SuccessfulResponse updateAnnounceResponse = this.announceService.updateAnnounce(request);
+        SuccessResponse updateAnnounceResponse = this.announceService.updateAnnounce(request);
         return updateAnnounceResponse;
     }
 
@@ -70,7 +70,7 @@ public class CommonAnnounceController {
     public ResponseBaseAbstract deleteAnnounce(
             @PathVariable Integer id
     ) {
-        SuccessfulResponse updateAnnounceResponse = this.announceService.deleteAnnounce(id);
+        SuccessResponse updateAnnounceResponse = this.announceService.deleteAnnounce(id);
         return updateAnnounceResponse;
     }
 }

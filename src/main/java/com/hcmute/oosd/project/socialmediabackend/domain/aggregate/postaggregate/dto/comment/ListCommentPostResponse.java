@@ -4,8 +4,8 @@ import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 
 import java.util.List;
 
-public class ListCommentResponse extends SuccessResponse {
-    public ListCommentResponse(List<CommentResponse> commentResponses) {
+public class ListCommentPostResponse extends SuccessResponse {
+    public ListCommentPostResponse(List<CommentPostResponse> commentResponses) {
         super();
         this.setData(commentResponses);
     }

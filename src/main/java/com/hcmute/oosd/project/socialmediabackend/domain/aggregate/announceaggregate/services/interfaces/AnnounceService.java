@@ -4,20 +4,20 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggre
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.dto.announce.GetAnnounceResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.dto.announce.ListAnnounceResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.announceaggregate.dto.announce.UpdateAnnounceRequest;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 
 import java.util.Map;
 
 public interface AnnounceService {
-    SuccessfulResponse createAnnounce(CreateAnnounceRequest request);
+    SuccessResponse createAnnounce(CreateAnnounceRequest request);
 
     GetAnnounceResponse getAnnounceById(Integer id);
 
     ListAnnounceResponse searchAnnounces(Map<String, String> queries);
 
-    SuccessfulResponse updateAnnounce(UpdateAnnounceRequest request);
+    SuccessResponse updateAnnounce(UpdateAnnounceRequest request);
 
-    SuccessfulResponse deleteAnnounce(Integer id);
+    SuccessResponse deleteAnnounce(Integer id);
 
     void onCreatedNewPost(Integer postId);
 }

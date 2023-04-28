@@ -4,20 +4,20 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.usertagfriendpost.GetUserTagFriendPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.usertagfriendpost.ListUserTagFriendPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.usertagfriendpost.UpdateUserTagFriendPostRequest;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 
 import java.util.Map;
 
 public interface UserTagFriendPostService {
-    SuccessfulResponse createUserTagFriendPost(CreateUserTagFriendPostRequest request);
+    SuccessResponse createUserTagFriendPost(CreateUserTagFriendPostRequest request);
 
     GetUserTagFriendPostResponse getUserTagFriendPostById(Integer id);
 
     ListUserTagFriendPostResponse searchUserTagFriendPosts(Map<String, String> queries);
 
-    SuccessfulResponse updateUserTagFriendPost(UpdateUserTagFriendPostRequest request);
+    SuccessResponse updateUserTagFriendPost(UpdateUserTagFriendPostRequest request);
 
-    SuccessfulResponse deleteUserTagFriendPost(Integer id);
+    SuccessResponse deleteUserTagFriendPost(Integer id);
 
 
 }

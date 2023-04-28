@@ -5,22 +5,20 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.Post;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.CommentRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.PostRepository;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.repositories.ReactionRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.CommentService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -28,6 +26,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private ReactionRepository reactionRepository;
 
     @Autowired
     private PostRepository postRepository;
@@ -49,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
     //TODO: loggggggggg
 
     @Override
-    public SuccessfulResponse createComment(CreateCommentRequest request) {
+    public SuccessResponse createComment(CreateCommentRequest request) {
         //Validate
 
 
@@ -79,6 +80,21 @@ public class CommentServiceImpl implements CommentService {
         if (optionalParent.isPresent())
             parent = optionalParent.get();
 
+        // Validate comment and post
+
+        if (post== null && parent== null){
+            throw ServiceExceptionFactory.badRequest()
+                    .addMessage("Yêu cầu comment phải thuộc post hoặc comment khác" );
+        }
+        if (post!= null && parent != null){
+            if(post.getId() != parent.getPost().getId()){
+                throw ServiceExceptionFactory.badRequest()
+                        .addMessage("Comment "+parent.getId()+" không thuộc post "+ post.getId() );
+            }
+        }
+        if (parent!= null && parent.getParent()!= null){
+                parent = parent.getParent();
+            }
 
         Comment comment = new Comment();
 
@@ -92,7 +108,7 @@ public class CommentServiceImpl implements CommentService {
 
         //Return
         CommentResponse commentDTO = new CommentResponse(comment);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(commentDTO);
         response.addMessage("Tạo Bình luận thành công");
@@ -129,7 +145,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public SuccessfulResponse updateComment(UpdateCommentRequest request) {
+    public SuccessResponse updateComment(UpdateCommentRequest request) {
         //Check record exists
         if (!this.commentRepository.existsById(request.getCommentId())) {
             throw ServiceExceptionFactory.notFound()
@@ -182,7 +198,7 @@ public class CommentServiceImpl implements CommentService {
 
         //Return
         CommentResponse commentDTO = new CommentResponse(comment);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
 
         response.setData(commentDTO);
         response.addMessage("Cập nhật Bình luận thành công");
@@ -193,21 +209,63 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public SuccessfulResponse deleteComment(Integer id) {
+    public SuccessResponse deleteComment(Integer id, Integer userId ) {
+
         if (!this.commentRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bình luận nào với id là " + id);
         }
 
         Comment comment = this.commentRepository.findById(id).get();
+        if (comment.getUser().getId() != userId &&  comment.getPost().getAuthor().getId() != userId ) {
+            throw ServiceExceptionFactory.forbidden()
+                    .addMessage("Không có quyền xoá Bình luận với id là " + id);
+        }
         comment.setDeletedAt(new Date());
 
         this.commentRepository.save(comment);
 
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Xóa Bình luận thành công");
 
         LOG.info("Deleted comment with id = " + comment.getId());
+        return response;
+    }
+
+    @Override
+    public SuccessResponse getByPost(Integer id) {
+        if (!this.postRepository.existsById(id)) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy Post nào với id là " + id);
+        }
+        List<Comment> comments = commentRepository.getByPost(id);
+        List<CommentPostResponse> commentPosts = new ArrayList<>();
+        for (int i = 0 ; i< comments.size(); i++){
+            commentPosts.add(new CommentPostResponse(comments.get(i).getId(), comments.get(i).getContent(),commentRepository.getByComment(comments.get(i).getId()).size()));
+        }
+
+        ListCommentPostResponse response = new ListCommentPostResponse(commentPosts);
+        response.addMessage("Lấy bình luận thuộc post thành công");
+
+        LOG.info("Get comments from post id = " + id);
+        return response;
+    }
+
+    @Override
+    public ListCommentPostResponse getByComment(Integer id) {
+        if (!this.commentRepository.existsById(id)) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy Bình luận nào với id là " + id);
+        }
+
+        List<CommentPostResponse> commentPosts = new ArrayList<>();
+        List<Comment> comments = commentRepository.getByComment(id);
+        for (int i = 0 ; i< comments.size(); i++){
+            commentPosts.add(new CommentPostResponse(comments.get(i).getId(), comments.get(i).getContent(),commentRepository.getByComment(comments.get(i).getId()).size()));
+        }
+        ListCommentPostResponse response = new ListCommentPostResponse(commentPosts);
+        response.addMessage("Lấy danh sách Bình luận từ Parent thành công");
+        LOG.info("Get comment with comment id = " + id);
         return response;
     }
 

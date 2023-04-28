@@ -15,6 +15,26 @@ public abstract class ResponseBaseAbstract {
     private Object data;
     private ArrayList<String> messages;
 
+    @Deprecated
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Deprecated
+    public void setStatusCode(HttpStatus statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    @Deprecated
+    public void setData(Object data) {
+        this.data = data;
+    }
+
+    @Deprecated
+    public void setMessages(ArrayList<String> messages) {
+        this.messages = messages;
+    }
+
     public ResponseBaseAbstract() {
         this.statusCode = HttpStatus.OK;
         this.status = "OK";
@@ -26,12 +46,13 @@ public abstract class ResponseBaseAbstract {
         this.statusCode = statusCode;
     }
 
+    @Deprecated
     public void addMessage(String message) {
         this.messages.add(message);
     }
 
     public static class ResponseBaseBuilder<C extends ResponseBaseAbstract, T extends ResponseBaseBuilder<C, T>> {
-        private final C instance;
+        protected final C instance;
 
         public ResponseBaseBuilder(C instance) {
             this.instance = instance;
@@ -44,6 +65,11 @@ public abstract class ResponseBaseAbstract {
 
         public T setStatusCode(HttpStatus httpStatus) {
             this.instance.setStatusCode(httpStatus);
+            return this.getThis();
+        }
+
+        public T setData(Object data) {
+            this.instance.setData(data);
             return this.getThis();
         }
 
@@ -62,7 +88,7 @@ public abstract class ResponseBaseAbstract {
             return (T)this;
         }
 
-        public ResponseBaseAbstract build() {
+        protected ResponseBaseAbstract build() {
             return this.instance;
         }
     }
