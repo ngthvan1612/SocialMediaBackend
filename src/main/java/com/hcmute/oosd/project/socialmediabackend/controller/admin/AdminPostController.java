@@ -17,7 +17,7 @@ import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
-//hoi lai, camelcase hay la a-a-a
+// hoi lai, camelcase hay la a-a-a
 @RequestMapping("api/admin/post")
 public class AdminPostController {
 
@@ -31,8 +31,7 @@ public class AdminPostController {
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchPost(
-            @RequestParam Map<String, String> queries
-    ) {
+            @RequestParam Map<String, String> queries) {
         ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
@@ -40,8 +39,7 @@ public class AdminPostController {
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getPost(
-            @PathVariable Integer id
-    ) {
+            @PathVariable Integer id) {
         ResponseBaseAbstract getPostResponse = this.postService.getPostById(id);
         return getPostResponse;
     }
@@ -50,8 +48,7 @@ public class AdminPostController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBaseAbstract createPost(
             @RequestBody CreatePostRequest request,
-            @AuthenticationPrincipal User user
-    ) {
+            @AuthenticationPrincipal User user) {
         request.setAuthorId(user.getId());
         ResponseBaseAbstract createPostResponse = this.postService.createPost(request);
         return createPostResponse;
@@ -62,8 +59,7 @@ public class AdminPostController {
     public ResponseBaseAbstract updatePost(
             @PathVariable Integer id,
             @RequestBody UpdatePostRequest request,
-            @AuthenticationPrincipal User user
-    ) {
+            @AuthenticationPrincipal User user) {
         request.setAuthorId(user.getId());
         request.setPostId(id);
         ResponseBaseAbstract updatePostResponse = this.postService.updatePost(request);
@@ -73,8 +69,7 @@ public class AdminPostController {
     @DeleteMapping("{id}/delete")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract deletePost(
-            @PathVariable Integer id
-    ) {
+            @PathVariable Integer id) {
         ResponseBaseAbstract updatePostResponse = this.postService.deletePost(id);
         return updatePostResponse;
     }

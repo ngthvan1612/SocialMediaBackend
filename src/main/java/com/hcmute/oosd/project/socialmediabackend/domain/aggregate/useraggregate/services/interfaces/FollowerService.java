@@ -8,15 +8,15 @@ import java.util.Map;
 public interface FollowerService {
     ResponseBaseAbstract createFollower(CreateFollowerRequest request);
 
-    GetFollowerResponse getFollowerById(Integer id);
+    ResponseBaseAbstract getFollowerById(Integer id);
 
-    ListFollowerResponse searchFollowers(Map<String, String> queries);
+    ResponseBaseAbstract searchFollowers(Map<String, String> queries);
 
     ResponseBaseAbstract updateFollower(UpdateFollowerRequest request);
 
     ResponseBaseAbstract deleteFollower(Integer id);
 
-    GetFollowerResponse getFollowerByUserIdAndFollowerId(ToggleFollowerRequest request);
+    ResponseBaseAbstract getFollowerByUserIdAndFollowerId(ToggleFollowerRequest request);
 
     ResponseBaseAbstract getListPeoplesFollowMe(Integer userid);
 

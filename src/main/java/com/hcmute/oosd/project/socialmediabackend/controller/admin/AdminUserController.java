@@ -32,7 +32,7 @@ public class AdminUserController {
     public ResponseBaseAbstract searchUser(
             @AuthenticationPrincipal User loggingInUser,
             @RequestParam Map<String, String> queries) {
-        ListUserResponse listUserResponse = this.userService.searchUsers(queries, loggingInUser);
+        ResponseBaseAbstract listUserResponse = this.userService.searchUsers(queries, loggingInUser);
         return listUserResponse;
     }
 
@@ -41,7 +41,7 @@ public class AdminUserController {
     public ResponseBaseAbstract getUser(
             @AuthenticationPrincipal User loggingInUser,
             @PathVariable Integer id) {
-        GetUserResponse getUserResponse = this.userService.getUserById(id, loggingInUser);
+        ResponseBaseAbstract getUserResponse = this.userService.getUserById(id, loggingInUser);
         return getUserResponse;
     }
 
