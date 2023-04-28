@@ -16,8 +16,9 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,23 +56,15 @@ public class PostServiceImpl implements PostService {
 
     }
 
-    //TODO: Validate with annotation
-    //TODO: check fk before create & update
-    //TODO: update unique column for delete
-    //TODO: swagger
-    //TODO: authorize
-    //TODO: hash password
-    //TODO: loggggggggg
-
     @Override
-    public SuccessfulResponse createPost(CreatePostRequest request) {
-        //Validate
+    public ResponseBaseAbstract createPost(CreatePostRequest request) {
+        // Validate
         PostContentBase postContent = PostContentFactory.fromJson(request.getContent());
 
         assert postContent != null;
         postContent.validate(true);
 
-        //Check null
+        // Check null
 
         Optional<User> optionalAuthor = this.userRepository.findById(request.getAuthorId());
         User author = null;
@@ -102,65 +95,63 @@ public class PostServiceImpl implements PostService {
         post.setPrivacy(request.getPrivacy());
         post.setAuthor(author);
 
-        //Save to database
+        // Save to database
         this.postRepository.save(post);
         if (request.getTags() != null) {
             List<User> userList = userRepository.findAllById(request.getTags());
             this.userTagFriendPostRepository.saveAll(
-                    userList.stream().map(user -> new UserTagFriendPost(user, post)).toList()
-            );
+                    userList.stream().map(user -> new UserTagFriendPost(user, post)).toList());
         }
 
-        //Return
-        PostResponse postDTO = new PostResponse(post);
-        SuccessfulResponse response = new SuccessfulResponse();
-
-        response.setData(postDTO);
-        response.addMessage("Tạo Bài đăng thành công");
-
+        // Return
         LOG.info("Created post with id = " + post.getId());
 
+        // Announce
         announceService.onCreatedNewPost(post.getId());
-        return response;
+
+        return SuccessResponse.builder()
+                .addMessage("Tạo bài đăng thành công")
+                .setData(new PostResponse(post))
+                .returnCreated();
     }
 
     @Override
-    public GetPostResponse getPostById(Integer id) {
+    public ResponseBaseAbstract getPostById(Integer id) {
         if (!this.postRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bài đăng nào với id là " + id);
         }
 
         Post post = this.postRepository.findById(id).get();
-        PostResponse postDTO = new PostResponse(post);
-        GetPostResponse response = new GetPostResponse(postDTO);
 
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(new PostResponse(post))
+                .returnGetOK();
     }
 
     @Override
-    public ListPostResponse searchPosts(Map<String, String> queries) {
+    public ResponseBaseAbstract searchPosts(Map<String, String> queries) {
         List<PostResponse> listPostResponses = this.postRepository.searchPost(queries)
                 .stream().map(post -> new PostResponse(post)).toList();
 
         ListPostResponse response = new ListPostResponse(listPostResponses);
-        response.addMessage("Lấy dữ liệu thành công");
 
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(response)
+                .returnGetOK();
     }
 
-
     @Override
-    public SuccessfulResponse updatePost(UpdatePostRequest request) {
-        //Check record exists
+    public ResponseBaseAbstract updatePost(UpdatePostRequest request) {
+        // Check record exists
         if (!this.postRepository.existsById(request.getPostId())) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bài đăng nào với id là " + request.getPostId());
         }
 
-        //Read data from request
+        // Read data from request
         Post post = this.postRepository.findById(request.getPostId()).get();
 
         Optional<User> optionalAuthor = this.userRepository.findById(request.getAuthorId());
@@ -173,34 +164,29 @@ public class PostServiceImpl implements PostService {
             author = optionalAuthor.get();
         }
 
-
         post.setContent(request.getContent());
         post.setPrivacy(request.getPrivacy());
         post.setAuthor(author);
 
-        //Validate unique
+        // Validate unique
 
-
-        //Update last changed time
+        // Update last changed time
         post.setLastUpdatedAt(new Date());
 
-        //Store
+        // Store
         this.postRepository.save(post);
 
-        //Return
-        PostResponse postDTO = new PostResponse(post);
-        SuccessfulResponse response = new SuccessfulResponse();
-
-        response.setData(postDTO);
-        response.addMessage("Cập nhật Bài đăng thành công");
-
+        // Return
         LOG.info("Updated post with id = " + post.getId());
-        return response;
+
+        return SuccessResponse.builder()
+                .addMessage("Cập nhật bài đăng thành công")
+                .setData(new PostResponse(post))
+                .returnUpdated();
     }
 
-
     @Override
-    public SuccessfulResponse deletePost(Integer id) {
+    public ResponseBaseAbstract deletePost(Integer id) {
         if (!this.postRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bài đăng nào với id là " + id);
@@ -213,15 +199,18 @@ public class PostServiceImpl implements PostService {
 
         reactionRepository.deleteByPostId(post.getId());
 
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Xóa Bài đăng thành công");
 
         LOG.info("Deleted post with id = " + post.getId());
-        return response;
+
+        return SuccessResponse.builder()
+                .addMessage("Xóa bài đăng thành công")
+                .returnDeleted();
     }
 
     @Override
-    public SuccessfulResponse toogleLikePost(CreateReactionRequest request) {
+    public SuccessResponse toogleLikePost(CreateReactionRequest request) {
         if (!this.postRepository.existsById(request.getPostId())) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bài đăng nào với id là " + request.getPostId());
@@ -230,23 +219,21 @@ public class PostServiceImpl implements PostService {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Ngừoi dùng nào với id là " + request.getUserId());
         }
-        Optional<Reaction> optionalReaction = reactionRepository.findByPostAndUser(request.getUserId(),request.getPostId());
+        Optional<Reaction> optionalReaction = reactionRepository.findByPostAndUser(request.getUserId(),
+                request.getPostId());
         Reaction reaction = null;
 
         if (!optionalReaction.isEmpty()) {
             reaction = optionalReaction.get();
             reactionRepository.delete(reaction);
-        }
-        else{
+        } else {
             reactionService.createReaction(request);
         }
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Like/Dislike post thành công");
 
         LOG.info("Toggle like post with id = " + request.getPostId());
         return response;
     }
 
-
 }
-  

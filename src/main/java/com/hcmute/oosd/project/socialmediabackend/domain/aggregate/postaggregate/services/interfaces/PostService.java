@@ -1,24 +1,23 @@
 package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces;
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.CreatePostRequest;
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.GetPostResponse;
-import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.ListPostResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.post.UpdatePostRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.reaction.CreateReactionRequest;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 
 import java.util.Map;
 
 public interface PostService {
-    SuccessfulResponse createPost(CreatePostRequest request);
+    ResponseBaseAbstract createPost(CreatePostRequest request);
 
-    GetPostResponse getPostById(Integer id);
+    ResponseBaseAbstract getPostById(Integer id);
 
-    ListPostResponse searchPosts(Map<String, String> queries);
+    ResponseBaseAbstract searchPosts(Map<String, String> queries);
 
-    SuccessfulResponse updatePost(UpdatePostRequest request);
+    ResponseBaseAbstract updatePost(UpdatePostRequest request);
 
-    SuccessfulResponse deletePost(Integer id);
-    SuccessfulResponse toogleLikePost(CreateReactionRequest request);
+    ResponseBaseAbstract toogleLikePost(CreateReactionRequest request);
+
+    ResponseBaseAbstract deletePost(Integer id);
 
 }

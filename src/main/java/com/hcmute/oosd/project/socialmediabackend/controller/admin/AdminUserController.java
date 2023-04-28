@@ -4,7 +4,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.UserService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -52,7 +52,7 @@ public class AdminUserController {
     public ResponseBaseAbstract createUser(
             @RequestBody CreateUserRequest request
     ) {
-        SuccessfulResponse createUserResponse = this.userService.createUser(request);
+        SuccessResponse createUserResponse = this.userService.createUser(request);
         return createUserResponse;
     }
 
@@ -68,7 +68,7 @@ public class AdminUserController {
         request.setAvatarBufferByteArray(avatarFile.getBytes());
         request.setUploadFileName(avatarFile.getOriginalFilename());
 
-        SuccessfulResponse updateUserAvatarResponse = this.userService.updateAvatarById(request);
+        SuccessResponse updateUserAvatarResponse = this.userService.updateAvatarById(request);
         return updateUserAvatarResponse;
     }
 
@@ -79,7 +79,7 @@ public class AdminUserController {
             @RequestBody UpdateUserRequest request
     ) {
         request.setUserId(id);
-        SuccessfulResponse updateUserResponse = this.userService.updateUser(request);
+        SuccessResponse updateUserResponse = this.userService.updateUser(request);
         return updateUserResponse;
     }
 
@@ -88,7 +88,7 @@ public class AdminUserController {
     public ResponseBaseAbstract deleteUser(
             @PathVariable Integer id
     ) {
-        SuccessfulResponse updateUserResponse = this.userService.deleteUser(id);
+        SuccessResponse updateUserResponse = this.userService.deleteUser(id);
         return updateUserResponse;
     }
 }

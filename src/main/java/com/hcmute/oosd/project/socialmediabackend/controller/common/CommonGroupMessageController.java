@@ -6,7 +6,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.groupmessage.UpdateGroupMessageRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.GroupMessageService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,7 +50,7 @@ public class CommonGroupMessageController {
     public ResponseBaseAbstract createGroupMessage(
             @RequestBody @Valid CreateGroupMessageRequest request
     ) {
-        SuccessfulResponse createGroupMessageResponse = this.groupMessageService.createGroupMessage(request);
+        SuccessResponse createGroupMessageResponse = this.groupMessageService.createGroupMessage(request);
         return createGroupMessageResponse;
     }
 
@@ -61,7 +61,7 @@ public class CommonGroupMessageController {
             @RequestBody @Valid UpdateGroupMessageRequest request
     ) {
         request.setGroupMessageId(id);
-        SuccessfulResponse updateGroupMessageResponse = this.groupMessageService.updateGroupMessage(request);
+        SuccessResponse updateGroupMessageResponse = this.groupMessageService.updateGroupMessage(request);
         return updateGroupMessageResponse;
     }
 
@@ -70,7 +70,7 @@ public class CommonGroupMessageController {
     public ResponseBaseAbstract deleteGroupMessage(
             @PathVariable Integer id
     ) {
-        SuccessfulResponse updateGroupMessageResponse = this.groupMessageService.deleteGroupMessage(id);
+        SuccessResponse updateGroupMessageResponse = this.groupMessageService.deleteGroupMessage(id);
         return updateGroupMessageResponse;
     }
 }

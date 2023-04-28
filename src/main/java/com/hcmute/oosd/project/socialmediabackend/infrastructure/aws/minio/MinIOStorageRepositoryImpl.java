@@ -57,7 +57,7 @@ public class MinIOStorageRepositoryImpl implements StorageRepository {
             return null;
         }
 
-        return this.minIOConfigurationModel.getEndPoint() + "/" + this.minIOConfigurationModel.getDefaultBucket() + "/" + imageFullPath;
+        return "/" + this.minIOConfigurationModel.getDefaultBucket() + "/" + imageFullPath;
     }
 
     @Override
@@ -79,6 +79,6 @@ public class MinIOStorageRepositoryImpl implements StorageRepository {
             return null;
         }
 
-        return this.minIOConfigurationModel.getEndPoint() + "/" + this.minIOConfigurationModel.getDefaultBucket() + "/" + imageFullPath;
+        return "/" + this.minIOConfigurationModel.getDefaultBucket() + "/" + imageFullPath;
     }
 }

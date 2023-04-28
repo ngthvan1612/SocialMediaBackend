@@ -4,20 +4,20 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.usergroupmessage.GetUserGroupMessageResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.usergroupmessage.ListUserGroupMessageResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.usergroupmessage.UpdateUserGroupMessageRequest;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessfulResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 
 import java.util.Map;
 
 public interface UserGroupMessageService {
-    SuccessfulResponse createUserGroupMessage(CreateUserGroupMessageRequest request);
+    SuccessResponse createUserGroupMessage(CreateUserGroupMessageRequest request);
 
     GetUserGroupMessageResponse getUserGroupMessageById(Integer id);
 
     ListUserGroupMessageResponse searchUserGroupMessages(Map<String, String> queries);
 
-    SuccessfulResponse updateUserGroupMessage(UpdateUserGroupMessageRequest request);
+    SuccessResponse updateUserGroupMessage(UpdateUserGroupMessageRequest request);
 
-    SuccessfulResponse deleteUserGroupMessage(Integer id);
+    SuccessResponse deleteUserGroupMessage(Integer id);
 
 
 }
