@@ -15,6 +15,7 @@ public class ChatMessageOneToOne {
     private String randomHash;
 
     private Date createdAt;
+    private boolean isRead;
 
     public ChatMessageOneToOne() {
 
@@ -26,5 +27,6 @@ public class ChatMessageOneToOne {
         this.message = message.getContent();
         this.createdAt = message.getCreatedAt();
         this.type = ChatMessageOneToOneType.MESSAGE;
+        this.isRead = message.getIsRead();
     }
 }
