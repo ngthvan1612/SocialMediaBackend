@@ -50,7 +50,7 @@ public class CommonGroupMessageController {
     public ResponseBaseAbstract createGroupMessage(
             @RequestBody @Valid CreateGroupMessageRequest request
     ) {
-        ResponseBaseAbstract createGroupMessageResponse = this.groupMessageService.createGroupMessage(request);
+        SuccessResponse createGroupMessageResponse = this.groupMessageService.createGroupMessage(request);
         return createGroupMessageResponse;
     }
 
@@ -61,7 +61,7 @@ public class CommonGroupMessageController {
             @RequestBody @Valid UpdateGroupMessageRequest request
     ) {
         request.setGroupMessageId(id);
-        ResponseBaseAbstract updateGroupMessageResponse = this.groupMessageService.updateGroupMessage(request);
+        SuccessResponse updateGroupMessageResponse = this.groupMessageService.updateGroupMessage(request);
         return updateGroupMessageResponse;
     }
 
@@ -70,7 +70,7 @@ public class CommonGroupMessageController {
     public ResponseBaseAbstract deleteGroupMessage(
             @PathVariable Integer id
     ) {
-        ResponseBaseAbstract updateGroupMessageResponse = this.groupMessageService.deleteGroupMessage(id);
+        SuccessResponse updateGroupMessageResponse = this.groupMessageService.deleteGroupMessage(id);
         return updateGroupMessageResponse;
     }
 }

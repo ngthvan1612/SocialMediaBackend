@@ -5,22 +5,22 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.groupmessage.ListGroupMessageResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.groupmessage.UpdateGroupMessageRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToGroup;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 
 import java.util.Map;
 
 public interface GroupMessageService {
-    ResponseBaseAbstract createGroupMessage(CreateGroupMessageRequest request);
+    SuccessResponse createGroupMessage(CreateGroupMessageRequest request);
 
     GetGroupMessageResponse getGroupMessageById(Integer id);
 
     ListGroupMessageResponse searchGroupMessages(Map<String, String> queries);
 
-    ResponseBaseAbstract updateGroupMessage(UpdateGroupMessageRequest request);
+    SuccessResponse updateGroupMessage(UpdateGroupMessageRequest request);
 
 //    SuccessfulResponse addUserToGroup(Integer groupId, Integer userId);
-    ResponseBaseAbstract groupstoreMessage(ChatMessageOneToGroup message);
-    ResponseBaseAbstract deleteGroupMessage(Integer id);
+    SuccessResponse groupstoreMessage(ChatMessageOneToGroup message);
+    SuccessResponse deleteGroupMessage(Integer id);
 
 
 }

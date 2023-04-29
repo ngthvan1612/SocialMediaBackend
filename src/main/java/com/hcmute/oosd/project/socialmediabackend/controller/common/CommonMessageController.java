@@ -47,7 +47,7 @@ public class CommonMessageController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBaseAbstract createMessage(
             @RequestBody @Valid CreateMessageRequest request) {
-        ResponseBaseAbstract createMessageResponse = this.messageService.createMessage(request);
+        SuccessResponse createMessageResponse = this.messageService.createMessage(request);
         return createMessageResponse;
     }
 
@@ -57,7 +57,7 @@ public class CommonMessageController {
             @PathVariable Integer id,
             @RequestBody @Valid UpdateMessageRequest request) {
         request.setMessageId(id);
-        ResponseBaseAbstract updateMessageResponse = this.messageService.updateMessage(request);
+        SuccessResponse updateMessageResponse = this.messageService.updateMessage(request);
         return updateMessageResponse;
     }
 
@@ -65,7 +65,7 @@ public class CommonMessageController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract deleteMessage(
             @PathVariable Integer id) {
-        ResponseBaseAbstract updateMessageResponse = this.messageService.deleteMessage(id);
+        SuccessResponse updateMessageResponse = this.messageService.deleteMessage(id);
         return updateMessageResponse;
     }
 
