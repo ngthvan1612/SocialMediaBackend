@@ -339,4 +339,9 @@ public class UserServiceImpl implements UserService {
                 .returnUpdated();
     }
 
+    @Override
+    public ResponseBaseAbstract getSuggestionsForMe(User loggingInUser) {
+        return null;
+    }
+
 }

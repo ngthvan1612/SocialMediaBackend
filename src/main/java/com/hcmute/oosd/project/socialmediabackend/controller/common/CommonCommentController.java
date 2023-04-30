@@ -33,7 +33,7 @@ public class CommonCommentController {
         @ResponseStatus(HttpStatus.OK)
         public ResponseBaseAbstract searchComment(
                         @RequestParam Map<String, String> queries) {
-                ListCommentResponse listCommentResponse = this.commentService.searchComments(queries);
+                ResponseBaseAbstract listCommentResponse = this.commentService.searchComments(queries);
                 return listCommentResponse;
         }
 
@@ -41,7 +41,7 @@ public class CommonCommentController {
         @ResponseStatus(HttpStatus.OK)
         public ResponseBaseAbstract getComment(
                         @PathVariable Integer id) {
-                GetCommentResponse getCommentResponse = this.commentService.getCommentById(id);
+                ResponseBaseAbstract getCommentResponse = this.commentService.getCommentById(id);
                 return getCommentResponse;
         }
 
@@ -49,7 +49,7 @@ public class CommonCommentController {
         @ResponseStatus(HttpStatus.CREATED)
         public ResponseBaseAbstract createComment(
                         @RequestBody @Valid CreateCommentRequest request) {
-                SuccessResponse createCommentResponse = this.commentService.createComment(request);
+                ResponseBaseAbstract createCommentResponse = this.commentService.createComment(request);
                 return createCommentResponse;
         }
 
@@ -59,7 +59,7 @@ public class CommonCommentController {
                         @PathVariable Integer id,
                         @RequestBody @Valid UpdateCommentRequest request) {
                 request.setCommentId(id);
-                SuccessResponse updateCommentResponse = this.commentService.updateComment(request);
+                ResponseBaseAbstract updateCommentResponse = this.commentService.updateComment(request);
                 return updateCommentResponse;
         }
 
@@ -68,7 +68,7 @@ public class CommonCommentController {
         public ResponseBaseAbstract deleteComment(
                         @AuthenticationPrincipal User user,
                         @PathVariable Integer id) {
-                SuccessResponse updateCommentResponse = this.commentService.deleteComment(id, user.getId());
+                ResponseBaseAbstract updateCommentResponse = this.commentService.deleteComment(id, user.getId());
                 return updateCommentResponse;
         }
 
@@ -76,7 +76,7 @@ public class CommonCommentController {
         @ResponseStatus(HttpStatus.OK)
         public ResponseBaseAbstract getChildComment(
                         @PathVariable Integer id) {
-                SuccessResponse getChildComment = this.commentService.getByComment(id);
+                ResponseBaseAbstract getChildComment = this.commentService.getByComment(id);
                 return getChildComment;
         }
 

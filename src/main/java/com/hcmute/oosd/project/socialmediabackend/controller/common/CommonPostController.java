@@ -117,7 +117,7 @@ public class CommonPostController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getComments(
             @PathVariable Integer id) {
-        SuccessResponse getCommentsResponse = commentService.getByPost(id);
+        ResponseBaseAbstract getCommentsResponse = commentService.getByPost(id);
         return getCommentsResponse;
     }
 
@@ -130,4 +130,5 @@ public class CommonPostController {
         ResponseBaseAbstract likePostReponse = this.postService.toogleLikePost(request);
         return likePostReponse;
     }
+
 }

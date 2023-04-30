@@ -24,5 +24,6 @@ public interface UserService {
     ResponseBaseAbstract authenticate(LoginRequest request);
 
     ResponseBaseAbstract registerUser(RegisterUserRequest registerUserRequest);
+    ResponseBaseAbstract getSuggestionsForMe(User loggingInUser);
 
 }

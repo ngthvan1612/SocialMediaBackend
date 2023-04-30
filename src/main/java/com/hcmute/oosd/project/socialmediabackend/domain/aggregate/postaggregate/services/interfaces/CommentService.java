@@ -2,6 +2,7 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregat
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.comment.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.entities.Comment;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 
 import java.util.List;
@@ -16,10 +17,10 @@ public interface CommentService {
 
     ResponseBaseAbstract updateComment(UpdateCommentRequest request);
 
-    SuccessResponse deleteComment(Integer id, Integer userId);
+    ResponseBaseAbstract deleteComment(Integer id, Integer userId);
 
-    SuccessResponse getByPost(Integer id);
+    ResponseBaseAbstract getByPost(Integer id);
 
-    SuccessResponse getByComment(Integer id);
+    ResponseBaseAbstract getByComment(Integer id);
 
 }
