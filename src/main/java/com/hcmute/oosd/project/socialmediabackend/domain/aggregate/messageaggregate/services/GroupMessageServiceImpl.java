@@ -3,6 +3,7 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggre
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.groupmessage.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.GroupMessage;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.Message;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.UserGroupMessage;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToGroup;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.GroupMessageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.MessageRepository;
@@ -177,7 +178,7 @@ public class GroupMessageServiceImpl implements GroupMessageService {
     }
     @Transactional
     @Override
-    public SuccessfulResponse CreateGroup(String groupName, List<Integer> memberIds)
+    public SuccessResponse CreateGroup(String groupName, List<Integer> memberIds)
     {
         if (memberIds.size() < 3) {
             throw new RuntimeException("Nhóm phải có ít nhất 3 thành viên");
@@ -203,14 +204,14 @@ public class GroupMessageServiceImpl implements GroupMessageService {
         }
         // Lưu danh sách UserGroupMessage vào cơ sở dữ liệu
         userGroupMessageRepository.saveAll(userGroupMessages);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Tạo nhóm thành công ");
         response.setData(groupMessage);
         return response;
 
     }
     @Override
-    public  SuccessfulResponse AddUserToGroup(Integer groupId, List<Integer> memberIds)
+    public  SuccessResponse AddUserToGroup(Integer groupId, List<Integer> memberIds)
     {
         Optional<GroupMessage> optionalGroupMessage = groupMessageRepository.findById(groupId);
         List<User> members = userRepository.findAllById(memberIds);
@@ -223,7 +224,7 @@ public class GroupMessageServiceImpl implements GroupMessageService {
             userGroupMessages.add(userGroupMessage);
             }
         userGroupMessageRepository.saveAll(userGroupMessages);
-        SuccessfulResponse response = new SuccessfulResponse();
+        SuccessResponse response = new SuccessResponse();
         response.addMessage("Thêm thành viên vào nhóm thành công");
         response.setData(groupMessage);
         return response;

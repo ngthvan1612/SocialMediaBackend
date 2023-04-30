@@ -20,10 +20,10 @@ public interface GroupMessageService {
 
     SuccessResponse updateGroupMessage(UpdateGroupMessageRequest request);
 
-    SuccessfulResponse CreateGroup(String groupName, List<Integer> memberIds);
-    SuccessfulResponse AddUserToGroup(Integer groupId, List<Integer> memberIds);
-    SuccessfulResponse groupstoreMessage(ChatMessageOneToGroup message);
-    SuccessfulResponse deleteGroupMessage(Integer id);
+    SuccessResponse CreateGroup(String groupName, List<Integer> memberIds);
+    SuccessResponse AddUserToGroup(Integer groupId, List<Integer> memberIds);
+    SuccessResponse groupstoreMessage(ChatMessageOneToGroup message);
+    SuccessResponse deleteGroupMessage(Integer id);
 
 
 }
