@@ -30,6 +30,12 @@ public class PostResponse {
 
     private String avatar;
 
+    private Integer totalReact;
+
+    private Boolean isReacted;
+
+    private Integer totalComment;
+
 
     public PostResponse(Post post) {
 
@@ -44,5 +50,22 @@ public class PostResponse {
             this.username = post.getAuthor().getUsername();
             this.avatar = post.getAuthor().getAvatar();
         }
+    }
+    public PostResponse(Post post, AdditionalData4Post data) {
+
+        this.id = post.getId();
+        this.createdAt = post.getCreatedAt();
+        this.lastUpdatedAt = post.getLastUpdatedAt();
+        this.deletedAt = post.getDeletedAt();
+        this.content = post.getContent();
+        this.privacy = post.getPrivacy();
+        if (post.getAuthor() != null) {
+            this.authorId = post.getAuthor().getId();
+            this.username = post.getAuthor().getUsername();
+            this.avatar = post.getAuthor().getAvatar();
+        }
+        this.totalReact = data.getTotalReact();
+        this.isReacted = data.getIsReacted();
+        this.totalComment = data.getTotalComment();
     }
 }
