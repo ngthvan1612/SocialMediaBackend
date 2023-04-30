@@ -58,13 +58,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ResponseBaseAbstract createPost(CreatePostRequest request) {
-        //Validate
+        // Validate
         PostContentBase postContent = PostContentFactory.fromJson(request.getContent());
 
         assert postContent != null;
         postContent.validate(true);
 
-        //Check null
+        // Check null
 
         Optional<User> optionalAuthor = this.userRepository.findById(request.getAuthorId());
         User author = null;
@@ -95,19 +95,18 @@ public class PostServiceImpl implements PostService {
         post.setPrivacy(request.getPrivacy());
         post.setAuthor(author);
 
-        //Save to database
+        // Save to database
         this.postRepository.save(post);
         if (request.getTags() != null) {
             List<User> userList = userRepository.findAllById(request.getTags());
             this.userTagFriendPostRepository.saveAll(
-                    userList.stream().map(user -> new UserTagFriendPost(user, post)).toList()
-            );
+                    userList.stream().map(user -> new UserTagFriendPost(user, post)).toList());
         }
 
-        //Return
+        // Return
         LOG.info("Created post with id = " + post.getId());
 
-        //Announce
+        // Announce
         announceService.onCreatedNewPost(post.getId());
 
         return SuccessResponse.builder()
@@ -144,16 +143,15 @@ public class PostServiceImpl implements PostService {
                 .returnGetOK();
     }
 
-
     @Override
     public ResponseBaseAbstract updatePost(UpdatePostRequest request) {
-        //Check record exists
+        // Check record exists
         if (!this.postRepository.existsById(request.getPostId())) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bài đăng nào với id là " + request.getPostId());
         }
 
-        //Read data from request
+        // Read data from request
         Post post = this.postRepository.findById(request.getPostId()).get();
 
         Optional<User> optionalAuthor = this.userRepository.findById(request.getAuthorId());
@@ -166,25 +164,19 @@ public class PostServiceImpl implements PostService {
             author = optionalAuthor.get();
         }
 
-
         post.setContent(request.getContent());
         post.setPrivacy(request.getPrivacy());
         post.setAuthor(author);
 
-        //Validate unique
+        // Validate unique
 
-        //Update last changed time
+        // Update last changed time
         post.setLastUpdatedAt(new Date());
 
-        //Store
+        // Store
         this.postRepository.save(post);
-        if (request.getTags() != null) {
-            List<User> userList = userRepository.findAllById(request.getTags());
-            this.userTagFriendPostRepository.saveAll(
-                    userList.stream().map(user -> new UserTagFriendPost(user, post)).toList()
-            );
-        }
-        //Return
+
+        // Return
         LOG.info("Updated post with id = " + post.getId());
 
         return SuccessResponse.builder()
@@ -192,7 +184,6 @@ public class PostServiceImpl implements PostService {
                 .setData(new PostResponse(post))
                 .returnUpdated();
     }
-
 
     @Override
     public ResponseBaseAbstract deletePost(Integer id) {
@@ -207,6 +198,9 @@ public class PostServiceImpl implements PostService {
         this.postRepository.save(post);
 
         reactionRepository.deleteByPostId(post.getId());
+
+        SuccessResponse response = new SuccessResponse();
+        response.addMessage("Xóa Bài đăng thành công");
 
         LOG.info("Deleted post with id = " + post.getId());
 
@@ -225,14 +219,14 @@ public class PostServiceImpl implements PostService {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Ngừoi dùng nào với id là " + request.getUserId());
         }
-        Optional<Reaction> optionalReaction = reactionRepository.findByPostAndUser(request.getUserId(),request.getPostId());
+        Optional<Reaction> optionalReaction = reactionRepository.findByPostAndUser(request.getUserId(),
+                request.getPostId());
         Reaction reaction = null;
 
         if (!optionalReaction.isEmpty()) {
             reaction = optionalReaction.get();
             reactionRepository.delete(reaction);
-        }
-        else{
+        } else {
             reactionService.createReaction(request);
         }
         SuccessResponse response = new SuccessResponse();
@@ -242,6 +236,4 @@ public class PostServiceImpl implements PostService {
         return response;
     }
 
-
 }
-  

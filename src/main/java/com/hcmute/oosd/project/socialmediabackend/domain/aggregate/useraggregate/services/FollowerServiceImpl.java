@@ -8,6 +8,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.FollowerService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -50,7 +51,7 @@ public class FollowerServiceImpl implements FollowerService {
     // TODO: loggggggggg
 
     @Override
-    public SuccessResponse createFollower(CreateFollowerRequest request) {
+    public ResponseBaseAbstract createFollower(CreateFollowerRequest request) {
         // Validate
 
         // Check null
@@ -85,17 +86,16 @@ public class FollowerServiceImpl implements FollowerService {
 
         // Return
         FollowerResponse followerDTO = new FollowerResponse(follower);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(followerDTO);
-        response.addMessage("Tạo Theo dõi thành công");
 
         LOG.info("Created follower with id = " + follower.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Tạo Theo dõi thành công")
+                .setData(followerDTO)
+                .returnUpdated();
     }
 
     @Override
-    public GetFollowerResponse getFollowerById(Integer id) {
+    public ResponseBaseAbstract getFollowerById(Integer id) {
         if (!this.followerRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Theo dõi nào với id là " + id);
@@ -103,26 +103,26 @@ public class FollowerServiceImpl implements FollowerService {
 
         Follower follower = this.followerRepository.findById(id).get();
         FollowerResponse followerDTO = new FollowerResponse(follower);
-        GetFollowerResponse response = new GetFollowerResponse(followerDTO);
 
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(followerDTO)
+                .returnUpdated();
     }
 
     @Override
-    public ListFollowerResponse searchFollowers(Map<String, String> queries) {
+    public ResponseBaseAbstract searchFollowers(Map<String, String> queries) {
         List<FollowerResponse> listFollowerResponses = this.followerRepository.searchFollower(queries)
                 .stream().map(follower -> new FollowerResponse(follower)).toList();
 
-        ListFollowerResponse response = new ListFollowerResponse(listFollowerResponses);
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(listFollowerResponses)
+                .returnUpdated();
     }
 
     @Override
-    public SuccessResponse updateFollower(UpdateFollowerRequest request) {
+    public ResponseBaseAbstract updateFollower(UpdateFollowerRequest request) {
         // Check record exists
         if (!this.followerRepository.existsById(request.getFollowerId())) {
             throw ServiceExceptionFactory.notFound()
@@ -165,17 +165,16 @@ public class FollowerServiceImpl implements FollowerService {
 
         // Return
         FollowerResponse followerDTO = new FollowerResponse(follower);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(followerDTO);
-        response.addMessage("Cập nhật Theo dõi thành công");
 
         LOG.info("Updated follower with id = " + follower.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Cập nhật Theo dõi thành công")
+                .setData(followerDTO)
+                .returnUpdated();
     }
 
     @Override
-    public SuccessResponse deleteFollower(Integer id) {
+    public ResponseBaseAbstract deleteFollower(Integer id) {
         if (!this.followerRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Theo dõi nào với id là " + id);
@@ -186,15 +185,14 @@ public class FollowerServiceImpl implements FollowerService {
 
         this.followerRepository.save(follower);
 
-        SuccessResponse response = new SuccessResponse();
-        response.addMessage("Xóa Theo dõi thành công");
-
         LOG.info("Deleted follower with id = " + follower.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Xóa Theo dõi thành công")
+                .returnUpdated();
     }
 
     @Override
-    public GetFollowerResponse getFollowerByUserIdAndFollowerId(ToggleFollowerRequest request) {
+    public ResponseBaseAbstract getFollowerByUserIdAndFollowerId(ToggleFollowerRequest request) {
         Integer userId = request.getUserId();
         Integer followerId = request.getFollowerId();
         if (userId == followerId) {
@@ -213,38 +211,42 @@ public class FollowerServiceImpl implements FollowerService {
             this.followerRepository.save(follower);
 
             FollowerResponse followerDTO = new FollowerResponse(follower);
-            GetFollowerResponse response = new GetFollowerResponse(followerDTO);
-            response.addMessage("Follow thành công");
-            return response;
+            return SuccessResponse.builder()
+                    .addMessage("Theo dõi thành công")
+                    .setData(followerDTO)
+                    .returnUpdated();
         } else {
             Follower follower = this.followerRepository.findByUseridAndFollowerId(userId, followerId).get();
             this.followerRepository.delete(follower);
 
             FollowerResponse followerDTO = new FollowerResponse(follower);
-            GetFollowerResponse response = new GetFollowerResponse(followerDTO);
-            response.addMessage("Hủy follow thành công");
 
-            return response;
+            return SuccessResponse.builder()
+                    .addMessage("Huỷ Theo dõi thành công")
+                    .setData(followerDTO)
+                    .returnUpdated();
         }
 
     }
 
     @Override
-    public SuccessResponse getListPeoplesFollowMe(Integer userid){
-        List<User> userList =  this.followerRepository.findListPeoplesFollowMe(userid);
-        SuccessResponse response = new SuccessResponse();
-        response.setData(userList);
+    public ResponseBaseAbstract getListPeoplesFollowMe(Integer userid) {
+        List<User> userList = this.followerRepository.findListPeoplesFollowMe(userid);
 
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Thành công")
+                .setData(userList)
+                .returnUpdated();
     }
 
     @Override
-    public SuccessResponse getListPeoplesFollowed(Integer followerId){
+    public ResponseBaseAbstract getListPeoplesFollowed(Integer followerId) {
         List<User> userList = this.followerRepository.getListPeoplesFollowed(followerId);
-        SuccessResponse response = new SuccessResponse();
-        response.setData(userList);
 
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Thành công")
+                .setData(userList)
+                .returnUpdated();
     }
 
 }

@@ -1,24 +1,24 @@
 package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces;
 
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.follower.*;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 
 import java.util.Map;
 
 public interface FollowerService {
-    SuccessResponse createFollower(CreateFollowerRequest request);
+    ResponseBaseAbstract createFollower(CreateFollowerRequest request);
 
-    GetFollowerResponse getFollowerById(Integer id);
+    ResponseBaseAbstract getFollowerById(Integer id);
 
-    ListFollowerResponse searchFollowers(Map<String, String> queries);
+    ResponseBaseAbstract searchFollowers(Map<String, String> queries);
 
-    SuccessResponse updateFollower(UpdateFollowerRequest request);
+    ResponseBaseAbstract updateFollower(UpdateFollowerRequest request);
 
-    SuccessResponse deleteFollower(Integer id);
+    ResponseBaseAbstract deleteFollower(Integer id);
 
-    GetFollowerResponse getFollowerByUserIdAndFollowerId(ToggleFollowerRequest request);
+    ResponseBaseAbstract getFollowerByUserIdAndFollowerId(ToggleFollowerRequest request);
 
-    SuccessResponse getListPeoplesFollowMe(Integer userid);
+    ResponseBaseAbstract getListPeoplesFollowMe(Integer userid);
 
-    SuccessResponse getListPeoplesFollowed(Integer userid);
+    ResponseBaseAbstract getListPeoplesFollowed(Integer userid);
 }

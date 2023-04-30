@@ -8,6 +8,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.UserService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import com.hcmute.oosd.project.socialmediabackend.jwt.JwtTokenProvider;
 import org.slf4j.Logger;
@@ -39,49 +40,35 @@ public class UserServiceImpl implements UserService {
     private FollowerRepository followerRepository;
 
     private void preparedFollowedForUserResponse(User loggingInUser, UserResponse toAccessUser) {
-        if (loggingInUser.getId() == toAccessUser.getId()) return;
-        if (!this.followerRepository.existsByUserIdAndFollowerId(loggingInUser.getId(),toAccessUser.getId()))
+        if (loggingInUser.getId() == toAccessUser.getId())
+            return;
+        if (!this.followerRepository.existsByUserIdAndFollowerId(loggingInUser.getId(), toAccessUser.getId()))
             toAccessUser.setFollowed(false);
         else
             toAccessUser.setFollowed(true);
     }
+
     public UserServiceImpl() {
 
     }
 
-    //TODO: Validate with annotation
-    //TODO: check fk before create & update
-    //TODO: update unique column for delete
-    //TODO: swagger
-    //TODO: authorize
-    //TODO: hash password
-    //TODO: loggggggggg
+    // TODO: Validate with annotation
+    // TODO: check fk before create & update
+    // TODO: update unique column for delete
+    // TODO: swagger
+    // TODO: authorize
+    // TODO: hash password
+    // TODO: loggggggggg
 
     @Override
-    public SuccessResponse getSuggestionsForMe(User loggingInUser) {
-        if (!this.userRepository.existsById(loggingInUser.getId())) {
-            throw ServiceExceptionFactory.notFound()
-                    .addMessage("Không tìm thấy người dùng nào với id là " + loggingInUser.getId());
-        }
-        List<User> listFollowedUser = this.followerRepository.getListPeoplesFollowed(loggingInUser.getId());
-        List<SuggestionForMe> listSuggestionForMes = this.userRepository.getSuggestionsForMe(loggingInUser.getId(),listFollowedUser)
-                .stream().map(user -> new SuggestionForMe(user)).toList();
-
-        SuccessResponse response = new SuccessResponse();
-        response.setData(listSuggestionForMes);
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
-    }
-    @Override
-    public SuccessResponse createUser(CreateUserRequest request) {
-        //Validate
+    public ResponseBaseAbstract createUser(CreateUserRequest request) {
+        // Validate
         if (this.userRepository.existsByUsername(request.getUsername())) {
             throw ServiceExceptionFactory.duplicate()
                     .addMessage("Đã tồn tại người dùng với username là " + request.getUsername());
         }
 
-        //Check null
+        // Check null
 
         User user = new User();
 
@@ -94,22 +81,21 @@ public class UserServiceImpl implements UserService {
         user.setGender(request.getGender());
         user.setRole(request.getRole());
 
-        //Save to database
+        // Save to database
         this.userRepository.save(user);
 
-        //Return
-        UserResponse userDTO = new UserResponse(user);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(userDTO);
-        response.addMessage("Tạo người dùng thành công");
+        // Return
 
         LOG.info("Created user with id = " + user.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Tạo người dùng thành công")
+                .setData(user)
+                .returnUpdated();
+
     }
 
     @Override
-    public GetUserResponse getUserById(Integer id, User loggingInUser) {
+    public ResponseBaseAbstract getUserById(Integer id, User loggindInUser) {
         if (!this.userRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy người dùng nào với id là " + id);
@@ -117,49 +103,53 @@ public class UserServiceImpl implements UserService {
 
         User user = this.userRepository.findById(id).get();
         UserResponse userDTO = new UserResponse(user);
-        preparedFollowedForUserResponse(loggingInUser, userDTO);
-        GetUserResponse response = new GetUserResponse(userDTO);
+        preparedFollowedForUserResponse(loggindInUser, userDTO);
 
-        response.addMessage("Lấy dữ liệu thành công");
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(userDTO)
+                .returnUpdated();
 
-        return response;
     }
 
     @Override
-    public ListUserResponse searchUsers(Map<String, String> queries, User loggingInUser) {
+    public ResponseBaseAbstract searchUsers(Map<String, String> queries, User loggingInUser) {
         List<UserResponse> listUserResponses = this.userRepository.searchUser(queries)
                 .stream().map(user -> new UserResponse(user)).toList();
 
         for (UserResponse userResponse : listUserResponses) {
-            preparedFollowedForUserResponse(loggingInUser,userResponse);
+            preparedFollowedForUserResponse(loggingInUser, userResponse);
         }
-        ListUserResponse response = new ListUserResponse(listUserResponses);
-        response.addMessage("Lấy dữ liệu thành công");
 
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(listUserResponses)
+                .returnUpdated();
     }
 
     @Override
-    public SearchUsersForPostResponse searchUsersForPost(String pattern, Integer limit) {
+    public ResponseBaseAbstract searchUsersForPost(String pattern, Integer limit) {
         if (limit == null)
             limit = 10;
 
         List<User> userList = this.userRepository.searchUsersForPost(pattern, limit);
         List<SearchUsersForPost> data = userList.stream().map(SearchUsersForPost::new).toList();
-        return new SearchUsersForPostResponse(data);
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(data)
+                .returnUpdated();
     }
 
     @Override
-    public SuccessResponse updateUser(UpdateUserRequest request) {
-        //Check record exists
+    public ResponseBaseAbstract updateUser(UpdateUserRequest request) {
+        // Check record exists
         if (!this.userRepository.existsById(request.getUserId())) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy người dùng nào với id là " + request.getUserId());
         }
 
-        //Read data from request
+        // Read data from request
         User user = this.userRepository.findById(request.getUserId()).get();
-
 
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -169,67 +159,62 @@ public class UserServiceImpl implements UserService {
         user.setGender(request.getGender());
         user.setRole(request.getRole());
 
-        //Validate unique
+        // Validate unique
 
         if (this.userRepository.existsByUsernameExceptId(request.getUsername(), request.getUserId())) {
             throw ServiceExceptionFactory.duplicate()
                     .addMessage("Đã tồn tại người dùng với tên người dùng là " + request.getUsername());
         }
 
-
-        //Update last changed time
+        // Update last changed time
         user.setLastUpdatedAt(new Date());
 
-        //Store
+        // Store
         this.userRepository.save(user);
 
-        //Return
+        // Return
         UserResponse userDTO = new UserResponse(user);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(userDTO);
-        response.addMessage("Cập nhật người dùng thành công");
 
         LOG.info("Updated user with id = " + user.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Cập nhật người dùng thành công")
+                .setData(userDTO)
+                .returnUpdated();
     }
 
     @Override
-    public SuccessResponse updateAvatarById(UpdateUserAvatarRequest request) {
+    public ResponseBaseAbstract updateAvatarById(UpdateUserAvatarRequest request) {
         if (!this.userRepository.existsById(request.getUserId())) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy người dùng nào có id = " + request.getUserId());
         }
 
-        //Save to MinIO
+        // Save to MinIO
         InputStream preparedStream = new ByteArrayInputStream(request.getAvatarBufferByteArray());
         String newMinIOUrl = this.storageRepository.savedUploadedAvatar(
                 request.getUploadFileName(),
                 preparedStream,
-                request.getAvatarBufferByteArray().length
-        );
+                request.getAvatarBufferByteArray().length);
 
         if (newMinIOUrl == null) {
             throw ServiceExceptionFactory.badRequest()
                     .addMessage("Tải lên lỗi");
         }
 
-        //Save to database
+        // Save to database
         User user = this.userRepository.findById(request.getUserId()).get();
         user.setAvatar(newMinIOUrl);
 
         this.userRepository.save(user);
 
-        SuccessResponse successResponse = new SuccessResponse(HttpStatus.OK);
-        successResponse.addMessage("Cập nhật ảnh đại diện thành công");
-
         LOG.info("Updated avatar of user with id = " + user.getId());
-        return successResponse;
+        return SuccessResponse.builder()
+                .addMessage("Cập nhật ảnh đại diện thành công")
+                .returnUpdated();
     }
 
-
     @Override
-    public SuccessResponse deleteUser(Integer id) {
+    public ResponseBaseAbstract deleteUser(Integer id) {
         if (!this.userRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy người dùng nào với id là " + id);
@@ -242,15 +227,14 @@ public class UserServiceImpl implements UserService {
 
         this.userRepository.save(user);
 
-        SuccessResponse response = new SuccessResponse();
-        response.addMessage("Xóa người dùng thành công");
-
         LOG.info("Deleted user with id = " + user.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Xóa người dùng thành công")
+                .returnUpdated();
     }
 
     @Override
-    public LoginResponse authenticate(LoginRequest request) {
+    public ResponseBaseAbstract authenticate(LoginRequest request) {
         User user = this.userRepository.getUserByUsername(request.getUsername());
 
         if (user == null) {
@@ -268,13 +252,14 @@ public class UserServiceImpl implements UserService {
         LOG.info("User " + request.getUsername() + " has just logged in, generated jwt token is " + accessToken);
         LoginResponse response = new LoginResponse(new UserResponse(user), accessToken);
 
-        response.addMessage("Đăng nhập thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Đăng nhập thành công")
+                .setData(response)
+                .returnUpdated();
     }
 
     @Override
-    public SuccessResponse registerUser(RegisterUserRequest registerUserRequest) {
+    public ResponseBaseAbstract registerUser(RegisterUserRequest registerUserRequest) {
         String username = registerUserRequest.getUsername();
         String password = registerUserRequest.getPassword();
         String displayName = registerUserRequest.getDisplayName();
@@ -309,17 +294,17 @@ public class UserServiceImpl implements UserService {
         }
 
         // TODO: fix hard Code
-        if (password.length() == 0 || password.length() >16) {
+        if (password.length() == 0 || password.length() > 16) {
             throw ServiceExceptionFactory.badRequest()
                     .addMessage("Mật khẩu có độ dài tối đa là 16");
         }
 
-        if (displayName == null || displayName.length() == 0){
+        if (displayName == null || displayName.length() == 0) {
             throw ServiceExceptionFactory.badRequest()
                     .addMessage("Họ và tên không được trống");
         }
 
-        if (email == null){
+        if (email == null) {
             throw ServiceExceptionFactory.badRequest()
                     .addMessage("Email không được trống");
         }
@@ -334,7 +319,7 @@ public class UserServiceImpl implements UserService {
                     .addMessage("Đã tồn tại người dùng với email là " + email);
         }
 
-        //Create entity
+        // Create entity
         User user = new User();
 
         user.setUsername(username);
@@ -343,17 +328,15 @@ public class UserServiceImpl implements UserService {
         user.setEmail(email);
         user.setRole(UserRole.REGULAR);
 
-        //Save to database
+        // Save to database
         this.userRepository.save(user);
 
-        //Return
-
-        SuccessResponse successResponse = new SuccessResponse(HttpStatus.OK);
-        successResponse.addMessage("Đăng ký thành công");
+        // Return
 
         LOG.info("Create user with id = " + user.getId());
-        return successResponse;
+        return SuccessResponse.builder()
+                .addMessage("Đăng ký thành công")
+                .returnUpdated();
     }
 
 }
-  

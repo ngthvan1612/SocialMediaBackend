@@ -4,7 +4,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.FollowerService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,7 @@ public class CommonFollowerController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchFollower(
             @RequestParam Map<String, String> queries) {
-        ListFollowerResponse listFollowerResponse = this.followerService.searchFollowers(queries);
+        ResponseBaseAbstract listFollowerResponse = this.followerService.searchFollowers(queries);
         return listFollowerResponse;
     }
 
@@ -38,7 +38,7 @@ public class CommonFollowerController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getFollower(
             @PathVariable Integer id) {
-        GetFollowerResponse getFollowerResponse = this.followerService.getFollowerById(id);
+        ResponseBaseAbstract getFollowerResponse = this.followerService.getFollowerById(id);
         return getFollowerResponse;
     }
 
@@ -48,25 +48,23 @@ public class CommonFollowerController {
             @AuthenticationPrincipal User user,
             @RequestBody @Valid ToggleFollowerRequest request) {
         request.setUserId(user.getId());
-        GetFollowerResponse getFollowerResponse = this.followerService.getFollowerByUserIdAndFollowerId(request);
+        ResponseBaseAbstract getFollowerResponse = this.followerService.getFollowerByUserIdAndFollowerId(request);
         return getFollowerResponse;
     }
 
     @GetMapping("{id}/followers")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseBaseAbstract listPeoplesFollowMe( //lấy danh sách những người follow mình
-        @PathVariable Integer id
-    ){
-        SuccessResponse successfulResponse = this.followerService.getListPeoplesFollowMe(id);
+    public ResponseBaseAbstract listPeoplesFollowMe( // lấy danh sách những người follow mình
+            @AuthenticationPrincipal User user) {
+        ResponseBaseAbstract successfulResponse = this.followerService.getListPeoplesFollowMe(user.getId());
         return successfulResponse;
     }
 
     @GetMapping("{id}/following")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseBaseAbstract listPeoplesFollowed( //lấy danh sách những người mình follow
-        @PathVariable Integer id
-    ){
-        SuccessResponse successfulResponse = this.followerService.getListPeoplesFollowed(id);
+    public ResponseBaseAbstract listPeoplesFollowed( // lấy danh sách những người mình follow
+            @AuthenticationPrincipal User user) {
+        ResponseBaseAbstract successfulResponse = this.followerService.getListPeoplesFollowed(user.getId());
         return successfulResponse;
     }
 

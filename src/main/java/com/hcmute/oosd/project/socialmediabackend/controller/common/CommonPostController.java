@@ -26,7 +26,7 @@ import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
-//hoi lai, camelcase hay la a-a-a
+// hoi lai, camelcase hay la a-a-a
 @RequestMapping("api/common/post")
 @Slf4j
 public class CommonPostController {
@@ -47,8 +47,7 @@ public class CommonPostController {
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchPost(
-            @RequestParam Map<String, String> queries
-    ) {
+            @RequestParam Map<String, String> queries) {
         ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
@@ -56,22 +55,22 @@ public class CommonPostController {
     @GetMapping("/me/list")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchMyPost(
-            @AuthenticationPrincipal User user
-    ) {
+            @AuthenticationPrincipal User user) {
         Map<String, String> queries = new HashMap<>();
         queries.put("author.id.equal", user.getId().toString());
         ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
+
     @GetMapping("/{userId}/list")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchUserPost(
-            @PathVariable Integer userId
-    ) {
+            @PathVariable Integer userId) {
         Map<String, String> queries = new HashMap<>();
         queries.put("author.id.equal", userId.toString());
         queries.put("privacy.equal", "PUBLIC");
-        //TODO: thêm một số criteria về tài khoản kiểm tra người xem và người được xem có thỏa các điều kiên không
+        // TODO: thêm một số criteria về tài khoản kiểm tra người xem và người được xem
+        // có thỏa các điều kiên không
         ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries);
         return listPostResponse;
     }
@@ -79,8 +78,7 @@ public class CommonPostController {
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getPost(
-            @PathVariable Integer id
-    ) {
+            @PathVariable Integer id) {
         ResponseBaseAbstract getPostResponse = this.postService.getPostById(id);
         return getPostResponse;
     }
@@ -89,8 +87,7 @@ public class CommonPostController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBaseAbstract createPost(
             @RequestBody @Valid CreatePostRequest request,
-            @AuthenticationPrincipal User user
-    ) {
+            @AuthenticationPrincipal User user) {
         request.setAuthorId(user.getId());
         ResponseBaseAbstract createPostResponse = this.postService.createPost(request);
         return createPostResponse;
@@ -101,20 +98,17 @@ public class CommonPostController {
     public ResponseBaseAbstract updatePost(
             @PathVariable Integer id,
             @RequestBody @Valid UpdatePostRequest request,
-            @AuthenticationPrincipal User user
-    ) {
+            @AuthenticationPrincipal User user) {
         request.setAuthorId(user.getId());
         request.setPostId(id);
         ResponseBaseAbstract updatePostResponse = this.postService.updatePost(request);
         return updatePostResponse;
     }
 
-
     @DeleteMapping("{id}/delete")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract deletePost(
-            @PathVariable Integer id
-    ) {
+            @PathVariable Integer id) {
         ResponseBaseAbstract updatePostResponse = this.postService.deletePost(id);
         return updatePostResponse;
     }
@@ -122,9 +116,8 @@ public class CommonPostController {
     @GetMapping("{id}/comments")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getComments(
-            @PathVariable Integer id
-    ) {
-        ResponseBaseAbstract getCommentsResponse = commentService.getByPost(id);
+            @PathVariable Integer id) {
+        SuccessResponse getCommentsResponse = commentService.getByPost(id);
         return getCommentsResponse;
     }
 
@@ -132,10 +125,8 @@ public class CommonPostController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract likePost(
             @AuthenticationPrincipal User user,
-            @PathVariable Integer postId
-    )
-    {
-        CreateReactionRequest request = new CreateReactionRequest(ReactionType.LIKE,user.getId(),postId);
+            @PathVariable Integer postId) {
+        CreateReactionRequest request = new CreateReactionRequest(ReactionType.LIKE, user.getId(), postId);
         ResponseBaseAbstract likePostReponse = this.postService.toogleLikePost(request);
         return likePostReponse;
     }
