@@ -1,5 +1,6 @@
 package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services;
 
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.groupmessage.GroupMessageResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.message.*;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.GroupMessage;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.Message;
@@ -12,6 +13,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
@@ -84,7 +86,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public SuccessResponse createMessage(CreateMessageRequest request) {
+    public ResponseBaseAbstract createMessage(CreateMessageRequest request) {
         // Validate
 
         // Check null
@@ -122,46 +124,42 @@ public class MessageServiceImpl implements MessageService {
         // Save to database
         this.messageRepository.save(message);
 
-        // Return
-        MessageResponse messageDTO = new MessageResponse(message);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(messageDTO);
-        response.addMessage("Tạo Tin nhắn thành công");
-
         LOG.info("Created message with id = " + message.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Tạo Tin nhắn thành công")
+                .setData(new MessageResponse(message))
+                .returnCreated();
     }
 
     @Override
-    public GetMessageResponse getMessageById(Integer id) {
+    public ResponseBaseAbstract getMessageById(Integer id) {
         if (!this.messageRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Tin nhắn nào với id là " + id);
         }
 
         Message message = this.messageRepository.findById(id).get();
-        MessageResponse messageDTO = new MessageResponse(message);
-        GetMessageResponse response = new GetMessageResponse(messageDTO);
-
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(new MessageResponse(message))
+                .returnGetOK();
     }
 
     @Override
-    public ListMessageResponse searchMessages(Map<String, String> queries) {
+    public ResponseBaseAbstract searchMessages(Map<String, String> queries) {
         List<MessageResponse> listMessageResponses = this.messageRepository.searchMessage(queries)
                 .stream().map(message -> new MessageResponse(message)).toList();
 
         ListMessageResponse response = new ListMessageResponse(listMessageResponses);
-        response.addMessage("Lấy dữ liệu thành công");
 
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(response)
+                .returnGetOK();
     }
 
     @Override
-    public SuccessResponse updateMessage(UpdateMessageRequest request) {
+    public ResponseBaseAbstract updateMessage(UpdateMessageRequest request) {
         // Check record exists
         if (!this.messageRepository.existsById(request.getMessageId())) {
             throw ServiceExceptionFactory.notFound()
@@ -209,18 +207,16 @@ public class MessageServiceImpl implements MessageService {
         this.messageRepository.save(message);
 
         // Return
-        MessageResponse messageDTO = new MessageResponse(message);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(messageDTO);
-        response.addMessage("Cập nhật Tin nhắn thành công");
 
         LOG.info("Updated message with id = " + message.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Cập nhật Tin nhắn thành công")
+                .setData(new MessageResponse(message))
+                .returnUpdated();
     }
 
     @Override
-    public SuccessResponse deleteMessage(Integer id) {
+    public ResponseBaseAbstract deleteMessage(Integer id) {
         if (!this.messageRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Tin nhắn nào với id là " + id);
@@ -231,11 +227,10 @@ public class MessageServiceImpl implements MessageService {
 
         this.messageRepository.save(message);
 
-        SuccessResponse response = new SuccessResponse();
-        response.addMessage("Xóa Tin nhắn thành công");
-
         LOG.info("Deleted message with id = " + message.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Xóa Tin nhắn thành công")
+                .returnDeleted();
     }
 
     @Override

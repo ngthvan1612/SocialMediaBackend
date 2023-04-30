@@ -13,6 +13,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
@@ -55,7 +56,7 @@ public class GroupMessageServiceImpl implements GroupMessageService {
     //TODO: loggggggggg
 
     @Override
-    public SuccessResponse createGroupMessage(CreateGroupMessageRequest request) {
+    public ResponseBaseAbstract createGroupMessage(CreateGroupMessageRequest request) {
         //Validate
 
 
@@ -80,52 +81,49 @@ public class GroupMessageServiceImpl implements GroupMessageService {
         //Save to database
         this.groupMessageRepository.save(groupMessage);
 
-        //Return
-        GroupMessageResponse groupMessageDTO = new GroupMessageResponse(groupMessage);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(groupMessageDTO);
-        response.addMessage("Tạo Nhóm thành công");
 
         LOG.info("Created groupMessage with id = " + groupMessage.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Tạo Nhóm thành công")
+                .setData(new GroupMessageResponse(groupMessage))
+                .returnCreated();
     }
 
     @Override
-    public GetGroupMessageResponse getGroupMessageById(Integer id) {
+    public ResponseBaseAbstract getGroupMessageById(Integer id) {
         if (!this.groupMessageRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Nhóm nào với id là " + id);
         }
 
         GroupMessage groupMessage = this.groupMessageRepository.findById(id).get();
-        GroupMessageResponse groupMessageDTO = new GroupMessageResponse(groupMessage);
-        GetGroupMessageResponse response = new GetGroupMessageResponse(groupMessageDTO);
 
-        response.addMessage("Lấy dữ liệu thành công");
 
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(new GroupMessageResponse(groupMessage))
+                .returnGetOK();
     }
 
     @Override
-    public ListGroupMessageResponse searchGroupMessages(Map<String, String> queries) {
+    public  ResponseBaseAbstract searchGroupMessages(Map<String, String> queries) {
         List<GroupMessageResponse> listGroupMessageResponses = this.groupMessageRepository.searchGroupMessage(queries)
                 .stream().map(groupMessage -> new GroupMessageResponse(groupMessage)).toList();
 
         ListGroupMessageResponse response = new ListGroupMessageResponse(listGroupMessageResponses);
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(response)
+                .returnGetOK();
     }
 
     @Override
-    public SuccessResponse updateGroupMessage(UpdateGroupMessageRequest request) {
+    public ResponseBaseAbstract updateGroupMessage(UpdateGroupMessageRequest request) {
         //Check record exists
         if (!this.groupMessageRepository.existsById(request.getGroupMessageId())) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Nhóm nào với id là " + request.getGroupMessageId());
         }
-
         //Read data from request
         GroupMessage groupMessage = this.groupMessageRepository.findById(request.getGroupMessageId()).get();
 
@@ -138,7 +136,6 @@ public class GroupMessageServiceImpl implements GroupMessageService {
         } else {
             admin = optionalAdmin.get();
         }
-
 
         groupMessage.setDisplayName(request.getDisplayName());
         groupMessage.setAdmin(admin);
@@ -153,14 +150,12 @@ public class GroupMessageServiceImpl implements GroupMessageService {
         this.groupMessageRepository.save(groupMessage);
 
         //Return
-        GroupMessageResponse groupMessageDTO = new GroupMessageResponse(groupMessage);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(groupMessageDTO);
-        response.addMessage("Cập nhật Nhóm thành công");
 
         LOG.info("Updated groupMessage with id = " + groupMessage.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Cập nhật Nhóm thành công")
+                .setData(new GroupMessageResponse(groupMessage))
+                .returnUpdated();
     }
     @Override
     public SuccessResponse groupstoreMessage(ChatMessageOneToGroup message) {
@@ -178,7 +173,7 @@ public class GroupMessageServiceImpl implements GroupMessageService {
     }
     @Transactional
     @Override
-    public SuccessResponse CreateGroup(String groupName, List<Integer> memberIds)
+    public ResponseBaseAbstract CreateGroup(String groupName, List<Integer> memberIds)
     {
         if (memberIds.size() < 3) {
             throw new RuntimeException("Nhóm phải có ít nhất 3 thành viên");
@@ -211,7 +206,7 @@ public class GroupMessageServiceImpl implements GroupMessageService {
 
     }
     @Override
-    public  SuccessResponse AddUserToGroup(Integer groupId, List<Integer> memberIds)
+    public  ResponseBaseAbstract AddUserToGroup(Integer groupId, List<Integer> memberIds)
     {
         Optional<GroupMessage> optionalGroupMessage = groupMessageRepository.findById(groupId);
         List<User> members = userRepository.findAllById(memberIds);
@@ -230,7 +225,7 @@ public class GroupMessageServiceImpl implements GroupMessageService {
         return response;
     }
     @Override
-    public SuccessResponse deleteGroupMessage(Integer id) {
+    public ResponseBaseAbstract deleteGroupMessage(Integer id) {
         if (!this.groupMessageRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Nhóm nào với id là " + id);
@@ -242,7 +237,7 @@ public class GroupMessageServiceImpl implements GroupMessageService {
         this.groupMessageRepository.save(groupMessage);
 
         SuccessResponse response = new SuccessResponse();
-        response.addMessage("Xóa Nhóm thành công");
+        response.builder().addMessage("Xóa Nhóm thành công");
 
         LOG.info("Deleted groupMessage with id = " + groupMessage.getId());
         return response;
