@@ -221,6 +221,13 @@ public class CommentServiceImpl implements CommentService {
             throw ServiceExceptionFactory.forbidden()
                     .addMessage("Không có quyền xoá Bình luận với id là " + id);
         }
+        Map<String, String> criteria = new HashMap<>();
+        criteria.put("parent.id.equal", id.toString());
+        List<Comment> comments = commentRepository.searchComment(criteria);
+        comments.forEach(item -> {
+            item.setDeletedAt(new Date());
+        });
+
         comment.setDeletedAt(new Date());
 
         this.commentRepository.save(comment);

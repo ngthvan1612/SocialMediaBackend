@@ -50,8 +50,10 @@ public class CommonCommentController {
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBaseAbstract createComment(
-            @RequestBody @Valid CreateCommentRequest request
+            @RequestBody @Valid CreateCommentRequest request,
+            @AuthenticationPrincipal User user
     ) {
+        request.setUserId(user.getId());
         SuccessResponse createCommentResponse = this.commentService.createComment(request);
         return createCommentResponse;
     }
@@ -60,9 +62,11 @@ public class CommonCommentController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract updateComment(
             @PathVariable Integer id,
-            @RequestBody @Valid UpdateCommentRequest request
+            @RequestBody @Valid UpdateCommentRequest request,
+            @AuthenticationPrincipal User user
     ) {
         request.setCommentId(id);
+        request.setUserId(user.getId());
         SuccessResponse updateCommentResponse = this.commentService.updateComment(request);
         return updateCommentResponse;
     }
