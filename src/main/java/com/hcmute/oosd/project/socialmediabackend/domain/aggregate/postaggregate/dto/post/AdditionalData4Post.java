@@ -15,4 +15,7 @@ public class AdditionalData4Post {
         this.isReacted = isReacted;
         this.totalComment = totalComment;
     }
+
+    public AdditionalData4Post() {
+    }
 }
