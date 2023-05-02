@@ -134,12 +134,9 @@ public class PostServiceImpl implements PostService {
     public ResponseBaseAbstract searchPosts(Map<String, String> queries) {
         List<PostResponse> listPostResponses = this.postRepository.searchPost(queries)
                 .stream().map(post -> new PostResponse(post)).toList();
-
-        ListPostResponse response = new ListPostResponse(listPostResponses);
-
         return SuccessResponse.builder()
                 .addMessage("Lấy dữ liệu thành công")
-                .setData(response)
+                .setData(listPostResponses)
                 .returnGetOK();
     }
 
@@ -200,7 +197,6 @@ public class PostServiceImpl implements PostService {
         reactionRepository.deleteByPostId(post.getId());
 
         SuccessResponse response = new SuccessResponse();
-        response.addMessage("Xóa Bài đăng thành công");
 
         LOG.info("Deleted post with id = " + post.getId());
 
@@ -230,7 +226,6 @@ public class PostServiceImpl implements PostService {
             reactionService.createReaction(request);
         }
         SuccessResponse response = new SuccessResponse();
-        response.addMessage("Like/Dislike post thành công");
 
         LOG.info("Toggle like post with id = " + request.getPostId());
         return response;
