@@ -23,6 +23,10 @@ public class CommentResponse {
 
     private Integer userId;
 
+    private String username;
+
+    private String avatar;
+
     private Integer postId;
 
     private Integer parentId;
@@ -37,6 +41,8 @@ public class CommentResponse {
         this.content = comment.getContent();
         if (comment.getUser() != null) {
             this.userId = comment.getUser().getId();
+            this.username = comment.getUser().getUsername();
+            this.avatar = comment.getUser().getAvatar();
         }
 
         if (comment.getPost() != null) {

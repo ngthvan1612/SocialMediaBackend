@@ -45,23 +45,47 @@ public class CommonCommentController {
                 return getCommentResponse;
         }
 
-        @PostMapping("")
-        @ResponseStatus(HttpStatus.CREATED)
-        public ResponseBaseAbstract createComment(
-                        @RequestBody @Valid CreateCommentRequest request) {
-                ResponseBaseAbstract createCommentResponse = this.commentService.createComment(request);
-                return createCommentResponse;
-        }
+    @PostMapping("")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseBaseAbstract createComment(
+            @RequestBody @Valid CreateCommentRequest request,
+            @AuthenticationPrincipal User user
+    ) {
+        request.setUserId(user.getId());
+        SuccessResponse createCommentResponse = this.commentService.createComment(request);
+        return createCommentResponse;
+    }
 
-        @PutMapping("{id}/update")
-        @ResponseStatus(HttpStatus.OK)
-        public ResponseBaseAbstract updateComment(
-                        @PathVariable Integer id,
-                        @RequestBody @Valid UpdateCommentRequest request) {
-                request.setCommentId(id);
-                ResponseBaseAbstract updateCommentResponse = this.commentService.updateComment(request);
-                return updateCommentResponse;
-        }
+    @PutMapping("{id}/update")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract updateComment(
+            @PathVariable Integer id,
+            @RequestBody @Valid UpdateCommentRequest request,
+            @AuthenticationPrincipal User user
+    ) {
+        request.setCommentId(id);
+        request.setUserId(user.getId());
+        SuccessResponse updateCommentResponse = this.commentService.updateComment(request);
+        return updateCommentResponse;
+    }
+
+    @DeleteMapping("{id}/delete")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract deleteComment(
+            @AuthenticationPrincipal User user,
+            @PathVariable Integer id
+    ) {
+        Integer userId  = user.getId();
+        SuccessResponse updateCommentResponse = this.commentService.deleteComment(id,userId);
+        return updateCommentResponse;
+    }
+
+    @GetMapping("{id}/comments")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract getChildComment(@PathVariable Integer id) {
+        SuccessResponse getChildComment = this.commentService.getByComment(id);
+        return getChildComment;
+    }
 
         @DeleteMapping("{id}/delete")
         @ResponseStatus(HttpStatus.OK)
@@ -72,12 +96,5 @@ public class CommonCommentController {
                 return updateCommentResponse;
         }
 
-        @GetMapping("{id}/comments")
-        @ResponseStatus(HttpStatus.OK)
-        public ResponseBaseAbstract getChildComment(
-                        @PathVariable Integer id) {
-                ResponseBaseAbstract getChildComment = this.commentService.getByComment(id);
-                return getChildComment;
-        }
-
+      
 }

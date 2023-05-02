@@ -21,7 +21,6 @@ public class ServiceExceptionResolver extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ServiceExceptionBase.class})
     protected ResponseEntity<Object> handleServiceExceptionBase(RuntimeException ex, WebRequest request) {
-
         ServiceExceptionResponse serviceExceptionResponse = ((ServiceExceptionBase) ex).getServiceExceptionResponse();
 
         return handleExceptionInternal(ex, serviceExceptionResponse,
