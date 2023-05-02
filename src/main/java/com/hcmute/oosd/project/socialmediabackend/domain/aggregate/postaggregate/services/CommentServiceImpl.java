@@ -127,11 +127,11 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = this.commentRepository.findById(id).get();
         CommentResponse commentDTO = new CommentResponse(comment);
-        GetCommentResponse response = new GetCommentResponse(commentDTO);
+//        GetCommentResponse response = new GetCommentResponse(commentDTO);
 
         return SuccessResponse.builder()
                 .addMessage("Lấy dữ liệu thành công")
-                .setData(response)
+                .setData(commentDTO)
                 .returnGetOK();
     }
 
@@ -140,10 +140,9 @@ public class CommentServiceImpl implements CommentService {
         List<CommentResponse> listCommentResponses = this.commentRepository.searchComment(queries)
                 .stream().map(comment -> new CommentResponse(comment)).toList();
 
-        ListCommentResponse response = new ListCommentResponse(listCommentResponses);
         return SuccessResponse.builder()
                 .addMessage("Lấy dữ liệu thành công")
-                .setData(response)
+                    .setData(listCommentResponses)
                 .returnGetOK();
     }
 
