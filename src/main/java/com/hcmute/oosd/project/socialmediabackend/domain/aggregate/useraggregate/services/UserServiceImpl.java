@@ -250,11 +250,12 @@ public class UserServiceImpl implements UserService {
         String accessToken = this.jwtTokenProvider.generateToken(user);
 
         LOG.info("User " + request.getUsername() + " has just logged in, generated jwt token is " + accessToken);
-        LoginResponse response = new LoginResponse(new UserResponse(user), accessToken);
-
+        Map<String, Object> data = new HashMap<>();
+        data.put("user", new UserResponse(user));
+        data.put("accessToken", accessToken);
         return SuccessResponse.builder()
                 .addMessage("Đăng nhập thành công")
-                .setData(response)
+                .setData(data)
                 .returnUpdated();
     }
 
