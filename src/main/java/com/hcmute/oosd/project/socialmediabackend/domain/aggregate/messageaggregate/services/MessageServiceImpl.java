@@ -58,7 +58,7 @@ public class MessageServiceImpl implements MessageService {
     // TODO: loggggggggg
 
     @Override
-    public SuccessResponse getListMessageWithAnotherPerson(GetListMessageWithAnotherPersonRequest request) {
+    public ResponseBaseAbstract getListMessageWithAnotherPerson(GetListMessageWithAnotherPersonRequest request) {
         List<Message> rawMessage = this.messageRepository.getAllMessageBetween(request.getUserId(),
                 request.getFriendId());
 
