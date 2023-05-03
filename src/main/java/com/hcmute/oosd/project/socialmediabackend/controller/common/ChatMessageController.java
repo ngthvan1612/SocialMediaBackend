@@ -2,6 +2,7 @@ package com.hcmute.oosd.project.socialmediabackend.controller.common;
 
 import com.hcmute.oosd.project.socialmediabackend.SocialMediaBackendApplication;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.groupmessage.GroupMessageResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.Message;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToGroup;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToOne;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.MessageRepository;
@@ -20,11 +21,14 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Controller
 public class ChatMessageController {
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private MessageRepository messageRepository;
     private GroupMessageService groupmessageService;
     private GroupMessageResponse groupmessageResponse;
 
@@ -36,40 +40,39 @@ public class ChatMessageController {
     public void sendMessageOneToOne(@Payload ChatMessageOneToOne msg) {
         Integer sender = msg.getSenderId();
         Integer receiver = msg.getReceiverId();
-
+        if(msg.getType() == ChatMessageOneToOneType.SEEN)
+        {
+            msg.setMessageAsRead();
+            this.messageService.storeMessage(msg);
+            // Update the message status on the receiver side
+//            String receiverEndPoint = "/ws/secured/messenger/user-" + receiver;
+//            simpMessagingTemplate.convertAndSend(receiverEndPoint, msg);
+        }
         if (msg.getType() == ChatMessageOneToOneType.MESSAGE) {
             String message = msg.getMessage();
-            JSONObject json = new JSONObject();
-            json.put("type", ChatMessageOneToOneType.MESSAGE);
-            json.put("message", message);
             msg.setCreatedAt(new Date());
-
             this.messageService.storeMessage(msg);
-
             logger.info(String.format("WS-INFO: %s send to %s: %s", sender, receiver, message));
 
             String receiverEndPoint = "/ws/secured/messenger/user-" + receiver;
-            simpMessagingTemplate.convertAndSend(receiverEndPoint, json.toString());
+            simpMessagingTemplate.convertAndSend(receiverEndPoint,msg);
 
             String senderEndPoint = "/ws/secured/messenger/user-" + sender;
-            simpMessagingTemplate.convertAndSend(senderEndPoint, json.toString());
+            simpMessagingTemplate.convertAndSend(senderEndPoint, msg);
         }
         else if (msg.getType() == ChatMessageOneToOneType.IMAGE) {
             // Send image
             String image = msg.getImage();
-            JSONObject json = new JSONObject();
-            json.put("type", ChatMessageOneToOneType.IMAGE);
-            json.put("image", image);
             msg.setCreatedAt(new Date());
             this.messageService.storeMessage(msg);
 
             logger.info(String.format("WS-INFO: %s send to %s: %s", sender, receiver, image));
 
             String receiverEndPoint = "/ws/secured/messenger/user-" + receiver;
-            simpMessagingTemplate.convertAndSend(receiverEndPoint, json.toString());
+            simpMessagingTemplate.convertAndSend(receiverEndPoint, msg);
 
             String senderEndPoint = "/ws/secured/messenger/user-" + sender;
-            simpMessagingTemplate.convertAndSend(senderEndPoint, json.toString());
+            simpMessagingTemplate.convertAndSend(senderEndPoint,msg);
         }
 
     }

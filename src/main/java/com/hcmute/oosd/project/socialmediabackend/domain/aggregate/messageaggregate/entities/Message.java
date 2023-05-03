@@ -1,5 +1,7 @@
 package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -43,6 +45,7 @@ public class Message {
     @ManyToOne
     @JoinColumn(name = "group_id")
     private GroupMessage group;
+
 
 
 }

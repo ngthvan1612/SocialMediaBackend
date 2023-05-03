@@ -66,11 +66,9 @@ public class MessageServiceImpl implements MessageService {
                 msg.getSender().getId(),
                 msg.getReceiver().getId(),
                 msg)).toList();
-
-        SuccessResponse response = new SuccessResponse();
-        response.setData(messages);
-
-        return response;
+        return SuccessResponse.builder()
+                .setData( messages )
+                .returnGetOK();
     }
 
     @Override
@@ -80,18 +78,26 @@ public class MessageServiceImpl implements MessageService {
         messageEntity.setReceiver(this.entityManager.getReference(User.class, message.getReceiverId()));
         messageEntity.setCreatedAt(message.getCreatedAt());
         messageEntity.setIsRead(false);
-        JSONObject content = new JSONObject();
-        if (message.getType() == ChatMessageOneToOneType.MESSAGE) {
-            content.put("type", ChatMessageOneToOneType.MESSAGE);
-            content.put("message", message.getMessage());
+
+        if (message.getType() == ChatMessageOneToOneType.MESSAGE)
+        {
+            messageEntity.setContent(message.getMessage());
+            messageEntity.setLastUpdatedAt(new Date());
         } else if (message.getType() == ChatMessageOneToOneType.IMAGE) {
-            content.put("type", ChatMessageOneToOneType.IMAGE);
-            content.put("image", message.getImage());
+            messageEntity.setContent(message.getImage());
         }
 
-        messageEntity.setContent(content.toString());
         messageRepository.save(messageEntity);
-
+        if (message.getType() == ChatMessageOneToOneType.SEEN) {
+            Integer messageId = message.getMessageId();
+//            Integer receiverId = message.getReceiverId();
+            Message seenMessage = this.messageRepository.findById(messageId).orElse(null);
+            if (seenMessage != null) {
+                seenMessage.setIsRead(true); // Đánh dấu tin nhắn đã đọc
+                seenMessage.setLastUpdatedAt(new Date()); // Cập nhật thời gian cập nhật cuối cùng của tin nhắn
+                this.messageRepository.save(seenMessage); // Lưu tin nhắn đã cập nhật vào cơ sở dữ liệu
+            }
+        }
         SuccessResponse response = new SuccessResponse();
         return response;
     }
