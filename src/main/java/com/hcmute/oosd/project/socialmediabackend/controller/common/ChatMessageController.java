@@ -9,6 +9,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.MessageService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.types.ChatMessageOneToGroupType;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.types.ChatMessageOneToOneType;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,14 @@ public class ChatMessageController {
     private static final Logger logger = LoggerFactory.getLogger(SocialMediaBackendApplication.class);
     @MessageMapping("/ws/secured/messenger")
     public void sendMessageOneToOne(@Payload ChatMessageOneToOne msg) {
-        if (msg.getType() == ChatMessageOneToOneType.MESSAGE) {
-            Integer sender = msg.getSenderId();
-            Integer receiver = msg.getReceiverId();
-            String message = msg.getMessage();
+        Integer sender = msg.getSenderId();
+        Integer receiver = msg.getReceiverId();
 
+        if (msg.getType() == ChatMessageOneToOneType.MESSAGE) {
+            String message = msg.getMessage();
+            JSONObject json = new JSONObject();
+            json.put("type", ChatMessageOneToOneType.MESSAGE);
+            json.put("message", message);
             msg.setCreatedAt(new Date());
 
             this.messageService.storeMessage(msg);
@@ -45,11 +49,29 @@ public class ChatMessageController {
             logger.info(String.format("WS-INFO: %s send to %s: %s", sender, receiver, message));
 
             String receiverEndPoint = "/ws/secured/messenger/user-" + receiver;
-            simpMessagingTemplate.convertAndSend(receiverEndPoint, msg);
+            simpMessagingTemplate.convertAndSend(receiverEndPoint, json.toString());
 
             String senderEndPoint = "/ws/secured/messenger/user-" + sender;
-            simpMessagingTemplate.convertAndSend(senderEndPoint, msg);
+            simpMessagingTemplate.convertAndSend(senderEndPoint, json.toString());
         }
+        else if (msg.getType() == ChatMessageOneToOneType.IMAGE) {
+            // Send image
+            String image = msg.getImage();
+            JSONObject json = new JSONObject();
+            json.put("type", ChatMessageOneToOneType.IMAGE);
+            json.put("image", image);
+            msg.setCreatedAt(new Date());
+            this.messageService.storeMessage(msg);
+
+            logger.info(String.format("WS-INFO: %s send to %s: %s", sender, receiver, image));
+
+            String receiverEndPoint = "/ws/secured/messenger/user-" + receiver;
+            simpMessagingTemplate.convertAndSend(receiverEndPoint, json.toString());
+
+            String senderEndPoint = "/ws/secured/messenger/user-" + sender;
+            simpMessagingTemplate.convertAndSend(senderEndPoint, json.toString());
+        }
+
     }
     @MessageMapping("/ws/secured/messenger-group")
     public void sendMessageOneToGroup(@Payload ChatMessageOneToGroup msg) {

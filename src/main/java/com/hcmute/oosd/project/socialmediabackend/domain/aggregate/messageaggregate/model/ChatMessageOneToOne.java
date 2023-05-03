@@ -3,6 +3,7 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggre
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.entities.Message;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.types.ChatMessageOneToOneType;
 import lombok.Data;
+import org.json.JSONObject;
 
 import java.util.Date;
 
@@ -11,10 +12,12 @@ public class ChatMessageOneToOne {
     private Integer senderId;
     private Integer receiverId;
     private String message;
+    private String imageUrl;
     private ChatMessageOneToOneType type;
     private String randomHash;
 
     private Date createdAt;
+    private String image;
 
     public ChatMessageOneToOne() {
 
@@ -26,5 +29,16 @@ public class ChatMessageOneToOne {
         this.message = message.getContent();
         this.createdAt = message.getCreatedAt();
         this.type = ChatMessageOneToOneType.MESSAGE;
+
+    }
+    public JSONObject toJSON() {
+        JSONObject json = new JSONObject();
+        json.put("type", type);
+        if (type == ChatMessageOneToOneType.MESSAGE) {
+            json.put("message", message);
+        } else if (type == ChatMessageOneToOneType.IMAGE) {
+            json.put("image", image);
+        }
+        return json;
     }
 }

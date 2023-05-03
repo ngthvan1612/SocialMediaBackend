@@ -8,6 +8,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.GroupMessageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.MessageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.MessageService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.types.ChatMessageOneToOneType;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.ListUserResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.UserResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
@@ -19,6 +20,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,12 +76,21 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public SuccessResponse storeMessage(ChatMessageOneToOne message) {
         Message messageEntity = new Message();
-        messageEntity.setContent(message.getMessage());
         messageEntity.setSender(this.entityManager.getReference(User.class, message.getSenderId()));
         messageEntity.setReceiver(this.entityManager.getReference(User.class, message.getReceiverId()));
         messageEntity.setCreatedAt(message.getCreatedAt());
+        messageEntity.setIsRead(false);
+        JSONObject content = new JSONObject();
+        if (message.getType() == ChatMessageOneToOneType.MESSAGE) {
+            content.put("type", ChatMessageOneToOneType.MESSAGE);
+            content.put("message", message.getMessage());
+        } else if (message.getType() == ChatMessageOneToOneType.IMAGE) {
+            content.put("type", ChatMessageOneToOneType.IMAGE);
+            content.put("image", message.getImage());
+        }
 
-        this.messageRepository.save(messageEntity);
+        messageEntity.setContent(content.toString());
+        messageRepository.save(messageEntity);
 
         SuccessResponse response = new SuccessResponse();
         return response;
