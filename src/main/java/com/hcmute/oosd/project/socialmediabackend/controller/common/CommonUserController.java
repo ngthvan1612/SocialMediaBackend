@@ -4,7 +4,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.interfaces.UserService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
-//hoi lai, camelcase hay la a-a-a
+// hoi lai, camelcase hay la a-a-a
 @RequestMapping("api/common/user")
 public class CommonUserController {
 
@@ -31,10 +31,9 @@ public class CommonUserController {
     @GetMapping("search-users-for-post")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchUsersForPost(
-                @RequestParam("username.contains") String username,
-            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit
-    ) {
-        SearchUsersForPostResponse searchUsersForPostResponse = this.userService.searchUsersForPost(username, limit);
+            @RequestParam("username.contains") String username,
+            @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit) {
+        ResponseBaseAbstract searchUsersForPostResponse = this.userService.searchUsersForPost(username, limit);
         return searchUsersForPostResponse;
     }
 
@@ -42,9 +41,8 @@ public class CommonUserController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchUser(
             @AuthenticationPrincipal User loggingInUser,
-            @RequestParam Map<String, String> queries
-    ) {
-        ListUserResponse listUserResponse = this.userService.searchUsers(queries, loggingInUser);
+            @RequestParam Map<String, String> queries) {
+        ResponseBaseAbstract listUserResponse = this.userService.searchUsers(queries, loggingInUser);
         return listUserResponse;
     }
 
@@ -52,18 +50,16 @@ public class CommonUserController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getUser(
             @AuthenticationPrincipal User currentUser,
-            @PathVariable Integer id
-    ) {
-        GetUserResponse getUserResponse = this.userService.getUserById(id,currentUser);
+            @PathVariable Integer id) {
+        ResponseBaseAbstract getUserResponse = this.userService.getUserById(id, currentUser);
         return getUserResponse;
     }
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBaseAbstract createUser(
-            @RequestBody @Valid CreateUserRequest request
-    ) {
-        SuccessResponse createUserResponse = this.userService.createUser(request);
+            @RequestBody @Valid CreateUserRequest request) {
+        ResponseBaseAbstract createUserResponse = this.userService.createUser(request);
         return createUserResponse;
     }
 
@@ -71,15 +67,14 @@ public class CommonUserController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract updateUserAvatar(
             @AuthenticationPrincipal User user,
-            @RequestParam("avatarFile") MultipartFile avatarFile
-    ) throws IOException {
+            @RequestParam("avatarFile") MultipartFile avatarFile) throws IOException {
         UpdateUserAvatarRequest request = new UpdateUserAvatarRequest();
 
         request.setUserId(user.getId());
         request.setAvatarBufferByteArray(avatarFile.getBytes());
         request.setUploadFileName(avatarFile.getOriginalFilename());
 
-        SuccessResponse updateUserAvatarResponse = this.userService.updateAvatarById(request);
+        ResponseBaseAbstract updateUserAvatarResponse = this.userService.updateAvatarById(request);
         return updateUserAvatarResponse;
     }
 
@@ -87,19 +82,17 @@ public class CommonUserController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract updateUser(
             @PathVariable Integer id,
-            @RequestBody @Valid UpdateUserRequest request
-    ) {
+            @RequestBody @Valid UpdateUserRequest request) {
         request.setUserId(id);
-        SuccessResponse updateUserResponse = this.userService.updateUser(request);
+        ResponseBaseAbstract updateUserResponse = this.userService.updateUser(request);
         return updateUserResponse;
     }
 
     @DeleteMapping("{id}/delete")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract deleteUser(
-            @PathVariable Integer id
-    ) {
-        SuccessResponse updateUserResponse = this.userService.deleteUser(id);
+            @PathVariable Integer id) {
+        ResponseBaseAbstract updateUserResponse = this.userService.deleteUser(id);
         return updateUserResponse;
     }
 

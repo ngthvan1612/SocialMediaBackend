@@ -9,6 +9,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
@@ -49,7 +50,7 @@ public class ReactionServiceImpl implements ReactionService {
     //TODO: loggggggggg
 
     @Override
-    public SuccessResponse createReaction(CreateReactionRequest request) {
+    public ResponseBaseAbstract createReaction(CreateReactionRequest request) {
         //Validate
 
 
@@ -94,11 +95,14 @@ public class ReactionServiceImpl implements ReactionService {
         response.addMessage("Tạo Thả cảm xúc thành công");
 
         LOG.info("Created reaction with id = " + reaction.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Tạo thả cảm xúc thành công")
+                .setData(new ReactionResponse(reaction))
+                .returnCreated();
     }
 
     @Override
-    public GetReactionResponse getReactionById(Integer id) {
+    public ResponseBaseAbstract getReactionById(Integer id) {
         if (!this.reactionRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Thả cảm xúc nào với id là " + id);
@@ -108,24 +112,26 @@ public class ReactionServiceImpl implements ReactionService {
         ReactionResponse reactionDTO = new ReactionResponse(reaction);
         GetReactionResponse response = new GetReactionResponse(reactionDTO);
 
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(response)
+                .returnGetOK();
     }
 
     @Override
-    public ListReactionResponse searchReactions(Map<String, String> queries) {
+    public ResponseBaseAbstract searchReactions(Map<String, String> queries) {
         List<ReactionResponse> listReactionResponses = this.reactionRepository.searchReaction(queries)
                 .stream().map(reaction -> new ReactionResponse(reaction)).toList();
 
         ListReactionResponse response = new ListReactionResponse(listReactionResponses);
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(response)
+                .returnGetOK();
     }
 
     @Override
-    public SuccessResponse updateReaction(UpdateReactionRequest request) {
+    public ResponseBaseAbstract updateReaction(UpdateReactionRequest request) {
         //Check record exists
         if (!this.reactionRepository.existsById(request.getReactionId())) {
             throw ServiceExceptionFactory.notFound()
@@ -178,12 +184,15 @@ public class ReactionServiceImpl implements ReactionService {
         response.addMessage("Cập nhật Thả cảm xúc thành công");
 
         LOG.info("Updated reaction with id = " + reaction.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Cập nhật thả cảm xúc thành công")
+                .setData(new ReactionResponse(reaction))
+                .returnUpdated();
     }
 
 
     @Override
-    public SuccessResponse deleteReaction(Integer id) {
+    public ResponseBaseAbstract deleteReaction(Integer id) {
         if (!this.reactionRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Thả cảm xúc nào với id là " + id);
@@ -198,7 +207,9 @@ public class ReactionServiceImpl implements ReactionService {
         response.addMessage("Xóa Thả cảm xúc thành công");
 
         LOG.info("Deleted reaction with id = " + reaction.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Xóa thả cảm xúc thành công")
+                .returnDeleted();
     }
 
 }

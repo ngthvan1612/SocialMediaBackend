@@ -6,7 +6,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.usergroupmessage.UpdateUserGroupMessageRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.UserGroupMessageService;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
-import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
-//hoi lai, camelcase hay la a-a-a
+// hoi lai, camelcase hay la a-a-a
 @RequestMapping("api/common/user-group-message")
 public class CommonUserGroupMessageController {
 
@@ -30,27 +30,26 @@ public class CommonUserGroupMessageController {
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchUserGroupMessage(
-            @RequestParam Map<String, String> queries
-    ) {
-        ListUserGroupMessageResponse listUserGroupMessageResponse = this.userGroupMessageService.searchUserGroupMessages(queries);
+            @RequestParam Map<String, String> queries) {
+        ResponseBaseAbstract listUserGroupMessageResponse = this.userGroupMessageService
+                .searchUserGroupMessages(queries);
         return listUserGroupMessageResponse;
     }
 
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getUserGroupMessage(
-            @PathVariable Integer id
-    ) {
-        GetUserGroupMessageResponse getUserGroupMessageResponse = this.userGroupMessageService.getUserGroupMessageById(id);
+            @PathVariable Integer id) {
+        ResponseBaseAbstract getUserGroupMessageResponse = this.userGroupMessageService.getUserGroupMessageById(id);
         return getUserGroupMessageResponse;
     }
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBaseAbstract createUserGroupMessage(
-            @RequestBody @Valid CreateUserGroupMessageRequest request
-    ) {
-        SuccessResponse createUserGroupMessageResponse = this.userGroupMessageService.createUserGroupMessage(request);
+            @RequestBody @Valid CreateUserGroupMessageRequest request) {
+        ResponseBaseAbstract createUserGroupMessageResponse = this.userGroupMessageService
+                .createUserGroupMessage(request);
         return createUserGroupMessageResponse;
     }
 
@@ -58,19 +57,18 @@ public class CommonUserGroupMessageController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract updateUserGroupMessage(
             @PathVariable Integer id,
-            @RequestBody @Valid UpdateUserGroupMessageRequest request
-    ) {
+            @RequestBody @Valid UpdateUserGroupMessageRequest request) {
         request.setUserGroupMessageId(id);
-        SuccessResponse updateUserGroupMessageResponse = this.userGroupMessageService.updateUserGroupMessage(request);
+        ResponseBaseAbstract updateUserGroupMessageResponse = this.userGroupMessageService
+                .updateUserGroupMessage(request);
         return updateUserGroupMessageResponse;
     }
 
     @DeleteMapping("{id}/delete")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract deleteUserGroupMessage(
-            @PathVariable Integer id
-    ) {
-        SuccessResponse updateUserGroupMessageResponse = this.userGroupMessageService.deleteUserGroupMessage(id);
+            @PathVariable Integer id) {
+        ResponseBaseAbstract updateUserGroupMessageResponse = this.userGroupMessageService.deleteUserGroupMessage(id);
         return updateUserGroupMessageResponse;
     }
 }

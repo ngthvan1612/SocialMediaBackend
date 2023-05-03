@@ -11,6 +11,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,20 +41,19 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
 
     }
 
-    //TODO: Validate with annotation
-    //TODO: check fk before create & update
-    //TODO: update unique column for delete
-    //TODO: swagger
-    //TODO: authorize
-    //TODO: hash password
-    //TODO: loggggggggg
+    // TODO: Validate with annotation
+    // TODO: check fk before create & update
+    // TODO: update unique column for delete
+    // TODO: swagger
+    // TODO: authorize
+    // TODO: hash password
+    // TODO: loggggggggg
 
     @Override
-    public SuccessResponse createUserGroupMessage(CreateUserGroupMessageRequest request) {
-        //Validate
+    public ResponseBaseAbstract createUserGroupMessage(CreateUserGroupMessageRequest request) {
+        // Validate
 
-
-        //Check null
+        // Check null
 
         Optional<GroupMessage> optionalGroup = this.groupMessageRepository.findById(request.getGroupId());
         GroupMessage group = null;
@@ -65,7 +65,6 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
             group = optionalGroup.get();
         }
 
-
         Optional<User> optionalMember = this.userRepository.findById(request.getMemberId());
         User member = null;
 
@@ -76,28 +75,27 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
             member = optionalMember.get();
         }
 
-
         UserGroupMessage userGroupMessage = new UserGroupMessage();
 
         userGroupMessage.setGroup(group);
         userGroupMessage.setMember(member);
 
-        //Save to database
+        // Save to database
         this.userGroupMessageRepository.save(userGroupMessage);
 
-        //Return
+        // Return
         UserGroupMessageResponse userGroupMessageDTO = new UserGroupMessageResponse(userGroupMessage);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(userGroupMessageDTO);
-        response.addMessage("Tạo Chi tiết nhóm thành công");
 
         LOG.info("Created userGroupMessage with id = " + userGroupMessage.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Tạo Chi tiết nhóm thành công")
+                .setData(userGroupMessageDTO)
+                .returnUpdated();
+
     }
 
     @Override
-    public GetUserGroupMessageResponse getUserGroupMessageById(Integer id) {
+    public ResponseBaseAbstract getUserGroupMessageById(Integer id) {
         if (!this.userGroupMessageRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Chi tiết nhóm nào với id là " + id);
@@ -105,34 +103,35 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
 
         UserGroupMessage userGroupMessage = this.userGroupMessageRepository.findById(id).get();
         UserGroupMessageResponse userGroupMessageDTO = new UserGroupMessageResponse(userGroupMessage);
-        GetUserGroupMessageResponse response = new GetUserGroupMessageResponse(userGroupMessageDTO);
-
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(userGroupMessageDTO)
+                .returnUpdated();
     }
 
     @Override
-    public ListUserGroupMessageResponse searchUserGroupMessages(Map<String, String> queries) {
-        List<UserGroupMessageResponse> listUserGroupMessageResponses = this.userGroupMessageRepository.searchUserGroupMessage(queries)
+    public ResponseBaseAbstract searchUserGroupMessages(Map<String, String> queries) {
+        List<UserGroupMessageResponse> listUserGroupMessageResponses = this.userGroupMessageRepository
+                .searchUserGroupMessage(queries)
                 .stream().map(userGroupMessage -> new UserGroupMessageResponse(userGroupMessage)).toList();
 
-        ListUserGroupMessageResponse response = new ListUserGroupMessageResponse(listUserGroupMessageResponses);
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(listUserGroupMessageResponses)
+                .returnUpdated();
     }
 
     @Override
-    public SuccessResponse updateUserGroupMessage(UpdateUserGroupMessageRequest request) {
-        //Check record exists
+    public ResponseBaseAbstract updateUserGroupMessage(UpdateUserGroupMessageRequest request) {
+        // Check record exists
         if (!this.userGroupMessageRepository.existsById(request.getUserGroupMessageId())) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Chi tiết nhóm nào với id là " + request.getUserGroupMessageId());
         }
 
-        //Read data from request
-        UserGroupMessage userGroupMessage = this.userGroupMessageRepository.findById(request.getUserGroupMessageId()).get();
+        // Read data from request
+        UserGroupMessage userGroupMessage = this.userGroupMessageRepository.findById(request.getUserGroupMessageId())
+                .get();
 
         Optional<GroupMessage> optionalGroup = this.groupMessageRepository.findById(request.getGroupId());
         GroupMessage group = null;
@@ -144,7 +143,6 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
             group = optionalGroup.get();
         }
 
-
         Optional<User> optionalMember = this.userRepository.findById(request.getMemberId());
         User member = null;
 
@@ -155,33 +153,29 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
             member = optionalMember.get();
         }
 
-
         userGroupMessage.setGroup(group);
         userGroupMessage.setMember(member);
 
-        //Validate unique
+        // Validate unique
 
-
-        //Update last changed time
+        // Update last changed time
         userGroupMessage.setLastUpdatedAt(new Date());
 
-        //Store
+        // Store
         this.userGroupMessageRepository.save(userGroupMessage);
 
-        //Return
+        // Return
         UserGroupMessageResponse userGroupMessageDTO = new UserGroupMessageResponse(userGroupMessage);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(userGroupMessageDTO);
-        response.addMessage("Cập nhật Chi tiết nhóm thành công");
 
         LOG.info("Updated userGroupMessage with id = " + userGroupMessage.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Cập nhật Chi tiết nhóm thành công")
+                .setData(userGroupMessageDTO)
+                .returnUpdated();
     }
 
-
     @Override
-    public SuccessResponse deleteUserGroupMessage(Integer id) {
+    public ResponseBaseAbstract deleteUserGroupMessage(Integer id) {
         if (!this.userGroupMessageRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Chi tiết nhóm nào với id là " + id);
@@ -192,12 +186,11 @@ public class UserGroupMessageServiceImpl implements UserGroupMessageService {
 
         this.userGroupMessageRepository.save(userGroupMessage);
 
-        SuccessResponse response = new SuccessResponse();
-        response.addMessage("Xóa Chi tiết nhóm thành công");
-
         LOG.info("Deleted userGroupMessage with id = " + userGroupMessage.getId());
-        return response;
+
+        return SuccessResponse.builder()
+                .addMessage("Xóa Chi tiết nhóm thành công")
+                .returnUpdated();
     }
 
 }
-  

@@ -26,7 +26,7 @@ public class CommonStorageController {
         UploadImgRequest request = new UploadImgRequest();
         request.setUploadFileName(file.getName());
         request.setImgBufferByteArray(file.getBytes());
-        SuccessResponse createImgUrl = this.storageService.uploadImg(request);
+        ResponseBaseAbstract createImgUrl = this.storageService.uploadImg(request);
         return createImgUrl;
     }
 }

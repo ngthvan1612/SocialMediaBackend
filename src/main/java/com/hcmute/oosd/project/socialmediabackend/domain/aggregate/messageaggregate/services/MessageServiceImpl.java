@@ -130,6 +130,7 @@ public class MessageServiceImpl implements MessageService {
         message.setSender(sender);
         message.setReceiver(receiver);
         message.setGroup(group);
+        message.setIsRead(false);
 
         // Save to database
         this.messageRepository.save(message);

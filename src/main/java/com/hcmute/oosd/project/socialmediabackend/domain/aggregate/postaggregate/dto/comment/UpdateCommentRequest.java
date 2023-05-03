@@ -9,8 +9,10 @@ public class UpdateCommentRequest {
     private Integer commentId;
 
     private String content;
-
+    @JsonIgnore
     private Integer userId;
+
     private Integer postId;
+
     private Integer parentId;
 }

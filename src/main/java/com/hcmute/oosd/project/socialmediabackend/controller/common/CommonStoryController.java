@@ -32,7 +32,7 @@ public class CommonStoryController {
     public ResponseBaseAbstract searchStory(
             @RequestParam Map<String, String> queries
     ) {
-        ListStoryResponse listStoryResponse = this.storyService.searchStorys(queries);
+        ResponseBaseAbstract listStoryResponse = this.storyService.searchStorys(queries);
         return listStoryResponse;
     }
 
@@ -41,7 +41,7 @@ public class CommonStoryController {
     public ResponseBaseAbstract getStory(
             @PathVariable Integer id
     ) {
-        GetStoryResponse getStoryResponse = this.storyService.getStoryById(id);
+        ResponseBaseAbstract getStoryResponse = this.storyService.getStoryById(id);
         return getStoryResponse;
     }
 
@@ -50,7 +50,7 @@ public class CommonStoryController {
     public ResponseBaseAbstract createStory(
             @RequestBody @Valid CreateStoryRequest request
     ) {
-        SuccessResponse createStoryResponse = this.storyService.createStory(request);
+        ResponseBaseAbstract createStoryResponse = this.storyService.createStory(request);
         return createStoryResponse;
     }
 
@@ -61,7 +61,7 @@ public class CommonStoryController {
             @RequestBody @Valid UpdateStoryRequest request
     ) {
         request.setStoryId(id);
-        SuccessResponse updateStoryResponse = this.storyService.updateStory(request);
+        ResponseBaseAbstract updateStoryResponse = this.storyService.updateStory(request);
         return updateStoryResponse;
     }
 
@@ -70,7 +70,7 @@ public class CommonStoryController {
     public ResponseBaseAbstract deleteStory(
             @PathVariable Integer id
     ) {
-        SuccessResponse updateStoryResponse = this.storyService.deleteStory(id);
+        ResponseBaseAbstract updateStoryResponse = this.storyService.deleteStory(id);
         return updateStoryResponse;
     }
 }

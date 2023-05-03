@@ -32,7 +32,7 @@ public class CommonUserTagFriendPostController {
     public ResponseBaseAbstract searchUserTagFriendPost(
             @RequestParam Map<String, String> queries
     ) {
-        ListUserTagFriendPostResponse listUserTagFriendPostResponse = this.userTagFriendPostService.searchUserTagFriendPosts(queries);
+        ResponseBaseAbstract listUserTagFriendPostResponse = this.userTagFriendPostService.searchUserTagFriendPosts(queries);
         return listUserTagFriendPostResponse;
     }
 
@@ -41,7 +41,7 @@ public class CommonUserTagFriendPostController {
     public ResponseBaseAbstract getUserTagFriendPost(
             @PathVariable Integer id
     ) {
-        GetUserTagFriendPostResponse getUserTagFriendPostResponse = this.userTagFriendPostService.getUserTagFriendPostById(id);
+        ResponseBaseAbstract getUserTagFriendPostResponse = this.userTagFriendPostService.getUserTagFriendPostById(id);
         return getUserTagFriendPostResponse;
     }
 
@@ -50,7 +50,7 @@ public class CommonUserTagFriendPostController {
     public ResponseBaseAbstract createUserTagFriendPost(
             @RequestBody @Valid CreateUserTagFriendPostRequest request
     ) {
-        SuccessResponse createUserTagFriendPostResponse = this.userTagFriendPostService.createUserTagFriendPost(request);
+        ResponseBaseAbstract createUserTagFriendPostResponse = this.userTagFriendPostService.createUserTagFriendPost(request);
         return createUserTagFriendPostResponse;
     }
 
@@ -61,7 +61,7 @@ public class CommonUserTagFriendPostController {
             @RequestBody @Valid UpdateUserTagFriendPostRequest request
     ) {
         request.setUserTagFriendPostId(id);
-        SuccessResponse updateUserTagFriendPostResponse = this.userTagFriendPostService.updateUserTagFriendPost(request);
+        ResponseBaseAbstract updateUserTagFriendPostResponse = this.userTagFriendPostService.updateUserTagFriendPost(request);
         return updateUserTagFriendPostResponse;
     }
 
@@ -70,7 +70,7 @@ public class CommonUserTagFriendPostController {
     public ResponseBaseAbstract deleteUserTagFriendPost(
             @PathVariable Integer id
     ) {
-        SuccessResponse updateUserTagFriendPostResponse = this.userTagFriendPostService.deleteUserTagFriendPost(id);
+        ResponseBaseAbstract updateUserTagFriendPostResponse = this.userTagFriendPostService.deleteUserTagFriendPost(id);
         return updateUserTagFriendPostResponse;
     }
 }

@@ -4,20 +4,21 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.story.GetStoryResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.story.ListStoryResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.story.UpdateStoryRequest;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 
 import java.util.Map;
 
 public interface StoryService {
-    SuccessResponse createStory(CreateStoryRequest request);
+    ResponseBaseAbstract createStory(CreateStoryRequest request);
 
-    GetStoryResponse getStoryById(Integer id);
+    ResponseBaseAbstract getStoryById(Integer id);
 
-    ListStoryResponse searchStorys(Map<String, String> queries);
+    ResponseBaseAbstract searchStorys(Map<String, String> queries);
 
-    SuccessResponse updateStory(UpdateStoryRequest request);
+    ResponseBaseAbstract updateStory(UpdateStoryRequest request);
 
-    SuccessResponse deleteStory(Integer id);
+    ResponseBaseAbstract deleteStory(Integer id);
 
 
 }

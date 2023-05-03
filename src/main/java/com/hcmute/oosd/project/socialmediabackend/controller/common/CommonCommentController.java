@@ -18,41 +18,41 @@ import java.util.Map;
 
 @CrossOrigin("*")
 @RestController
-//hoi lai, camelcase hay la a-a-a
+// hoi lai, camelcase hay la a-a-a
 @RequestMapping("api/common/comment")
 public class CommonCommentController {
 
-    @Autowired
-    private CommentService commentService;
+        @Autowired
+        private CommentService commentService;
 
-    public CommonCommentController() {
+        public CommonCommentController() {
 
-    }
+        }
 
-    @GetMapping("")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseBaseAbstract searchComment(
-            @RequestParam Map<String, String> queries
-    ) {
-        ListCommentResponse listCommentResponse = this.commentService.searchComments(queries);
-        return listCommentResponse;
-    }
+        @GetMapping("")
+        @ResponseStatus(HttpStatus.OK)
+        public ResponseBaseAbstract searchComment(
+                        @RequestParam Map<String, String> queries) {
+                ResponseBaseAbstract listCommentResponse = this.commentService.searchComments(queries);
+                return listCommentResponse;
+        }
 
-    @GetMapping("{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseBaseAbstract getComment(
-            @PathVariable Integer id
-    ) {
-        GetCommentResponse getCommentResponse = this.commentService.getCommentById(id);
-        return getCommentResponse;
-    }
+        @GetMapping("{id}")
+        @ResponseStatus(HttpStatus.OK)
+        public ResponseBaseAbstract getComment(
+                        @PathVariable Integer id) {
+                ResponseBaseAbstract getCommentResponse = this.commentService.getCommentById(id);
+                return getCommentResponse;
+        }
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseBaseAbstract createComment(
-            @RequestBody @Valid CreateCommentRequest request
+            @RequestBody @Valid CreateCommentRequest request,
+            @AuthenticationPrincipal User user
     ) {
-        SuccessResponse createCommentResponse = this.commentService.createComment(request);
+        request.setUserId(user.getId());
+        ResponseBaseAbstract createCommentResponse = this.commentService.createComment(request);
         return createCommentResponse;
     }
 
@@ -60,10 +60,12 @@ public class CommonCommentController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract updateComment(
             @PathVariable Integer id,
-            @RequestBody @Valid UpdateCommentRequest request
+            @RequestBody @Valid UpdateCommentRequest request,
+            @AuthenticationPrincipal User user
     ) {
         request.setCommentId(id);
-        SuccessResponse updateCommentResponse = this.commentService.updateComment(request);
+        request.setUserId(user.getId());
+        ResponseBaseAbstract updateCommentResponse = this.commentService.updateComment(request);
         return updateCommentResponse;
     }
 
@@ -71,22 +73,16 @@ public class CommonCommentController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract deleteComment(
             @AuthenticationPrincipal User user,
-            @PathVariable Integer id
-    ) {
-        Integer userId  = user.getId();
-        SuccessResponse updateCommentResponse = this.commentService.deleteComment(id,userId);
-        return updateCommentResponse;
+            @PathVariable Integer id) {
+        ResponseBaseAbstract deleteCommentResponse = this.commentService.deleteComment(id, user.getId());
+        return deleteCommentResponse;
     }
-
     @GetMapping("{id}/comments")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseBaseAbstract getChildComment(
-            @PathVariable Integer id
-    ) {
-        SuccessResponse getChildComment = this.commentService.getByComment(id);
+    public ResponseBaseAbstract getChildComment(@PathVariable Integer id) {
+        ResponseBaseAbstract getChildComment = this.commentService.getByComment(id);
         return getChildComment;
     }
 
-
-
+      
 }
