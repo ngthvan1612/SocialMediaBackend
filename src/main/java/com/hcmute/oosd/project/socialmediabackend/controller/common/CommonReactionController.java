@@ -32,7 +32,7 @@ public class CommonReactionController {
     public ResponseBaseAbstract searchReaction(
             @RequestParam Map<String, String> queries
     ) {
-        ListReactionResponse listReactionResponse = this.reactionService.searchReactions(queries);
+        ResponseBaseAbstract listReactionResponse = this.reactionService.searchReactions(queries);
         return listReactionResponse;
     }
 
@@ -41,7 +41,7 @@ public class CommonReactionController {
     public ResponseBaseAbstract getReaction(
             @PathVariable Integer id
     ) {
-        GetReactionResponse getReactionResponse = this.reactionService.getReactionById(id);
+        ResponseBaseAbstract getReactionResponse = this.reactionService.getReactionById(id);
         return getReactionResponse;
     }
 
@@ -50,7 +50,7 @@ public class CommonReactionController {
     public ResponseBaseAbstract createReaction(
             @RequestBody @Valid CreateReactionRequest request
     ) {
-        SuccessResponse createReactionResponse = this.reactionService.createReaction(request);
+        ResponseBaseAbstract createReactionResponse = this.reactionService.createReaction(request);
         return createReactionResponse;
     }
 
@@ -61,7 +61,7 @@ public class CommonReactionController {
             @RequestBody @Valid UpdateReactionRequest request
     ) {
         request.setReactionId(id);
-        SuccessResponse updateReactionResponse = this.reactionService.updateReaction(request);
+        ResponseBaseAbstract updateReactionResponse = this.reactionService.updateReaction(request);
         return updateReactionResponse;
     }
 
@@ -70,7 +70,7 @@ public class CommonReactionController {
     public ResponseBaseAbstract deleteReaction(
             @PathVariable Integer id
     ) {
-        SuccessResponse updateReactionResponse = this.reactionService.deleteReaction(id);
+        ResponseBaseAbstract updateReactionResponse = this.reactionService.deleteReaction(id);
         return updateReactionResponse;
     }
 }

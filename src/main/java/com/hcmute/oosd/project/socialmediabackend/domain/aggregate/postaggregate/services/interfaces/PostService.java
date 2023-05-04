@@ -16,8 +16,8 @@ public interface PostService {
 
     ResponseBaseAbstract updatePost(UpdatePostRequest request);
 
-    ResponseBaseAbstract deletePost(Integer id);
-
     ResponseBaseAbstract toogleLikePost(CreateReactionRequest request);
+
+    ResponseBaseAbstract deletePost(Integer id);
 
 }

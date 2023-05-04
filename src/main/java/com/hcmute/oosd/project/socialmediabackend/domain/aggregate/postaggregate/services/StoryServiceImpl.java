@@ -7,6 +7,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
@@ -45,7 +46,7 @@ public class StoryServiceImpl implements StoryService {
     //TODO: loggggggggg
 
     @Override
-    public SuccessResponse createStory(CreateStoryRequest request) {
+    public ResponseBaseAbstract createStory(CreateStoryRequest request) {
         //Validate
 
 
@@ -78,11 +79,14 @@ public class StoryServiceImpl implements StoryService {
         response.addMessage("Tạo Story 24h thành công");
 
         LOG.info("Created story with id = " + story.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Tạo Story 24h thành công")
+                .setData(new StoryResponse(story))
+                .returnCreated();
     }
 
     @Override
-    public GetStoryResponse getStoryById(Integer id) {
+    public ResponseBaseAbstract getStoryById(Integer id) {
         if (!this.storyRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Story 24h nào với id là " + id);
@@ -92,24 +96,28 @@ public class StoryServiceImpl implements StoryService {
         StoryResponse storyDTO = new StoryResponse(story);
         GetStoryResponse response = new GetStoryResponse(storyDTO);
 
-        response.addMessage("Lấy dữ liệu thành công");
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(response)
+                .returnGetOK();
 
-        return response;
     }
 
     @Override
-    public ListStoryResponse searchStorys(Map<String, String> queries) {
+    public ResponseBaseAbstract searchStorys(Map<String, String> queries) {
         List<StoryResponse> listStoryResponses = this.storyRepository.searchStory(queries)
                 .stream().map(story -> new StoryResponse(story)).toList();
 
         ListStoryResponse response = new ListStoryResponse(listStoryResponses);
-        response.addMessage("Lấy dữ liệu thành công");
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(response)
+                .returnGetOK();
 
-        return response;
     }
 
     @Override
-    public SuccessResponse updateStory(UpdateStoryRequest request) {
+    public ResponseBaseAbstract updateStory(UpdateStoryRequest request) {
         //Check record exists
         if (!this.storyRepository.existsById(request.getStoryId())) {
             throw ServiceExceptionFactory.notFound()
@@ -142,20 +150,16 @@ public class StoryServiceImpl implements StoryService {
         //Store
         this.storyRepository.save(story);
 
-        //Return
-        StoryResponse storyDTO = new StoryResponse(story);
-        SuccessResponse response = new SuccessResponse();
-
-        response.setData(storyDTO);
-        response.addMessage("Cập nhật Story 24h thành công");
-
         LOG.info("Updated story with id = " + story.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Cập nhật Story 24h thành công")
+                .setData(new StoryResponse(story))
+                .returnUpdated();
     }
 
 
     @Override
-    public SuccessResponse deleteStory(Integer id) {
+    public ResponseBaseAbstract deleteStory(Integer id) {
         if (!this.storyRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Story 24h nào với id là " + id);
@@ -167,10 +171,12 @@ public class StoryServiceImpl implements StoryService {
         this.storyRepository.save(story);
 
         SuccessResponse response = new SuccessResponse();
-        response.addMessage("Xóa Story 24h thành công");
 
         LOG.info("Deleted story with id = " + story.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Xóa story thành công")
+                .returnDeleted();
+
     }
 
 }

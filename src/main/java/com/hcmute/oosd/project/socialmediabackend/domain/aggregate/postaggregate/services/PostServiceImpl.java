@@ -164,7 +164,7 @@ public class PostServiceImpl implements PostService {
 
         return SuccessResponse.builder()
                 .addMessage("Lấy dữ liệu thành công")
-                .setData(response)
+                .setData(listPostResponses)
                 .returnGetOK();
     }
 
@@ -223,7 +223,7 @@ public class PostServiceImpl implements PostService {
 
         Post post = this.postRepository.findById(id).get();
         post.setDeletedAt(new Date());
-c        this.postRepository.save(post);
+        this.postRepository.save(post);
 
         reactionRepository.deleteByPostId(post.getId());
 
@@ -255,7 +255,6 @@ c        this.postRepository.save(post);
             reactionService.createReaction(request);
         }
         SuccessResponse response = new SuccessResponse();
-        response.addMessage("Like/Dislike post thành công");
 
         LOG.info("Toggle like post with id = " + request.getPostId());
         return response;

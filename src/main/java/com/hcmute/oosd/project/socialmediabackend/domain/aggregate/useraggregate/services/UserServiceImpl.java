@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService {
         User user = this.userRepository.findById(request.getUserId()).get();
 
         user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        // user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setDisplayName(request.getDisplayName());
         user.setBirthday(request.getBirthday());
         user.setProfile(request.getProfile());
@@ -267,11 +267,12 @@ public class UserServiceImpl implements UserService {
         String accessToken = this.jwtTokenProvider.generateToken(user);
 
         LOG.info("User " + request.getUsername() + " has just logged in, generated jwt token is " + accessToken);
-        LoginResponse response = new LoginResponse(new UserResponse(user), accessToken);
-
+        Map<String, Object> data = new HashMap<>();
+        data.put("user", new UserResponse(user));
+        data.put("accessToken", accessToken);
         return SuccessResponse.builder()
                 .addMessage("Đăng nhập thành công")
-                .setData(response)
+                .setData(data)
                 .returnUpdated();
     }
 
@@ -354,6 +355,11 @@ public class UserServiceImpl implements UserService {
         return SuccessResponse.builder()
                 .addMessage("Đăng ký thành công")
                 .returnUpdated();
+    }
+
+    @Override
+    public ResponseBaseAbstract getSuggestionsForMe(User loggingInUser) {
+        return null;
     }
 
 }

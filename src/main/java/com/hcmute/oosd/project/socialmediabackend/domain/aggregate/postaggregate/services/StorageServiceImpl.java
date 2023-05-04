@@ -3,6 +3,7 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregat
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.dto.image.UploadImgRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate.services.interfaces.StorageService;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
@@ -21,7 +22,7 @@ public class StorageServiceImpl implements StorageService {
     @Autowired
     private StorageRepository storageRepository;
     @Override
-    public SuccessResponse uploadImg(UploadImgRequest request) {
+    public ResponseBaseAbstract uploadImg(UploadImgRequest request) {
         //Save to MinIO
         InputStream preparedStream = new ByteArrayInputStream(request.getImgBufferByteArray());
         String newMinIOUrl = this.storageRepository.saveUploadedImg(
@@ -38,10 +39,10 @@ public class StorageServiceImpl implements StorageService {
         //Return
         SuccessResponse response = new SuccessResponse(HttpStatus.CREATED);
 
-        response.setData(newMinIOUrl);
-        response.addMessage("Tải hình ảnh lên server thành công");
-
         LOG.info("New img uploaded successfully in " + newMinIOUrl);
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Tải hình ảnh lên server thành công")
+                .setData(newMinIOUrl)
+                .returnUpdated();
     }
 }

@@ -10,6 +10,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.postaggregate
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.repositories.UserRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.services.UserServiceImpl;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.StorageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
@@ -111,11 +112,14 @@ public class CommentServiceImpl implements CommentService {
         response.addMessage("Tạo Bình luận thành công");
 
         LOG.info("Created comment with id = " + comment.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Tạo bình luận thành công")
+                .setData(new CommentResponse(comment))
+                .returnCreated();
     }
 
     @Override
-    public GetCommentResponse getCommentById(Integer id) {
+    public ResponseBaseAbstract getCommentById(Integer id) {
         if (!this.commentRepository.existsById(id)) {
             throw ServiceExceptionFactory.notFound()
                     .addMessage("Không tìm thấy Bình luận nào với id là " + id);
@@ -123,22 +127,23 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = this.commentRepository.findById(id).get();
         CommentResponse commentDTO = new CommentResponse(comment);
-        GetCommentResponse response = new GetCommentResponse(commentDTO);
+//        GetCommentResponse response = new GetCommentResponse(commentDTO);
 
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(commentDTO)
+                .returnGetOK();
     }
 
     @Override
-    public ListCommentResponse searchComments(Map<String, String> queries) {
+    public ResponseBaseAbstract searchComments(Map<String, String> queries) {
         List<CommentResponse> listCommentResponses = this.commentRepository.searchComment(queries)
                 .stream().map(comment -> new CommentResponse(comment)).toList();
 
-        ListCommentResponse response = new ListCommentResponse(listCommentResponses);
-        response.addMessage("Lấy dữ liệu thành công");
-
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                    .setData(listCommentResponses)
+                .returnGetOK();
     }
 
     @Override
@@ -197,7 +202,10 @@ public class CommentServiceImpl implements CommentService {
         response.addMessage("Cập nhật Bình luận thành công");
 
         LOG.info("Updated comment with id = " + comment.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Cập nhật bình luận thành công")
+                .setData(new CommentResponse(comment))
+                .returnUpdated();
     }
 
     @Override
@@ -228,7 +236,9 @@ public class CommentServiceImpl implements CommentService {
         response.addMessage("Xóa Bình luận thành công");
 
         LOG.info("Deleted comment with id = " + comment.getId());
-        return response;
+        return SuccessResponse.builder()
+                .addMessage("Xóa bình luận thành công")
+                .returnDeleted();
     }
 
     @Override

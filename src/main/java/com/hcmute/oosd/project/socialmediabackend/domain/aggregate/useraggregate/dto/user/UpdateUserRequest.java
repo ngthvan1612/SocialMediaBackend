@@ -13,7 +13,7 @@ public class UpdateUserRequest {
     private Integer userId;
 
     private String username;
-    private String password;
+//    private String password;
     private String displayName;
     private Date birthday;
     private String profile;

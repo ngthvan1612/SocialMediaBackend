@@ -5,22 +5,29 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.groupmessage.ListGroupMessageResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.dto.groupmessage.UpdateGroupMessageRequest;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.model.ChatMessageOneToGroup;
+import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstract;
 import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 
+import java.util.List;
 import java.util.Map;
 
 public interface GroupMessageService {
-    SuccessResponse createGroupMessage(CreateGroupMessageRequest request);
+    ResponseBaseAbstract createGroupMessage(CreateGroupMessageRequest request);
 
-    GetGroupMessageResponse getGroupMessageById(Integer id);
 
-    ListGroupMessageResponse searchGroupMessages(Map<String, String> queries);
+    ResponseBaseAbstract getGroupMessageById(Integer id);
 
-    SuccessResponse updateGroupMessage(UpdateGroupMessageRequest request);
+    ResponseBaseAbstract searchGroupMessages(Map<String, String> queries);
 
-//    SuccessfulResponse addUserToGroup(Integer groupId, Integer userId);
+    ResponseBaseAbstract updateGroupMessage(UpdateGroupMessageRequest request);
+
+
+    ResponseBaseAbstract CreateGroup(String groupName, List<Integer> memberIds);
+
+    ResponseBaseAbstract AddUserToGroup(Integer groupId, List<Integer> memberIds);
     SuccessResponse groupstoreMessage(ChatMessageOneToGroup message);
-    SuccessResponse deleteGroupMessage(Integer id);
+    ResponseBaseAbstract deleteGroupMessage(Integer id);
+
 
 
 }

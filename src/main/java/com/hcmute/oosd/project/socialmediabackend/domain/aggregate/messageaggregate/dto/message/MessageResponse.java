@@ -36,6 +36,7 @@ public class MessageResponse {
         this.lastUpdatedAt = message.getLastUpdatedAt();
         this.deletedAt = message.getDeletedAt();
         this.content = message.getContent();
+        this.isRead = message.getIsRead();
         if (message.getSender() != null) {
             this.senderId = message.getSender().getId();
         }

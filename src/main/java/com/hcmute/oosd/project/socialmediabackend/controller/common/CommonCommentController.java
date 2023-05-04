@@ -33,7 +33,7 @@ public class CommonCommentController {
         @ResponseStatus(HttpStatus.OK)
         public ResponseBaseAbstract searchComment(
                         @RequestParam Map<String, String> queries) {
-                ListCommentResponse listCommentResponse = this.commentService.searchComments(queries);
+                ResponseBaseAbstract listCommentResponse = this.commentService.searchComments(queries);
                 return listCommentResponse;
         }
 
@@ -41,15 +41,17 @@ public class CommonCommentController {
         @ResponseStatus(HttpStatus.OK)
         public ResponseBaseAbstract getComment(
                         @PathVariable Integer id) {
-                GetCommentResponse getCommentResponse = this.commentService.getCommentById(id);
+                ResponseBaseAbstract getCommentResponse = this.commentService.getCommentById(id);
                 return getCommentResponse;
         }
 
         @PostMapping("")
         @ResponseStatus(HttpStatus.CREATED)
         public ResponseBaseAbstract createComment(
-                        @RequestBody @Valid CreateCommentRequest request) {
-                SuccessResponse createCommentResponse = this.commentService.createComment(request);
+                        @RequestBody @Valid CreateCommentRequest request,
+                        @AuthenticationPrincipal User user) {
+                request.setUserId(user.getId());
+                ResponseBaseAbstract createCommentResponse = this.commentService.createComment(request);
                 return createCommentResponse;
         }
 
@@ -57,9 +59,11 @@ public class CommonCommentController {
         @ResponseStatus(HttpStatus.OK)
         public ResponseBaseAbstract updateComment(
                         @PathVariable Integer id,
-                        @RequestBody @Valid UpdateCommentRequest request) {
+                        @RequestBody @Valid UpdateCommentRequest request,
+                        @AuthenticationPrincipal User user) {
                 request.setCommentId(id);
-                SuccessResponse updateCommentResponse = this.commentService.updateComment(request);
+                request.setUserId(user.getId());
+                ResponseBaseAbstract updateCommentResponse = this.commentService.updateComment(request);
                 return updateCommentResponse;
         }
 
@@ -68,15 +72,14 @@ public class CommonCommentController {
         public ResponseBaseAbstract deleteComment(
                         @AuthenticationPrincipal User user,
                         @PathVariable Integer id) {
-                SuccessResponse updateCommentResponse = this.commentService.deleteComment(id, user.getId());
-                return updateCommentResponse;
+                ResponseBaseAbstract deleteCommentResponse = this.commentService.deleteComment(id, user.getId());
+                return deleteCommentResponse;
         }
 
         @GetMapping("{id}/comments")
         @ResponseStatus(HttpStatus.OK)
-        public ResponseBaseAbstract getChildComment(
-                        @PathVariable Integer id) {
-                SuccessResponse getChildComment = this.commentService.getByComment(id);
+        public ResponseBaseAbstract getChildComment(@PathVariable Integer id) {
+                ResponseBaseAbstract getChildComment = this.commentService.getByComment(id);
                 return getChildComment;
         }
 
