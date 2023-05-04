@@ -61,6 +61,23 @@ public class UserServiceImpl implements UserService {
     // TODO: loggggggggg
 
     @Override
+    public ResponseBaseAbstract getSuggestionsForMe(User loggingInUser) {
+        if (!this.userRepository.existsById(loggingInUser.getId())) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy người dùng nào với id là " + loggingInUser.getId());
+        }
+        List<User> listFollowedUser = this.followerRepository.getListPeoplesFollowed(loggingInUser.getId());
+        List<SuggestionForMe> listSuggestionForMes = this.userRepository
+                .getSuggestionsForMe(loggingInUser.getId(), listFollowedUser)
+                .stream().map(user -> new SuggestionForMe(user)).toList();
+
+        return SuccessResponse.builder()
+                .addMessage("Lấy dữ liệu thành công")
+                .setData(listSuggestionForMes)
+                .returnUpdated();
+    }
+
+    @Override
     public ResponseBaseAbstract createUser(CreateUserRequest request) {
         // Validate
         if (this.userRepository.existsByUsername(request.getUsername())) {
@@ -155,7 +172,6 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setDisplayName(request.getDisplayName());
         user.setBirthday(request.getBirthday());
-        user.setAvatar(request.getAvatar());
         user.setProfile(request.getProfile());
         user.setGender(request.getGender());
         user.setRole(request.getRole());

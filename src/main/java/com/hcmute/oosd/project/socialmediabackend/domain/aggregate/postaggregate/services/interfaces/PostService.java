@@ -10,14 +10,14 @@ import java.util.Map;
 public interface PostService {
     ResponseBaseAbstract createPost(CreatePostRequest request);
 
-    ResponseBaseAbstract getPostById(Integer id);
+    ResponseBaseAbstract getPostById(Integer id, Integer uid);
 
-    ResponseBaseAbstract searchPosts(Map<String, String> queries);
+    ResponseBaseAbstract searchPosts(Map<String, String> queries, Integer uid);
 
     ResponseBaseAbstract updatePost(UpdatePostRequest request);
 
-    ResponseBaseAbstract toogleLikePost(CreateReactionRequest request);
-
     ResponseBaseAbstract deletePost(Integer id);
+
+    ResponseBaseAbstract toogleLikePost(CreateReactionRequest request);
 
 }

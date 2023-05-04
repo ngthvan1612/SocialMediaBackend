@@ -52,7 +52,7 @@ public class CommonFollowerController {
         return getFollowerResponse;
     }
 
-    @GetMapping("followers")
+    @GetMapping("{id}/followers")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract listPeoplesFollowMe( // lấy danh sách những người follow mình
             @AuthenticationPrincipal User user) {
@@ -60,7 +60,7 @@ public class CommonFollowerController {
         return successfulResponse;
     }
 
-    @GetMapping("me")
+    @GetMapping("{id}/following")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract listPeoplesFollowed( // lấy danh sách những người mình follow
             @AuthenticationPrincipal User user) {

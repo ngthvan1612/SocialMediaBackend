@@ -31,16 +31,18 @@ public class AdminPostController {
     @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract searchPost(
-            @RequestParam Map<String, String> queries) {
-        ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries);
+            @RequestParam Map<String, String> queries,
+            @AuthenticationPrincipal User user) {
+        ResponseBaseAbstract listPostResponse = this.postService.searchPosts(queries, user.getId());
         return listPostResponse;
     }
 
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract getPost(
-            @PathVariable Integer id) {
-        ResponseBaseAbstract getPostResponse = this.postService.getPostById(id);
+            @PathVariable Integer id,
+            @AuthenticationPrincipal User user) {
+        ResponseBaseAbstract getPostResponse = this.postService.getPostById(id, user.getId());
         return getPostResponse;
     }
 

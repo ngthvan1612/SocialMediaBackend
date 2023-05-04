@@ -7,6 +7,8 @@ import com.hcmute.oosd.project.socialmediabackend.domain.base.ResponseBaseAbstra
 import java.util.Map;
 
 public interface UserService {
+    ResponseBaseAbstract getSuggestionsForMe(User loggingInUser);
+
     ResponseBaseAbstract createUser(CreateUserRequest request);
 
     ResponseBaseAbstract getUserById(Integer id, User loggingInUser);

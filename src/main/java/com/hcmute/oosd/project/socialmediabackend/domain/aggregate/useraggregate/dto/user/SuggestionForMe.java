@@ -6,17 +6,16 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SearchUsersForPost {
+public class SuggestionForMe {
     private Integer id;
     private String username;
-
     private String avatar;
+    private String displayName;
 
-    public SearchUsersForPost() { }
-
-    public SearchUsersForPost(User user) {
+    public SuggestionForMe(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.avatar = user.getAvatar();
+        this.displayName = user.getDisplayName();
     }
 }
