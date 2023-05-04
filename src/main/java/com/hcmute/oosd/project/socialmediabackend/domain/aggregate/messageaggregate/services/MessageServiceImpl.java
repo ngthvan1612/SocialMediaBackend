@@ -8,6 +8,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggreg
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.GroupMessageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.repositories.MessageRepository;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.services.interfaces.MessageService;
+import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggregate.types.ChatMessageOneToOneType;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.ListUserResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.dto.user.UserResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.aggregate.useraggregate.entities.User;
@@ -19,6 +20,7 @@ import com.hcmute.oosd.project.socialmediabackend.domain.base.SuccessResponse;
 import com.hcmute.oosd.project.socialmediabackend.domain.exception.ServiceExceptionFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +58,7 @@ public class MessageServiceImpl implements MessageService {
     // TODO: loggggggggg
 
     @Override
-    public SuccessResponse getListMessageWithAnotherPerson(GetListMessageWithAnotherPersonRequest request) {
+    public ResponseBaseAbstract getListMessageWithAnotherPerson(GetListMessageWithAnotherPersonRequest request) {
         List<Message> rawMessage = this.messageRepository.getAllMessageBetween(request.getUserId(),
                 request.getFriendId());
 
@@ -64,23 +66,38 @@ public class MessageServiceImpl implements MessageService {
                 msg.getSender().getId(),
                 msg.getReceiver().getId(),
                 msg)).toList();
-
-        SuccessResponse response = new SuccessResponse();
-        response.setData(messages);
-
-        return response;
+        return SuccessResponse.builder()
+                .setData( messages )
+                .returnGetOK();
     }
 
     @Override
     public SuccessResponse storeMessage(ChatMessageOneToOne message) {
         Message messageEntity = new Message();
-        messageEntity.setContent(message.getMessage());
         messageEntity.setSender(this.entityManager.getReference(User.class, message.getSenderId()));
         messageEntity.setReceiver(this.entityManager.getReference(User.class, message.getReceiverId()));
         messageEntity.setCreatedAt(message.getCreatedAt());
+        messageEntity.setIsRead(false);
 
-        this.messageRepository.save(messageEntity);
+        if (message.getType() == ChatMessageOneToOneType.MESSAGE)
+        {
+            messageEntity.setContent(message.getMessage());
+            messageEntity.setLastUpdatedAt(new Date());
+        } else if (message.getType() == ChatMessageOneToOneType.IMAGE) {
+            messageEntity.setContent(message.getImage());
+        }
 
+        messageRepository.save(messageEntity);
+        if (message.getType() == ChatMessageOneToOneType.SEEN) {
+            Integer messageId = message.getMessageId();
+//            Integer receiverId = message.getReceiverId();
+            Message seenMessage = this.messageRepository.findById(messageId).orElse(null);
+            if (seenMessage != null) {
+                seenMessage.setIsRead(true); // Đánh dấu tin nhắn đã đọc
+                seenMessage.setLastUpdatedAt(new Date()); // Cập nhật thời gian cập nhật cuối cùng của tin nhắn
+                this.messageRepository.save(seenMessage); // Lưu tin nhắn đã cập nhật vào cơ sở dữ liệu
+            }
+        }
         SuccessResponse response = new SuccessResponse();
         return response;
     }

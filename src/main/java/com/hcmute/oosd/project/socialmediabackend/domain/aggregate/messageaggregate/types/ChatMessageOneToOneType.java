@@ -3,5 +3,7 @@ package com.hcmute.oosd.project.socialmediabackend.domain.aggregate.messageaggre
 public enum ChatMessageOneToOneType {
 
     JOIN,
-    MESSAGE
+    MESSAGE,
+    IMAGE,
+    SEEN
 }
