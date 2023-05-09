@@ -213,7 +213,7 @@ public class AnnounceServiceImpl implements AnnounceService {
                 CreatedPostNotification notification = new CreatedPostNotification();
 
                 notification.setPost(post);
-                notification.setMessage("Người dùng mà bạn đang theo dõi vừa đăng bài mới");
+                notification.setMessage(post.getAuthor().getUsername() + " vừa đăng bài mới");
 
                 this.simpMessagingTemplate.convertAndSend(endPoint, notification);
             }
