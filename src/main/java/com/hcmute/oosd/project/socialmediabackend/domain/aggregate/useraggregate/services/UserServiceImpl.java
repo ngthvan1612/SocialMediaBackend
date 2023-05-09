@@ -198,6 +198,31 @@ public class UserServiceImpl implements UserService {
                 .setData(userDTO)
                 .returnUpdated();
     }
+    @Override
+    public ResponseBaseAbstract changePassword(UpdateUserPasswordRequest request) {
+        // Check record exists
+        if (!this.userRepository.existsById(request.getUserId())) {
+            throw ServiceExceptionFactory.notFound()
+                    .addMessage("Không tìm thấy người dùng nào với id là " + request.getUserId());
+        }
+
+        // Read data from request
+        User user = this.userRepository.findById(request.getUserId()).get();
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        // Update last changed time
+        user.setLastUpdatedAt(new Date());
+        // Store
+        this.userRepository.save(user);
+
+        // Return
+        UserResponse userDTO = new UserResponse(user);
+
+        LOG.info("Updated user with id = " + user.getId());
+        return SuccessResponse.builder()
+                .addMessage("Đổi mật khẩu thành công!")
+                .setData(userDTO)
+                .returnUpdated();
+    }
 
     @Override
     public ResponseBaseAbstract updateAvatarById(UpdateUserAvatarRequest request) {

@@ -18,6 +18,7 @@ public interface UserService {
     ResponseBaseAbstract searchUsersForPost(String pattern, Integer limit);
 
     ResponseBaseAbstract updateUser(UpdateUserRequest request);
+    ResponseBaseAbstract changePassword(UpdateUserPasswordRequest request);
 
     ResponseBaseAbstract deleteUser(Integer id);
 

@@ -87,6 +87,15 @@ public class CommonUserController {
         ResponseBaseAbstract updateUserResponse = this.userService.updateUser(request);
         return updateUserResponse;
     }
+    @PutMapping("{id}/change-password")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseBaseAbstract changePassword(
+            @PathVariable Integer id,
+            @RequestBody @Valid UpdateUserPasswordRequest request) {
+        request.setUserId(id);
+        ResponseBaseAbstract updateUserResponse = this.userService.changePassword(request);
+        return updateUserResponse;
+    }
 
     @DeleteMapping("{id}/delete")
     @ResponseStatus(HttpStatus.OK)
