@@ -55,16 +55,16 @@ public class CommonFollowerController {
     @GetMapping("{id}/followers")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract listPeoplesFollowMe( // lấy danh sách những người follow mình
-            @AuthenticationPrincipal User user) {
-        ResponseBaseAbstract successfulResponse = this.followerService.getListPeoplesFollowMe(user.getId());
+            @PathVariable Integer id) {
+        ResponseBaseAbstract successfulResponse = this.followerService.getListPeoplesFollowMe(id);
         return successfulResponse;
     }
 
     @GetMapping("{id}/following")
     @ResponseStatus(HttpStatus.OK)
     public ResponseBaseAbstract listPeoplesFollowed( // lấy danh sách những người mình follow
-            @AuthenticationPrincipal User user) {
-        ResponseBaseAbstract successfulResponse = this.followerService.getListPeoplesFollowed(user.getId());
+            @PathVariable Integer id) {
+        ResponseBaseAbstract successfulResponse = this.followerService.getListPeoplesFollowed(id);
         return successfulResponse;
     }
 
